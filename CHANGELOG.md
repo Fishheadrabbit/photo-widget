@@ -7,11 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v1.25.1] - 2025-02-23
+[v1.25.1]: https://github.com/fibelatti/photo-widget/releases/tag/v1.25.1
+
+### Fixed
+
+* Fix preferred gallery picker choice not being saved
+
+## [v1.25.0] - 2025-02-23
+[v1.25.0]: https://github.com/fibelatti/photo-widget/releases/tag/v1.25.0
+
 ### Added
 
 * Add support for HEIC/HEIF file format when syncing folders
 * Add preferred gallery picker when using "View with a gallery app"
 * Add back "View next photo" tap action for 1x1 widgets
+
+### Changed
+
+* Update how the corner radius is calculated to better match what's seen in the
+  picker
+* Update the base multiplier used to adjust the widget padding and offset
 
 ### Fixed
 
