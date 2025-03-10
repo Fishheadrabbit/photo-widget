@@ -21,10 +21,6 @@
     <string name="photo_widget_home_developer">由Filipe Belatti开发❤</string>
     <string name="photo_widget_home_version">版本号: %s</string>
     <string name="photo_widget_home_view_licenses">OSS Licenses</string>
-    <plurals name="photo_widget_home_share_received">
-        <item quantity="one">1 photo received. Create a new widget or choose an existing one to add it.</item>
-        <item quantity="other">%d photos received. Create a new widget or choose an existing one to add them.</item>
-    </plurals>
    <!-- My Widgets -->
     <string name="photo_widget_home_empty_widgets">您还没有添加任何小组件\n添加到桌面的小组件会出现在这里</string>
     <string name="photo_widget_home_filter_all">所有</string>
