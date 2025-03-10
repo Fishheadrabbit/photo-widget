@@ -24,8 +24,7 @@
    <!-- My Widgets -->
     <string name="photo_widget_home_empty_widgets">您还没有添加任何小组件\n添加到桌面的小组件会出现在这里</string>
     <plurals name="photo_widget_home_share_received">
-        <item quantity="one">1 photo received. Create a new widget or choose an existing one to add it.</item>
-        <item quantity="other">%d photos received. Create a new widget or choose an existing one to add them.</item>
+        <item quantity="other">收到了%d张照,创建一个新的小组件或选择一个现有的小组件来添加它们</item>
     </plurals>
     <string name="photo_widget_home_filter_all">所有</string>
     <string name="photo_widget_home_filter_photos">照片</string>
