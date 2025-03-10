@@ -38,6 +38,7 @@ import com.fibelatti.photowidget.R
 import com.fibelatti.photowidget.model.LocalPhoto
 import com.fibelatti.photowidget.model.PhotoWidget
 import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
+import com.fibelatti.photowidget.model.PhotoWidgetColors
 import com.fibelatti.photowidget.model.PhotoWidgetShapeBuilder
 import com.fibelatti.photowidget.model.PhotoWidgetSource
 import com.fibelatti.photowidget.model.PhotoWidgetStatus
@@ -103,9 +104,8 @@ fun MyWidgetsScreen(
                                 aspectRatio = widget.aspectRatio,
                                 shapeId = widget.shapeId,
                                 cornerRadius = widget.cornerRadius,
-                                opacity = widget.opacity,
                                 modifier = Modifier.fillMaxSize(),
-                                blackAndWhite = widget.blackAndWhite,
+                                colors = widget.colors,
                                 border = widget.border,
                                 isLoading = widget.isLoading,
                             )
@@ -226,7 +226,7 @@ private fun MyWidgetsScreenPreview() {
                         else -> PhotoWidgetAspectRatio.SQUARE
                     },
                     shapeId = allShapeIds.random(),
-                    opacity = opacities.random(),
+                    colors = PhotoWidgetColors(opacity = opacities.random()),
                     status = status,
                     deletionTimestamp = if (PhotoWidgetStatus.REMOVED == status) 1 else -1,
                 )

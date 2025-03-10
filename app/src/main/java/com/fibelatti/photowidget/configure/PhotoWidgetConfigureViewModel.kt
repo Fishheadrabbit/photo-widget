@@ -493,15 +493,29 @@ class PhotoWidgetConfigureViewModel @Inject constructor(
     fun opacitySelected(opacity: Float) {
         _state.update { current ->
             current.copy(
-                photoWidget = current.photoWidget.copy(opacity = opacity),
+                photoWidget = current.photoWidget.copy(
+                    colors = current.photoWidget.colors.copy(opacity = opacity),
+                ),
             )
         }
     }
 
-    fun blackAndWhiteChanged(value: Boolean) {
+    fun saturationSelected(saturation: Float) {
         _state.update { current ->
             current.copy(
-                photoWidget = current.photoWidget.copy(blackAndWhite = value),
+                photoWidget = current.photoWidget.copy(
+                    colors = current.photoWidget.colors.copy(saturation = saturation),
+                ),
+            )
+        }
+    }
+
+    fun brightnessSelected(brightness: Float) {
+        _state.update { current ->
+            current.copy(
+                photoWidget = current.photoWidget.copy(
+                    colors = current.photoWidget.colors.copy(brightness = brightness),
+                ),
             )
         }
     }

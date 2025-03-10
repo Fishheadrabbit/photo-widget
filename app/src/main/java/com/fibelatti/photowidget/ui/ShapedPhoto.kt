@@ -11,6 +11,7 @@ import androidx.core.graphics.toColorInt
 import com.fibelatti.photowidget.model.LocalPhoto
 import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
 import com.fibelatti.photowidget.model.PhotoWidgetBorder
+import com.fibelatti.photowidget.model.PhotoWidgetColors
 import com.fibelatti.photowidget.platform.getDynamicAttributeColor
 import com.fibelatti.photowidget.platform.withPolygonalShape
 import com.fibelatti.photowidget.platform.withRoundedCorners
@@ -21,9 +22,8 @@ fun ShapedPhoto(
     aspectRatio: PhotoWidgetAspectRatio,
     shapeId: String,
     cornerRadius: Int,
-    opacity: Float,
     modifier: Modifier = Modifier,
-    blackAndWhite: Boolean = false,
+    colors: PhotoWidgetColors = PhotoWidgetColors(),
     border: PhotoWidgetBorder = PhotoWidgetBorder.None,
     badge: @Composable BoxScope.() -> Unit = {},
     isLoading: Boolean = false,
@@ -40,8 +40,7 @@ fun ShapedPhoto(
             aspectRatio,
             shapeId,
             cornerRadius,
-            opacity,
-            blackAndWhite,
+            colors,
             border,
         ),
         isLoading = isLoading,
@@ -60,8 +59,7 @@ fun ShapedPhoto(
             if (PhotoWidgetAspectRatio.SQUARE == aspectRatio) {
                 bitmap.withPolygonalShape(
                     shapeId = shapeId,
-                    opacity = opacity,
-                    blackAndWhite = blackAndWhite,
+                    colors = colors,
                     borderColor = borderColor,
                     borderPercent = borderPercent,
                 )
@@ -69,8 +67,7 @@ fun ShapedPhoto(
                 bitmap.withRoundedCorners(
                     aspectRatio = aspectRatio,
                     radius = cornerRadius * localDensity,
-                    opacity = opacity,
-                    blackAndWhite = blackAndWhite,
+                    colors = colors,
                     borderColor = borderColor,
                     borderPercent = borderPercent,
                 )

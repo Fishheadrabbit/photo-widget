@@ -101,9 +101,8 @@ private fun ExistingWidgetPicker(
                         aspectRatio = widget.aspectRatio,
                         shapeId = widget.shapeId,
                         cornerRadius = widget.cornerRadius,
-                        opacity = widget.opacity,
                         modifier = Modifier.fillMaxSize(),
-                        blackAndWhite = widget.blackAndWhite,
+                        colors = widget.colors,
                         border = widget.border,
                         isLoading = widget.isLoading,
                     )

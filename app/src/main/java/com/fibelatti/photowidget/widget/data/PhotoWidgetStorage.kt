@@ -238,6 +238,10 @@ class PhotoWidgetStorage @Inject constructor(
         displayedPhotoDao.deletePhotosByWidgetId(widgetId = appWidgetId)
     }
 
+    suspend fun clearMostRecentPhoto(appWidgetId: Int) {
+        displayedPhotoDao.deleteMostRecentPhoto(widgetId = appWidgetId)
+    }
+
     suspend fun saveDisplayedPhoto(appWidgetId: Int, photoId: String) {
         displayedPhotoDao.savePhoto(
             displayedWidgetPhotoDto = DisplayedWidgetPhotoDto(
@@ -377,12 +381,20 @@ class PhotoWidgetStorage @Inject constructor(
         return sharedPreferences.getWidgetOpacity(appWidgetId = appWidgetId)
     }
 
-    fun saveWidgetBlackAndWhite(appWidgetId: Int, value: Boolean) {
-        sharedPreferences.saveWidgetBlackAndWhite(appWidgetId = appWidgetId, value = value)
+    fun saveWidgetSaturation(appWidgetId: Int, saturation: Float) {
+        sharedPreferences.saveWidgetSaturation(appWidgetId = appWidgetId, saturation = saturation)
     }
 
-    fun getWidgetBlackAndWhite(appWidgetId: Int): Boolean {
-        return sharedPreferences.getWidgetBlackAndWhite(appWidgetId = appWidgetId)
+    fun getWidgetSaturation(appWidgetId: Int): Float {
+        return sharedPreferences.getWidgetSaturation(appWidgetId = appWidgetId)
+    }
+
+    fun saveWidgetBrightness(appWidgetId: Int, brightness: Float) {
+        sharedPreferences.saveWidgetBrightness(appWidgetId = appWidgetId, brightness = brightness)
+    }
+
+    fun getWidgetBrightness(appWidgetId: Int): Float {
+        return sharedPreferences.getWidgetBrightness(appWidgetId = appWidgetId)
     }
 
     fun saveWidgetOffset(appWidgetId: Int, horizontalOffset: Int, verticalOffset: Int) {

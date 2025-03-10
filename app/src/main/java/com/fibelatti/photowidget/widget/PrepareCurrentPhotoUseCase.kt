@@ -82,8 +82,7 @@ class PrepareCurrentPhotoUseCase @Inject constructor(
         val transformedBitmap: Bitmap = if (PhotoWidgetAspectRatio.SQUARE == photoWidget.aspectRatio) {
             bitmap.withPolygonalShape(
                 shapeId = photoWidget.shapeId,
-                opacity = photoWidget.opacity,
-                blackAndWhite = photoWidget.blackAndWhite,
+                colors = photoWidget.colors,
                 borderColor = borderColor,
                 borderPercent = borderPercent,
             )
@@ -91,8 +90,7 @@ class PrepareCurrentPhotoUseCase @Inject constructor(
             bitmap.withRoundedCorners(
                 aspectRatio = photoWidget.aspectRatio,
                 radius = photoWidget.cornerRadius * context.resources.displayMetrics.density,
-                opacity = photoWidget.opacity,
-                blackAndWhite = photoWidget.blackAndWhite,
+                colors = photoWidget.colors,
                 borderColor = borderColor,
                 borderPercent = borderPercent,
                 widgetSize = widgetSize,

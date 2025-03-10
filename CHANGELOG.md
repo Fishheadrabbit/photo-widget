@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+* Brightness picker
+
+### Changed
+
+* Replaced the black and white toggle with a saturation picker for granular
+  control
+
+### Fixed
+
+* Fix the behavior of tapping to view the previous photo when shuffle is on
+
 ## [v1.25.2] - 2025-03-07
 [v1.25.2]: https://github.com/fibelatti/photo-widget/releases/tag/v1.25.2
 

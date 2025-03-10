@@ -63,10 +63,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fibelatti.photowidget.R
+import com.fibelatti.photowidget.configure.PhotoWidgetBrightnessPicker
 import com.fibelatti.photowidget.configure.PhotoWidgetCycleModePicker
+import com.fibelatti.photowidget.configure.PhotoWidgetSaturationPicker
 import com.fibelatti.photowidget.configure.PhotoWidgetTapActionPicker
 import com.fibelatti.photowidget.model.PhotoWidget
 import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
+import com.fibelatti.photowidget.model.PhotoWidgetColors
 import com.fibelatti.photowidget.model.PhotoWidgetCycleMode
 import com.fibelatti.photowidget.model.PhotoWidgetShapeBuilder
 import com.fibelatti.photowidget.model.PhotoWidgetSource
@@ -105,14 +108,6 @@ fun WidgetDefaultsScreen(
                 onOptionSelected = preferencesViewModel::saveDefaultSource,
             )
         },
-        onShuffleChange = preferencesViewModel::saveDefaultShuffle,
-        onIntervalClick = {
-            PhotoWidgetCycleModePicker.show(
-                context = localContext,
-                cycleMode = preferences.defaultCycleMode,
-                onApplyClick = preferencesViewModel::saveDefaultCycleMode,
-            )
-        },
         onShapeClick = {
             ComposeBottomSheetDialog(localContext) {
                 ShapePicker(
@@ -145,7 +140,28 @@ fun WidgetDefaultsScreen(
                 )
             }.show()
         },
-        onBlackAndWhiteChange = preferencesViewModel::saveDefaultBlackAndWhite,
+        onSaturationClick = {
+            PhotoWidgetSaturationPicker.show(
+                context = localContext,
+                currentSaturation = preferences.defaultSaturation,
+                onApplyClick = preferencesViewModel::saveDefaultSaturation,
+            )
+        },
+        onBrightnessClick = {
+            PhotoWidgetBrightnessPicker.show(
+                context = localContext,
+                currentBrightness = preferences.defaultBrightness,
+                onApplyClick = preferencesViewModel::saveDefaultBrightness,
+            )
+        },
+        onIntervalClick = {
+            PhotoWidgetCycleModePicker.show(
+                context = localContext,
+                cycleMode = preferences.defaultCycleMode,
+                onApplyClick = preferencesViewModel::saveDefaultCycleMode,
+            )
+        },
+        onShuffleChange = preferencesViewModel::saveDefaultShuffle,
         onTapActionClick = {
             PhotoWidgetTapActionPicker.show(
                 context = localContext,
@@ -163,12 +179,13 @@ private fun WidgetDefaultsScreen(
     userPreferences: UserPreferences,
     onNavClick: () -> Unit,
     onSourceClick: () -> Unit,
-    onShuffleChange: (Boolean) -> Unit,
-    onIntervalClick: () -> Unit,
     onShapeClick: () -> Unit,
     onCornerRadiusClick: () -> Unit,
     onOpacityClick: () -> Unit,
-    onBlackAndWhiteChange: (Boolean) -> Unit,
+    onSaturationClick: () -> Unit,
+    onBrightnessClick: () -> Unit,
+    onIntervalClick: () -> Unit,
+    onShuffleChange: (Boolean) -> Unit,
     onTapActionClick: () -> Unit,
     onClearDefaultsClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -209,10 +226,34 @@ private fun WidgetDefaultsScreen(
                 onClick = onSourceClick,
             )
 
-            BooleanDefault(
-                title = stringResource(id = R.string.widget_defaults_shuffle),
-                currentValue = userPreferences.defaultShuffle,
-                onCheckedChange = onShuffleChange,
+            ShapeDefault(
+                title = stringResource(id = R.string.widget_defaults_shape),
+                currentValue = userPreferences.defaultShape,
+                onClick = onShapeClick,
+            )
+
+            PickerDefault(
+                title = stringResource(id = R.string.widget_defaults_corner_radius),
+                currentValue = userPreferences.defaultCornerRadius.toString(),
+                onClick = onCornerRadiusClick,
+            )
+
+            PickerDefault(
+                title = stringResource(id = R.string.widget_defaults_opacity),
+                currentValue = formatPercent(value = userPreferences.defaultOpacity, fractionDigits = 0),
+                onClick = onOpacityClick,
+            )
+
+            PickerDefault(
+                title = stringResource(R.string.widget_defaults_saturation),
+                currentValue = formatPercent(value = userPreferences.defaultSaturation, fractionDigits = 0),
+                onClick = onSaturationClick,
+            )
+
+            PickerDefault(
+                title = stringResource(R.string.widget_defaults_brightness),
+                currentValue = formatPercent(value = userPreferences.defaultBrightness, fractionDigits = 0),
+                onClick = onBrightnessClick,
             )
 
             PickerDefault(
@@ -247,28 +288,10 @@ private fun WidgetDefaultsScreen(
                 onClick = onIntervalClick,
             )
 
-            ShapeDefault(
-                title = stringResource(id = R.string.widget_defaults_shape),
-                currentValue = userPreferences.defaultShape,
-                onClick = onShapeClick,
-            )
-
-            PickerDefault(
-                title = stringResource(id = R.string.widget_defaults_corner_radius),
-                currentValue = userPreferences.defaultCornerRadius.toInt().toString(),
-                onClick = onCornerRadiusClick,
-            )
-
-            PickerDefault(
-                title = stringResource(id = R.string.widget_defaults_opacity),
-                currentValue = formatPercent(value = userPreferences.defaultOpacity, fractionDigits = 0),
-                onClick = onOpacityClick,
-            )
-
             BooleanDefault(
-                title = stringResource(R.string.widget_defaults_black_and_white),
-                currentValue = userPreferences.defaultBlackAndWhite,
-                onCheckedChange = onBlackAndWhiteChange,
+                title = stringResource(id = R.string.widget_defaults_shuffle),
+                currentValue = userPreferences.defaultShuffle,
+                onCheckedChange = onShuffleChange,
             )
 
             PickerDefault(
@@ -550,7 +573,7 @@ fun OpacityPicker(
                 .withRoundedCorners(
                     aspectRatio = PhotoWidgetAspectRatio.SQUARE,
                     radius = PhotoWidget.DEFAULT_CORNER_RADIUS.dpToPx(),
-                    opacity = value,
+                    colors = PhotoWidgetColors(opacity = value),
                 )
                 .asImageBitmap(),
             contentDescription = null,
@@ -574,7 +597,7 @@ fun OpacityPicker(
 
             Text(
                 text = formatPercent(value = value, fractionDigits = 0),
-                modifier = Modifier.width(40.dp),
+                modifier = Modifier.width(48.dp),
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.End,
                 style = MaterialTheme.typography.labelLarge,
@@ -637,17 +660,19 @@ private fun WidgetDefaultsScreenPreview() {
                 defaultShape = PhotoWidget.DEFAULT_SHAPE_ID,
                 defaultCornerRadius = PhotoWidget.DEFAULT_CORNER_RADIUS,
                 defaultOpacity = PhotoWidget.DEFAULT_OPACITY,
-                defaultBlackAndWhite = false,
+                defaultSaturation = PhotoWidget.DEFAULT_SATURATION,
+                defaultBrightness = PhotoWidget.DEFAULT_BRIGHTNESS,
                 defaultTapAction = PhotoWidgetTapAction.DEFAULT,
             ),
             onNavClick = {},
             onSourceClick = {},
-            onShuffleChange = {},
-            onIntervalClick = {},
             onShapeClick = {},
             onCornerRadiusClick = {},
             onOpacityClick = {},
-            onBlackAndWhiteChange = {},
+            onSaturationClick = {},
+            onBrightnessClick = {},
+            onIntervalClick = {},
+            onShuffleChange = {},
             onTapActionClick = {},
             onClearDefaultsClick = {},
         )
