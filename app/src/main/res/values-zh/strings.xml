@@ -82,8 +82,7 @@
     <string name="photo_widget_aspect_ratio_wide">宽</string>
 
     
-  <string name="photo_widget_aspect_ratio_wide_description" translatable="false">16:10</string>
-      <string name="photo_widget_aspect_ratio_original">原型</string>
+    <string name="photo_widget_aspect_ratio_original">原型</string>
     <string name="photo_widget_aspect_ratio_original_description">匹配每张照片</string>
     <string name="photo_widget_aspect_ratio_fill_widget">填充</string>
     <string name="photo_widget_aspect_ratio_fill_widget_description">匹配小组件大小</string>
