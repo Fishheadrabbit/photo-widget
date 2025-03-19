@@ -34,11 +34,15 @@
     <string name="photo_widget_home_my_widget_action_edit">View / Edit</string>
     <string name="photo_widget_home_my_widget_action_duplicate">Duplicate</string>
     <string name="photo_widget_home_removed_widget_action_restore">恢复</string>
-      <string name="photo_widget_home_removed_widget_action_keep">保留</string>
+    <string name="photo_widget_home_locked_label">锁定</string>
+    <string name="photo_widget_home_removed_widget_action_keep">保留</string>
     <string name="photo_widget_home_removed_widget_action_delete">彻底删除</string>
     <!-- Preferences -->
     <string name="preferences_data_saver">减少存储占用</string>
     <string name="preferences_data_saver_description">启用后,添加到小组件中的照片会被压缩以节省存储空间。,通常不会影响照片的质量,但如果你的照片中的文字比较小,建议关闭这一功能\n\n此设置仅影响更改后添加的照片\n\n不适用于同步文件夹,因为这些照片是直接从你的设备存储中读取的</string>
+    <string name="photo_widget_home_my_widget_action_lock">Lock with current photo</string>
+    <string name="photo_widget_home_my_widget_action_unlock">Unlock widget</string>
+    <string name="photo_widget_home_my_widget_lock_explainer">Photos will not change automatically or on tap when the widget is locked</string>
     <string name="preferences_appearance_follow_system">跟随系统</string>
     <string name="preferences_appearance_light">亮色</string>
     <string name="preferences_appearance_dark">暗色</string>
@@ -150,7 +154,7 @@
     <string name="photo_widget_configure_offset_current_vertical">竖直: %1$d</string>
     <string name="photo_widget_configure_padding">内边距</string>
     <string name="photo_widget_configure_tap_action">点击行为</string>
-    <string name="photo_widget_configure_tap_action_description">选择中间区域的点击动作（绿色闪烁部分）,在尺寸大于1x1的小组件上,你可以点击两侧来切换照片</string>
+    <string name="photo_widget_configure_tap_action_description">选择中间区域的点击动作（绿色闪烁部分）,在尺寸大于1x1的小组件上,你可以点击两侧来切换照片\n如果小组件被锁定,此操作无效</string>
     <string name="photo_widget_configure_tap_action_none">无</string>
     <string name="photo_widget_configure_tap_action_view_full_screen">全屏查看照片</string>
      <string name="photo_widget_configure_tap_action_view_in_gallery">使用相册查看</string>
