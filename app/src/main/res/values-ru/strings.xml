@@ -14,7 +14,6 @@
     <string name="photo_widget_home_dynamic_colors">Цвета приложения</string>
     <string name="photo_widget_home_share">Поделиться приложением</string>
     <string name="photo_widget_home_rate">Оставить отзыв</string>
-    <string name="photo_widget_home_feedback">Отправить отзыв</string>
     <string name="photo_widget_home_help">Что-то не работает?</string>
     <string name="photo_widget_home_common_issues">Распространённые проблемы</string>
     <string name="photo_widget_home_privacy_policy">Политика конфиденциальности</string>
@@ -27,6 +26,8 @@
         <item quantity="many">Получено %d фотографий. Создайте новый виджет или выберите существующий, чтобы добавить их.</item>
         <item quantity="other">Получено %d фотографий. Создайте новый виджет или выберите существующий, чтобы добавить их.</item>
     </plurals>
+    <string name="photo_widget_home_pinning_not_supported_title">Добавьте виджет прямо с главного экрана</string>
+    <string name="photo_widget_home_pinning_not_supported_message">1. Нажмите и удерживайте пустое место\n\n2. Выберите меню виджетов\n\n3. Найдите Material Photo Widget\n\n4. Настройте и сохраните!</string>
     <!-- My Widgets -->
     <string name="photo_widget_home_empty_widgets">Вы ещё не добавили ни одного виджета.\nДобавленные на главный экран виджеты появятся здесь.</string>
     <string name="photo_widget_home_filter_all">Все</string>
@@ -35,6 +36,7 @@
     <string name="photo_widget_home_locked_label">Заблокировано</string>
     <string name="photo_widget_home_removed_label">Удаленный</string>
     <string name="photo_widget_home_removed_widgets_hint">Удаленные виджеты больше не отображаются на главном экране. Они навсегда удаляются из приложения через 7 дней. Вы можете выбрать «Сохранить» их.</string>
+    <string name="photo_widget_home_my_widget_action_sync">Синхронизировать с папкой photos</string>
     <string name="photo_widget_home_my_widget_action_edit">Просмотреть / Редактировать</string>
     <string name="photo_widget_home_my_widget_action_duplicate">Дублировать</string>
     <string name="photo_widget_home_my_widget_action_lock">Заблокировать с текущим фото</string>
@@ -43,6 +45,7 @@
     <string name="photo_widget_home_removed_widget_action_restore">Восстановить</string>
     <string name="photo_widget_home_removed_widget_action_keep">Держать</string>
     <string name="photo_widget_home_removed_widget_action_delete">Удалить навсегда</string>
+    <string name="photo_widget_home_my_widget_syncing_feedback">Извлечение последних фотографий из папки…</string>
     <!-- Preferences -->
     <string name="preferences_data_saver">Уменьшить использование хранилища</string>
     <string name="preferences_data_saver_description">При включении фотографии, добавленные в виджеты, сжимаются для экономии места. Обычно это не влияет на качество, но если ваши фотографии содержат мелкий текст, рекомендуется отключить эту функцию.\n\nЭта настройка влияет только на фотографии, добавленные после ее изменения.\n\nОна не применяется к синхронизированным папкам, так как эти фотографии считываются непосредственно из хранилища вашего устройства.</string>
@@ -71,7 +74,9 @@
     <string name="photo_widget_source_photos">Фотографии</string>
     <string name="photo_widget_source_directory">Папка</string>
     <!-- Aspect Ratio -->
-    <string name="photo_widget_aspect_ratio_title">Соотношение сторон</string>
+    <string name="photo_widget_aspect_ratio_title">Формат</string>
+    <string name="photo_widget_aspect_ratio_shape">Фигуры</string>
+    <string name="photo_widget_aspect_ratio_shape_description">Фигуры Material You</string>
     <string name="photo_widget_aspect_ratio_square">Квадрат</string>
     <string name="photo_widget_aspect_ratio_tall">Высокий</string>
     <string name="photo_widget_aspect_ratio_wide">Широкий</string>
@@ -159,12 +164,14 @@
     <string name="photo_widget_configure_interval_permission_dialog_title">Об этом разрешении</string>
     <string name="photo_widget_configure_interval_permission_dialog_description">Android может ограничивать фоновую работу, чтобы оптимизировать время работы аккумулятора, что приводит к увеличению интервалов между снимками.\n\nЧтобы обновлять виджеты точно с выбранным интервалом, откройте настройки и разрешите установку будильников и напоминаний.</string>
     <string name="photo_widget_configure_interval_open_settings">Открыть настройки</string>
-    <string name="photo_widget_configure_roundness_warning">Виджеты Android имеют закругленные углы, которые нельзя удалить. Вы можете увеличить закругление, но не убрать его полностью. Чтобы получить квадратные углы, выберите другой формат.</string>
-    <string name="photo_widget_configure_border_warning">Вы можете увеличить закругление, если рамка обрезается минимальным закруглением углов виджета</string>
     <string name="photo_widget_configure_border">Граница</string>
     <string name="photo_widget_configure_border_none">Нет</string>
     <string name="photo_widget_configure_border_dynamic">Динамичный</string>
     <string name="photo_widget_configure_border_color">Цветной</string>
+    <string name="photo_widget_configure_border_color_palette">Палитра</string>
+    <string name="photo_widget_configure_border_color_palette_dominant">Доминирующий цвет</string>
+    <string name="photo_widget_configure_border_color_palette_vibrant">Яркий цвет</string>
+    <string name="photo_widget_configure_border_color_palette_muted">Приглушённый цвет</string>
     <string name="photo_widget_configure_border_explanation">Изменения произойдут во время следующего обновления виджета после того, как вы измените цвет темы телефона. Чтобы обновить все виджеты немедленно, просто откройте приложение.</string>
     <string name="photo_widget_configure_offset">Смещение</string>
     <string name="photo_widget_configure_offset_current_values">Горизонтальное: %1$d, Вертикальное: %2$d</string>
@@ -177,17 +184,22 @@
     <string name="photo_widget_configure_tap_action_view_full_screen">Просмотр фото на весь экран</string>
     <string name="photo_widget_configure_tap_action_view_in_gallery">Просмотр с помощью приложения галереи</string>
     <string name="photo_widget_configure_tap_action_view_next_photo">Посмотреть следующее фото</string>
+    <string name="photo_widget_configure_tap_action_choose_next_photo">Выбрать следующее фото</string>
     <string name="photo_widget_configure_tap_action_app_shortcut">Открыть приложение</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Открыть ссылку</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling">Включить/выключить цикл</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling_description">Нажмите, чтобы приостановить автоматическую смену фото. Нажмите снова, чтобы возобновить. Это действие не имеет эффекта, если виджет заблокирован.</string>
     <string name="photo_widget_configure_tap_action_increase_brightness">Автоматически увеличить яркость</string>
     <string name="photo_widget_configure_tap_action_view_original_photo">Просмотреть оригинальную фотографию (без обрезки или поворота)</string>
+    <string name="photo_widget_configure_tap_action_do_not_shuffle">Не перемешивать при использовании кнопок просмотра</string>
+    <string name="photo_widget_configure_tap_action_keep_current_photo">Не менять текущую фотографию при использовании кнопок просмотра</string>
+    <string name="photo_widget_configure_tap_action_disable_side_actions">Отключить нажатия на края главного экрана</string>
     <string name="photo_widget_configure_tap_action_gallery_description">Доступно для виджетов на основе папок. Виджеты на основе фотографий будут использовать \"Просмотр фото на весь экран\" вместо этого. Вы также можете выбрать, какое приложение галереи использовать.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Выбрать приложение</string>
     <string name="photo_widget_configure_tap_action_disable_tap">Отключить сенсорные края во время паузы цикла</string>
     <string name="photo_widget_configure_add_to_home">Добавить на главный экран</string>
     <string name="photo_widget_configure_save_changes">Сохранить изменения</string>
+    <string name="photo_widget_configure_widget_pinned">Виджет добавлен! Проверьте домашний экран…</string>
     <string name="photo_widget_time_picker_title">Выбрать время</string>
     <!-- Help -->
     <string name="help_article_title_1">Не получается добавить виджет на главный экран</string>
@@ -198,8 +210,6 @@
     <string name="help_article_body_3">Когда ваш телефон перезагружается, Android отправляет сигнал приложениям, чтобы уведомить их, чтобы они могли перезапуститься. К сожалению, некоторые производители устройств (такие как Xiaomi, Redmi, Huawei и другие) блокируют этот сигнал.\n\nЧтобы включить эту функциональность, измените разрешение «Автозапуск» в вашем приложении безопасности.</string>
     <string name="help_article_title_4">Размер виджета слишком мал</string>
     <string name="help_article_body_4">После добавления виджета на главный экран вы можете нажать на него и удерживать, чтобы открыть опцию изменения размера. Затем перетащите его границы, чтобы настроить его на нужный размер.</string>
-    <string name="help_article_footer">Что-то еще не работает?</string>
-    <string name="help_email_body">Напишите свое сообщение ниже. Если вы сообщаете о проблеме, постарайтесь описать, что вы делали, когда возникла проблема.</string>
     <string name="restriction_warning_hint">Фоновая активность ограничена. Виджеты могут работать некорректно. Нажмите, чтобы узнать больше.</string>
     <string name="restriction_warning_dialog_title">Ограничения фоновой работы и оптимизация батареи</string>
     <string name="restriction_warning_dialog_body_1">Приложению Material Photo Widget необходимо работать в фоновом режиме для обновления виджетов. Оно запускается только при необходимости, но если использование батареи установлено как \"оптимизированное\", Android может остановить приложение, что приведет к некорректной работе виджетов.</string>

@@ -83,6 +83,13 @@
             android:theme="@style/AppTheme.TransparentActivity" />
 
         <activity
+            android:name=".chooser.PhotoWidgetChooserActivity"
+            android:enableOnBackInvokedCallback="false"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.TransparentActivity" />
+
+        <activity
             android:name=".widget.ToggleCyclingFeedbackActivity"
             android:enableOnBackInvokedCallback="false"
             android:exported="false"
@@ -137,7 +144,7 @@
             android:exported="false" />
 
         <receiver
-            android:name=".platform.DynamicBorderReceiver"
+            android:name=".platform.ConfigurationChangedReceiver"
             android:exported="false">
 
             <intent-filter>

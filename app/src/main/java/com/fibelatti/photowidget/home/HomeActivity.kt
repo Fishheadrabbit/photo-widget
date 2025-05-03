@@ -2,9 +2,9 @@ package com.fibelatti.photowidget.home
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -26,7 +26,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fibelatti.photowidget.BuildConfig
 import com.fibelatti.photowidget.R
 import com.fibelatti.photowidget.configure.PhotoWidgetConfigureActivity
 import com.fibelatti.photowidget.configure.appWidgetId
@@ -42,6 +41,7 @@ import com.fibelatti.photowidget.platform.AppTheme
 import com.fibelatti.photowidget.platform.BackgroundRestrictedSheetDialog
 import com.fibelatti.photowidget.platform.ComposeBottomSheetDialog
 import com.fibelatti.photowidget.platform.SelectionDialog
+import com.fibelatti.photowidget.platform.widgetPinningNotAvailable
 import com.fibelatti.photowidget.preferences.Appearance
 import com.fibelatti.photowidget.preferences.DataSaverPicker
 import com.fibelatti.photowidget.preferences.UserPreferencesStorage
@@ -139,6 +139,16 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun createNewWidget(aspectRatio: PhotoWidgetAspectRatio) {
+        if (widgetPinningNotAvailable()) {
+            MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.photo_widget_home_pinning_not_supported_title)
+                .setMessage(R.string.photo_widget_home_pinning_not_supported_message)
+                .setPositiveButton(R.string.photo_widget_action_got_it) { _, _ -> }
+                .show()
+
+            return
+        }
+
         val intent = (preparedIntent ?: Intent(this, PhotoWidgetConfigureActivity::class.java)).apply {
             this.aspectRatio = aspectRatio
         }
@@ -148,7 +158,7 @@ class HomeActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun showExistingWidgetMenu(appWidgetId: Int, canLock: Boolean, isLocked: Boolean) {
+    private fun showExistingWidgetMenu(appWidgetId: Int, canSync: Boolean, canLock: Boolean, isLocked: Boolean) {
         preparedIntent?.let {
             val intent = it.apply { this.appWidgetId = appWidgetId }
 
@@ -162,10 +172,17 @@ class HomeActivity : AppCompatActivity() {
         SelectionDialog.show(
             context = this,
             title = "",
-            options = MyWidgetOptions.options(canLock = canLock, isLocked = isLocked),
+            options = MyWidgetOptions.options(canSync = canSync, canLock = canLock, isLocked = isLocked),
             optionName = { option -> getString(option.label) },
             onOptionSelected = { option ->
                 when (option) {
+                    MyWidgetOptions.SYNC_PHOTOS -> {
+                        homeViewModel.syncPhotos(appWidgetId = appWidgetId)
+
+                        Toast.makeText(this, R.string.photo_widget_home_my_widget_syncing_feedback, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
                     MyWidgetOptions.EDIT -> {
                         val intent = Intent(this, PhotoWidgetConfigureActivity::class.java).apply {
                             this.appWidgetId = appWidgetId
@@ -241,10 +258,6 @@ class HomeActivity : AppCompatActivity() {
                 onBackgroundRestrictionClick = {
                     dismiss()
                     showBackgroundRestrictionDialog()
-                },
-                onSendFeedbackClick = {
-                    dismiss()
-                    sendFeedback()
                 },
             )
         }.show()
@@ -328,27 +341,6 @@ class HomeActivity : AppCompatActivity() {
             .startChooser()
     }
 
-    private fun sendFeedback() {
-        val emailBody = StringBuilder().apply {
-            appendLine("Android Version: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})")
-            appendLine("Device Manufacturer: ${Build.MANUFACTURER}")
-            appendLine("---")
-            appendLine(getString(R.string.help_email_body))
-            appendLine()
-        }
-
-        val emailIntent = Intent(Intent.ACTION_SENDTO, "mailto:".toUri()).apply {
-            putExtra(Intent.EXTRA_EMAIL, arrayOf("appsupport@fibelatti.com"))
-            putExtra(
-                Intent.EXTRA_SUBJECT,
-                "Material Photo Widget (${BuildConfig.VERSION_NAME}) — Feature request / Bug report",
-            )
-            putExtra(Intent.EXTRA_TEXT, emailBody.toString())
-        }
-
-        startActivity(Intent.createChooser(emailIntent, getString(R.string.photo_widget_home_feedback)))
-    }
-
     private fun rateApp() {
         openUrl(url = APP_URL)
     }
@@ -369,6 +361,7 @@ class HomeActivity : AppCompatActivity() {
         @StringRes val label: Int,
     ) {
 
+        SYNC_PHOTOS(label = R.string.photo_widget_home_my_widget_action_sync),
         EDIT(label = R.string.photo_widget_home_my_widget_action_edit),
         DUPLICATE(label = R.string.photo_widget_home_my_widget_action_duplicate),
         LOCK(label = R.string.photo_widget_home_my_widget_action_lock),
@@ -377,7 +370,11 @@ class HomeActivity : AppCompatActivity() {
 
         companion object {
 
-            fun options(canLock: Boolean, isLocked: Boolean): List<MyWidgetOptions> = buildList {
+            fun options(canSync: Boolean, canLock: Boolean, isLocked: Boolean): List<MyWidgetOptions> = buildList {
+                if (canSync) {
+                    add(SYNC_PHOTOS)
+                }
+
                 add(EDIT)
                 add(DUPLICATE)
 

@@ -1,7 +1,6 @@
 package com.fibelatti.photowidget.configure
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -24,15 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.fibelatti.photowidget.R
+import com.fibelatti.photowidget.model.LocalPhoto
 import com.fibelatti.photowidget.model.PhotoWidget
-import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
+import com.fibelatti.photowidget.model.PhotoWidgetColors
 import com.fibelatti.photowidget.platform.ComposeBottomSheetDialog
-import com.fibelatti.photowidget.platform.formatPercent
+import com.fibelatti.photowidget.platform.formatRangeValue
 import com.fibelatti.photowidget.platform.withRoundedCorners
 import com.fibelatti.photowidget.preferences.DefaultPicker
 import com.fibelatti.photowidget.ui.SliderSmallThumb
@@ -44,20 +44,23 @@ object PhotoWidgetSaturationPicker {
         context: Context,
         currentSaturation: Float,
         onApplyClick: (Float) -> Unit,
+        localPhoto: LocalPhoto? = null,
     ) {
         ComposeBottomSheetDialog(context) {
-            ColorMatrixPicker(
-                title = stringResource(R.string.widget_defaults_saturation),
-                valueRange = 0f..100f,
-                currentValue = currentSaturation,
-                onCurrentValueChange = { value ->
-                    ColorMatrix().apply { setToSaturation(value / 100) }
-                },
-                onApplyClick = { newValue ->
-                    onApplyClick(newValue)
-                    dismiss()
-                },
-            )
+            CompositionLocalProvider(LocalSamplePhoto provides localPhoto) {
+                ColorMatrixPicker(
+                    title = stringResource(R.string.widget_defaults_saturation),
+                    valueRange = -100f..100f,
+                    currentValue = PhotoWidgetColors.pickerSaturation(currentSaturation),
+                    onCurrentValueChange = { value ->
+                        ColorMatrix().apply { setToSaturation(PhotoWidgetColors.persistenceSaturation(value) / 100) }
+                    },
+                    onApplyClick = { newValue ->
+                        onApplyClick(PhotoWidgetColors.persistenceSaturation(newValue))
+                        dismiss()
+                    },
+                )
+            }
         }.show()
     }
 }
@@ -68,28 +71,31 @@ object PhotoWidgetBrightnessPicker {
         context: Context,
         currentBrightness: Float,
         onApplyClick: (Float) -> Unit,
+        localPhoto: LocalPhoto? = null,
     ) {
         ComposeBottomSheetDialog(context) {
-            ColorMatrixPicker(
-                title = stringResource(R.string.widget_defaults_brightness),
-                valueRange = -100f..100f,
-                currentValue = currentBrightness,
-                onCurrentValueChange = { value ->
-                    val brightness = value * 255 / 100
-                    val colorMatrix = floatArrayOf(
-                        1f, 0f, 0f, 0f, brightness,
-                        0f, 1f, 0f, 0f, brightness,
-                        0f, 0f, 1f, 0f, brightness,
-                        0f, 0f, 0f, 1f, 0f,
-                    )
+            CompositionLocalProvider(LocalSamplePhoto provides localPhoto) {
+                ColorMatrixPicker(
+                    title = stringResource(R.string.widget_defaults_brightness),
+                    valueRange = -100f..100f,
+                    currentValue = currentBrightness,
+                    onCurrentValueChange = { value ->
+                        val brightness = value * 255 / 100
+                        val colorMatrix = floatArrayOf(
+                            1f, 0f, 0f, 0f, brightness,
+                            0f, 1f, 0f, 0f, brightness,
+                            0f, 0f, 1f, 0f, brightness,
+                            0f, 0f, 0f, 1f, 0f,
+                        )
 
-                    ColorMatrix(colorMatrix)
-                },
-                onApplyClick = { newValue ->
-                    onApplyClick(newValue)
-                    dismiss()
-                },
-            )
+                        ColorMatrix(colorMatrix)
+                    },
+                    onApplyClick = { newValue ->
+                        onApplyClick(newValue)
+                        dismiss()
+                    },
+                )
+            }
         }.show()
     }
 }
@@ -108,18 +114,11 @@ private fun ColorMatrixPicker(
         title = title,
         modifier = modifier,
     ) {
-        val localContext = LocalContext.current
-        val baseBitmap = remember {
-            BitmapFactory.decodeResource(localContext.resources, R.drawable.image_sample)
-        }
         var value by remember(currentValue) { mutableFloatStateOf(currentValue) }
 
         Image(
-            bitmap = baseBitmap
-                .withRoundedCorners(
-                    aspectRatio = PhotoWidgetAspectRatio.SQUARE,
-                    radius = PhotoWidget.DEFAULT_CORNER_RADIUS.dpToPx(),
-                )
+            bitmap = rememberSampleBitmap()
+                .withRoundedCorners(radius = PhotoWidget.DEFAULT_CORNER_RADIUS.dpToPx())
                 .asImageBitmap(),
             contentDescription = null,
             modifier = Modifier.size(200.dp),
@@ -142,7 +141,7 @@ private fun ColorMatrixPicker(
             )
 
             Text(
-                text = formatPercent(value = value, fractionDigits = 0),
+                text = formatRangeValue(value = value),
                 modifier = Modifier.width(48.dp),
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.End,

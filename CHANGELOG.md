@@ -7,6 +7,84 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v1.29.0] - 2025-04-14
+[v1.29.0]: https://github.com/fibelatti/photo-widget/releases/tag/v1.29.0
+
+### Added
+
+* New tap action: choose the next photo
+* New options to the "View photo in full screen" tap action
+
+### Changed
+
+* Fill widgets can no longer have their borders and corners customized
+
+## [v1.28.4] - 2025-04-09
+[v1.28.4]: https://github.com/fibelatti/photo-widget/releases/tag/v1.28.4
+
+### Changed
+
+* Show a confirmation message when the widget was added to the home screen
+* Update resizing logic that's affecting Fill widgets
+
+### Fixed
+
+* Crashes when handling certain callbacks from the system
+
+## [v1.28.3] - 2025-04-06
+[v1.28.3]: https://github.com/fibelatti/photo-widget/releases/tag/v1.28.3
+
+### Changed
+
+* Always measure Fill widgets as if in portrait mode
+
+## [v1.28.2] - 2025-04-05
+[v1.28.2]: https://github.com/fibelatti/photo-widget/releases/tag/v1.28.2
+
+### Changed
+
+* Add warning to phones that don't support widget pinning
+
+### Fixed
+
+* Fix wrong fill format zooming and borders on tablets
+
+## [v1.28.1] - 2025-03-30
+[v1.28.1]: https://github.com/fibelatti/photo-widget/releases/tag/v1.28.1
+
+### Changed
+
+* Update palette border type to use dominant, vibrant and muted colors instead
+
+## [v1.28.0] - 2025-03-29
+[v1.28.0]: https://github.com/fibelatti/photo-widget/releases/tag/v1.28.0
+
+### Added
+
+* Add "sync" button to the My Widgets menu to fetch folder photos on demand
+* New border type that matches the current photo
+
+### Changed
+
+* Update configure screen to use the visual format picker
+* Open configure screen in the current photo when editing a widget
+* Show the selected photo when configuring aspects of the widget
+
+### Fixed
+
+* Fix tap action not working on tiny widgets
+
+## [v1.27.0] - 2025-03-22
+[v1.27.0]: https://github.com/fibelatti/photo-widget/releases/tag/v1.27.0
+
+### Added
+
+* New square aspect ratio with support for rounded corners
+
+### Changed
+
+* Update saturation picker to allow increasing the saturation
+
 ## [v1.26.1] - 2025-03-17
 [v1.26.1]: https://github.com/fibelatti/photo-widget/releases/tag/v1.26.1
 

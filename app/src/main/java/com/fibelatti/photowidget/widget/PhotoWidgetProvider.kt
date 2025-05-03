@@ -8,11 +8,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Size
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.net.toUri
+import androidx.core.os.postDelayed
 import com.fibelatti.photowidget.R
+import com.fibelatti.photowidget.chooser.PhotoWidgetChooserActivity
 import com.fibelatti.photowidget.configure.appWidgetId
 import com.fibelatti.photowidget.di.PhotoWidgetEntryPoint
 import com.fibelatti.photowidget.di.entryPoint
@@ -26,54 +29,55 @@ import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class PhotoWidgetProvider : AppWidgetProvider() {
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        Timber.d("Update requested by the system (appWidgetIds=${appWidgetIds.toList()})")
-        for (appWidgetId in appWidgetIds) {
-            update(context = context, appWidgetId = appWidgetId)
-        }
-    }
-
-    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
-        Timber.d("Deletion requested by the system (appWidgetIds=${appWidgetIds.toList()})")
-
-        val entryPoint = entryPoint<PhotoWidgetEntryPoint>(context)
-        val storage = entryPoint.photoWidgetStorage()
-        val alarmManager = entryPoint.photoWidgetAlarmManager()
-
-        for (appWidgetId in appWidgetIds) {
-            storage.saveWidgetDeletionTimestamp(
-                appWidgetId = appWidgetId,
-                timestamp = System.currentTimeMillis(),
-            )
-            alarmManager.cancel(appWidgetId = appWidgetId)
-        }
-    }
+    private val handler: Handler = Handler(Looper.getMainLooper())
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
-        if (ACTION_VIEW_NEXT_PHOTO == intent.action || ACTION_VIEW_PREVIOUS_PHOTO == intent.action) {
-            runCatching {
-                val entryPoint = entryPoint<PhotoWidgetEntryPoint>(context)
+        Timber.d("Broadcast received (action=${intent.action}, appWidgetId=${intent.appWidgetId})")
 
-                entryPoint.coroutineScope().launch {
-                    entryPoint.cyclePhotoUseCase().invoke(
-                        appWidgetId = intent.appWidgetId,
-                        flipBackwards = ACTION_VIEW_PREVIOUS_PHOTO == intent.action,
-                    )
-                    entryPoint.photoWidgetStorage().saveWidgetNextCycleTime(
-                        appWidgetId = intent.appWidgetId,
-                        nextCycleTime = null,
-                    )
-                    entryPoint.photoWidgetAlarmManager().setup(appWidgetId = intent.appWidgetId)
+        val acceptedAction = ACTION_VIEW_NEXT_PHOTO == intent.action ||
+            ACTION_VIEW_PREVIOUS_PHOTO == intent.action
+
+        if (!acceptedAction) {
+            return
+        }
+
+        handler.postDelayed(delayInMillis = 300) {
+            runCatching {
+                with(entryPoint<PhotoWidgetEntryPoint>(context)) {
+                    coroutineScope().launch {
+                        cyclePhotoUseCase().invoke(
+                            appWidgetId = intent.appWidgetId,
+                            flipBackwards = ACTION_VIEW_PREVIOUS_PHOTO == intent.action,
+                        )
+                        photoWidgetStorage().saveWidgetNextCycleTime(
+                            appWidgetId = intent.appWidgetId,
+                            nextCycleTime = null,
+                        )
+                        photoWidgetAlarmManager().setup(
+                            appWidgetId = intent.appWidgetId,
+                        )
+                    }
                 }
+            }
+        }
+    }
+
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        Timber.d("Update requested by the system (appWidgetIds=${appWidgetIds.toList()})")
+
+        handler.postDelayed(delayInMillis = 300) {
+            for (appWidgetId in appWidgetIds) {
+                val widgetOptions: Bundle? = appWidgetManager.getAppWidgetOptions(appWidgetId)
+
+                update(context = context, appWidgetId = appWidgetId, widgetOptions = widgetOptions)
             }
         }
     }
@@ -84,26 +88,24 @@ class PhotoWidgetProvider : AppWidgetProvider() {
         appWidgetId: Int,
         newOptions: Bundle?,
     ) {
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
         Timber.d("Options changed by the system (appWidgetId=$appWidgetId)")
-        updateWidgetWithRepeatSignal(context = context, appWidgetId = appWidgetId)
+
+        handler.postDelayed(delayInMillis = 300) {
+            update(context = context, appWidgetId = appWidgetId, widgetOptions = newOptions)
+        }
     }
 
-    /**
-     * For whatever reason, sometimes the widget size is not correct and photos will be zoomed in incorrectly when
-     * using [PhotoWidgetAspectRatio.FILL_WIDGET]. Repeating the update signal should be enough to nudge the widget to
-     * fix itself after the home screen UI has settled. A [WeakReference] of the given context is kept, and the repeated
-     * signal only goes through if the context is still around to avoid any leaks.
-     */
-    private fun updateWidgetWithRepeatSignal(context: Context, appWidgetId: Int) {
-        update(context = context, appWidgetId = appWidgetId)
+    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        Timber.d("Delete requested by the system (appWidgetIds=${appWidgetIds.toList()})")
 
-        runCatching {
-            val ctx = WeakReference(context)
-            entryPoint<PhotoWidgetEntryPoint>(context).coroutineScope().launch {
-                delay(timeMillis = 3_000L)
-                Timber.d("Repeating options changed signal (appWidgetId=$appWidgetId)")
-                ctx.get()?.let { update(context = it, appWidgetId = appWidgetId) }
+        handler.postDelayed(delayInMillis = 300) {
+            val entryPoint = entryPoint<PhotoWidgetEntryPoint>(context)
+            val storage = entryPoint.photoWidgetStorage()
+            val alarmManager = entryPoint.photoWidgetAlarmManager()
+
+            for (appWidgetId in appWidgetIds) {
+                storage.saveWidgetDeletionTimestamp(appWidgetId = appWidgetId, timestamp = System.currentTimeMillis())
+                alarmManager.cancel(appWidgetId = appWidgetId)
             }
         }
     }
@@ -120,7 +122,12 @@ class PhotoWidgetProvider : AppWidgetProvider() {
             .toList()
             .also { Timber.d("Provider widget IDs: $it") }
 
-        fun update(context: Context, appWidgetId: Int, recoveryMode: Boolean = false) {
+        fun update(
+            context: Context,
+            appWidgetId: Int,
+            widgetOptions: Bundle? = null,
+            recoveryMode: Boolean = false,
+        ) {
             Timber.d("Updating widget (appWidgetId=$appWidgetId)")
 
             val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -130,18 +137,18 @@ class PhotoWidgetProvider : AppWidgetProvider() {
             val pinningCache = entryPoint.photoWidgetPinningCache()
             val loadPhotoWidgetUseCase = entryPoint.loadPhotoWidgetUseCase()
 
-            val currentJob = updateJobMap[appWidgetId]?.get()
+            val currentJob: Job? = updateJobMap[appWidgetId]?.get()
             Timber.d("Current update job (isActive=${currentJob?.isActive})")
 
-            val newJob = coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
+            val newJob: Job = coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
                 currentJob?.join()
 
-                val photoWidget = pinningCache.pendingWidget
+                val photoWidget: PhotoWidget = pinningCache.pendingWidget
                     ?.takeIf { appWidgetId !in photoWidgetStorage.getKnownWidgetIds() }
                     ?.also { Timber.d("Updating using the pending widget data") }
                     ?: loadPhotoWidgetUseCase(appWidgetId = appWidgetId).first { !it.isLoading }
 
-                val views = createRemoteViews(
+                val views: RemoteViews = createRemoteViews(
                     context = context,
                     appWidgetId = appWidgetId,
                     photoWidget = photoWidget,
@@ -155,6 +162,7 @@ class PhotoWidgetProvider : AppWidgetProvider() {
                     photoWidget = photoWidget,
                     isLocked = photoWidgetStorage.getWidgetLockedInApp(appWidgetId = appWidgetId),
                     isCyclePaused = photoWidgetStorage.getWidgetCyclePaused(appWidgetId = appWidgetId),
+                    widgetOptions = widgetOptions,
                 )
 
                 Timber.d("Invoking AppWidgetManager#updateAppWidget")
@@ -180,19 +188,10 @@ class PhotoWidgetProvider : AppWidgetProvider() {
             recoveryMode: Boolean = false,
         ): RemoteViews {
             val prepareCurrentPhotoUseCase = entryPoint<PhotoWidgetEntryPoint>(context).prepareCurrentPhotoUseCase()
-            val widgetSize = if (PhotoWidgetAspectRatio.FILL_WIDGET == photoWidget.aspectRatio) {
-                val sizeProvider = WidgetSizeProvider(context = context)
-                val (width, height) = sizeProvider.getWidgetsSize(appWidgetId = appWidgetId, convertToPx = true)
-                Size(width, height)
-            } else {
-                null
-            }
-
             val result = prepareCurrentPhotoUseCase(
                 context = context,
                 appWidgetId = appWidgetId,
                 photoWidget = photoWidget,
-                widgetSize = widgetSize,
                 recoveryMode = recoveryMode,
             )
 
@@ -255,34 +254,40 @@ class PhotoWidgetProvider : AppWidgetProvider() {
             photoWidget: PhotoWidget,
             isLocked: Boolean,
             isCyclePaused: Boolean,
+            widgetOptions: Bundle?,
         ) {
-            val sizeProvider = WidgetSizeProvider(context = context)
-            val (width, _) = sizeProvider.getWidgetsSize(appWidgetId = appWidgetId)
+            val multiActionSupported = if (widgetOptions != null) {
+                val sizeProvider = WidgetSizeProvider(context = context)
+                val (width, _) = sizeProvider.getWidgetsSize(widgetOptions = widgetOptions)
+                width > 100
+            } else {
+                true
+            }
             val mainClickPendingIntent = getClickPendingIntent(
                 context = context,
                 appWidgetId = appWidgetId,
                 tapAction = photoWidget.tapAction,
                 externalUri = photoWidget.currentPhoto?.externalUri,
             ).takeUnless {
-                isLocked &&
-                    (
-                        photoWidget.tapAction is PhotoWidgetTapAction.ViewNextPhoto ||
-                            photoWidget.tapAction is PhotoWidgetTapAction.ToggleCycling
-                        )
+                val photoChangingAction = photoWidget.tapAction is PhotoWidgetTapAction.ViewNextPhoto ||
+                    photoWidget.tapAction is PhotoWidgetTapAction.ChooseNextPhoto ||
+                    photoWidget.tapAction is PhotoWidgetTapAction.ToggleCycling
+
+                isLocked && photoChangingAction
             }
 
-            if (width < 100) {
-                // The widget is too narrow to handle 3 different click areas
-                views.setViewVisibility(R.id.tap_actions_layout, View.GONE)
-                views.setOnClickPendingIntent(R.id.iv_widget, mainClickPendingIntent)
+            views.setOnClickPendingIntent(R.id.view_tap_center, mainClickPendingIntent)
+
+            if (!multiActionSupported) {
+                // The widget is too narrow to handle 3 different click actions
+                views.setOnClickPendingIntent(R.id.view_tap_left, mainClickPendingIntent)
+                views.setOnClickPendingIntent(R.id.view_tap_right, mainClickPendingIntent)
                 return
             }
 
-            val shouldDisableTap = photoWidget.tapAction is PhotoWidgetTapAction.ToggleCycling &&
-                photoWidget.tapAction.disableTap &&
-                isCyclePaused
+            val shouldDisableTap = (photoWidget.tapActionDisableTap && isCyclePaused) ||
+                photoWidget.tapActionDisableSideActions
 
-            views.setViewVisibility(R.id.tap_actions_layout, View.VISIBLE)
             views.setOnClickPendingIntent(
                 R.id.view_tap_left,
                 flipPhotoPendingIntent(
@@ -291,7 +296,6 @@ class PhotoWidgetProvider : AppWidgetProvider() {
                     flipBackwards = true,
                 ).takeUnless { isLocked || shouldDisableTap },
             )
-            views.setOnClickPendingIntent(R.id.view_tap_center, mainClickPendingIntent)
             views.setOnClickPendingIntent(
                 R.id.view_tap_right,
                 flipPhotoPendingIntent(
@@ -358,6 +362,23 @@ class PhotoWidgetProvider : AppWidgetProvider() {
                         context = context,
                         appWidgetId = appWidgetId,
                         flipBackwards = false,
+                    )
+                }
+
+                is PhotoWidgetTapAction.ChooseNextPhoto -> {
+                    val clickIntent = Intent(context, PhotoWidgetChooserActivity::class.java).apply {
+                        setIdentifierCompat("$appWidgetId")
+                        this.appWidgetId = appWidgetId
+                    }
+                    return PendingIntent.getActivity(
+                        /* context = */
+                        context,
+                        /* requestCode = */
+                        appWidgetId,
+                        /* intent = */
+                        clickIntent,
+                        /* flags = */
+                        PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
                     )
                 }
 

@@ -1,6 +1,5 @@
 package com.fibelatti.photowidget.preferences
 
-import android.graphics.BitmapFactory
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -67,8 +66,8 @@ import com.fibelatti.photowidget.configure.PhotoWidgetBrightnessPicker
 import com.fibelatti.photowidget.configure.PhotoWidgetCycleModePicker
 import com.fibelatti.photowidget.configure.PhotoWidgetSaturationPicker
 import com.fibelatti.photowidget.configure.PhotoWidgetTapActionPicker
+import com.fibelatti.photowidget.configure.rememberSampleBitmap
 import com.fibelatti.photowidget.model.PhotoWidget
-import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
 import com.fibelatti.photowidget.model.PhotoWidgetColors
 import com.fibelatti.photowidget.model.PhotoWidgetCycleMode
 import com.fibelatti.photowidget.model.PhotoWidgetShapeBuilder
@@ -77,6 +76,7 @@ import com.fibelatti.photowidget.model.PhotoWidgetTapAction
 import com.fibelatti.photowidget.platform.ComposeBottomSheetDialog
 import com.fibelatti.photowidget.platform.SelectionDialog
 import com.fibelatti.photowidget.platform.formatPercent
+import com.fibelatti.photowidget.platform.formatRangeValue
 import com.fibelatti.photowidget.platform.withRoundedCorners
 import com.fibelatti.photowidget.ui.ColoredShape
 import com.fibelatti.photowidget.ui.SliderSmallThumb
@@ -246,13 +246,15 @@ private fun WidgetDefaultsScreen(
 
             PickerDefault(
                 title = stringResource(R.string.widget_defaults_saturation),
-                currentValue = formatPercent(value = userPreferences.defaultSaturation, fractionDigits = 0),
+                currentValue = formatRangeValue(
+                    value = PhotoWidgetColors.pickerSaturation(userPreferences.defaultSaturation),
+                ),
                 onClick = onSaturationClick,
             )
 
             PickerDefault(
                 title = stringResource(R.string.widget_defaults_brightness),
-                currentValue = formatPercent(value = userPreferences.defaultBrightness, fractionDigits = 0),
+                currentValue = formatRangeValue(value = userPreferences.defaultBrightness),
                 onClick = onBrightnessClick,
             )
 
@@ -462,7 +464,7 @@ fun ShapePicker(
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(80.dp),
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -499,18 +501,11 @@ fun CornerRadiusPicker(
         title = stringResource(id = R.string.widget_defaults_corner_radius),
         modifier = modifier,
     ) {
-        val localContext = LocalContext.current
-        val baseBitmap = remember {
-            BitmapFactory.decodeResource(localContext.resources, R.drawable.image_sample)
-        }
         var value by remember(currentValue) { mutableIntStateOf(currentValue) }
 
         Image(
-            bitmap = baseBitmap
-                .withRoundedCorners(
-                    aspectRatio = PhotoWidgetAspectRatio.SQUARE,
-                    radius = value.dpToPx(),
-                )
+            bitmap = rememberSampleBitmap()
+                .withRoundedCorners(radius = value.dpToPx())
                 .asImageBitmap(),
             contentDescription = null,
             modifier = Modifier.size(200.dp),
@@ -562,16 +557,11 @@ fun OpacityPicker(
         title = stringResource(id = R.string.widget_defaults_opacity),
         modifier = modifier,
     ) {
-        val localContext = LocalContext.current
-        val baseBitmap = remember {
-            BitmapFactory.decodeResource(localContext.resources, R.drawable.image_sample)
-        }
         var value by remember(currentValue) { mutableFloatStateOf(currentValue) }
 
         Image(
-            bitmap = baseBitmap
+            bitmap = rememberSampleBitmap()
                 .withRoundedCorners(
-                    aspectRatio = PhotoWidgetAspectRatio.SQUARE,
                     radius = PhotoWidget.DEFAULT_CORNER_RADIUS.dpToPx(),
                     colors = PhotoWidgetColors(opacity = value),
                 )

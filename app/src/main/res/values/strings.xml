@@ -15,7 +15,6 @@
     <string name="photo_widget_home_dynamic_colors">App colors</string>
     <string name="photo_widget_home_share">Share the app</string>
     <string name="photo_widget_home_rate">Write a review</string>
-    <string name="photo_widget_home_feedback">Send your feedback</string>
     <string name="photo_widget_home_help">Something is not working?</string>
     <string name="photo_widget_home_common_issues">Common issues</string>
     <string name="photo_widget_home_privacy_policy">Privacy policy</string>
@@ -28,6 +27,9 @@
         <item quantity="other">%d photos received. Create a new widget or choose an existing one to add them.</item>
     </plurals>
 
+    <string name="photo_widget_home_pinning_not_supported_title">Add a widget directly from your home screen</string>
+    <string name="photo_widget_home_pinning_not_supported_message">1. Tap and hold an empty space\n\n2. Choose the widgets menu\n\n3. Search for Material Photo Widget\n\n4. Configure and save!</string>
+
     <!-- My Widgets -->
     <string name="photo_widget_home_empty_widgets">You haven\'t added any widgets yet.\nWidgets added to your home screen will appear here.</string>
     <string name="photo_widget_home_filter_all">All</string>
@@ -38,6 +40,7 @@
     <string name="photo_widget_home_removed_label">Removed</string>
     <string name="photo_widget_home_removed_widgets_hint">Removed widgets are no longer on your home screen. They are permanently deleted from the app after 7 days. You can choose to "Keep" them.</string>
 
+    <string name="photo_widget_home_my_widget_action_sync">Sync with folder photos</string>
     <string name="photo_widget_home_my_widget_action_edit">View / Edit</string>
     <string name="photo_widget_home_my_widget_action_duplicate">Duplicate</string>
     <string name="photo_widget_home_my_widget_action_lock">Lock with current photo</string>
@@ -46,6 +49,8 @@
     <string name="photo_widget_home_removed_widget_action_restore">Restore</string>
     <string name="photo_widget_home_removed_widget_action_keep">Keep</string>
     <string name="photo_widget_home_removed_widget_action_delete">Delete permanently</string>
+
+    <string name="photo_widget_home_my_widget_syncing_feedback">Fetching latest photos from folder…</string>
 
     <!-- Preferences -->
     <string name="preferences_data_saver">Reduce storage usage</string>
@@ -81,7 +86,9 @@
     <string name="photo_widget_source_directory">Folder</string>
 
     <!-- Aspect Ratio -->
-    <string name="photo_widget_aspect_ratio_title">Aspect ratio</string>
+    <string name="photo_widget_aspect_ratio_title">Format</string>
+    <string name="photo_widget_aspect_ratio_shape">Shapes</string>
+    <string name="photo_widget_aspect_ratio_shape_description">Material You shapes</string>
     <string name="photo_widget_aspect_ratio_square">Square</string>
     <string name="photo_widget_aspect_ratio_square_description" translatable="false">1:1</string>
     <string name="photo_widget_aspect_ratio_tall">Tall</string>
@@ -177,13 +184,14 @@
     <string name="photo_widget_configure_interval_permission_dialog_description">Android can restrict background work to optimize battery life, resulting in longer intervals between each photo.\n\nTo update widgets precisely at the selected interval, open settings and allow setting alarms and reminders.</string>
     <string name="photo_widget_configure_interval_open_settings">Open settings</string>
 
-    <string name="photo_widget_configure_roundness_warning">Android widgets have rounded corners that can\'t be removed. You can increase the roundness, but not remove it completely. To have square corners, choose a different aspect ratio.</string>
-    <string name="photo_widget_configure_border_warning">You can increase the roundness if the border is cut-off by the widget\'s minimum rounded corners</string>
-
     <string name="photo_widget_configure_border">Border</string>
     <string name="photo_widget_configure_border_none">None</string>
     <string name="photo_widget_configure_border_dynamic">Dynamic</string>
     <string name="photo_widget_configure_border_color">Colored</string>
+    <string name="photo_widget_configure_border_color_palette">Palette</string>
+    <string name="photo_widget_configure_border_color_palette_dominant">Dominant color</string>
+    <string name="photo_widget_configure_border_color_palette_vibrant">Vibrant color</string>
+    <string name="photo_widget_configure_border_color_palette_muted">Muted color</string>
 
     <string name="photo_widget_configure_border_explanation">Changes will take place during the next widget update after you change your phone\'s theme color. To update all widgets immediately, simply open the app.</string>
 
@@ -200,6 +208,7 @@
     <string name="photo_widget_configure_tap_action_view_full_screen">View photo in full screen</string>
     <string name="photo_widget_configure_tap_action_view_in_gallery">View with a gallery app</string>
     <string name="photo_widget_configure_tap_action_view_next_photo">View next photo</string>
+    <string name="photo_widget_configure_tap_action_choose_next_photo">Choose next photo</string>
     <string name="photo_widget_configure_tap_action_app_shortcut">Open an app</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Open a link</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling">Enable/disable cycle</string>
@@ -207,12 +216,17 @@
 
     <string name="photo_widget_configure_tap_action_increase_brightness">Automatically increase brightness</string>
     <string name="photo_widget_configure_tap_action_view_original_photo">View original photo (no crop or rotation)</string>
+    <string name="photo_widget_configure_tap_action_do_not_shuffle">Do not shuffle when using the viewer buttons</string>
+    <string name="photo_widget_configure_tap_action_keep_current_photo">Do not change the current photo when using the viewer buttons</string>
+    <string name="photo_widget_configure_tap_action_disable_side_actions">Disable tapping on the edges on the home screen</string>
     <string name="photo_widget_configure_tap_action_gallery_description">Available for folder-based widgets. Photo-based widgets will use \"View photo in full screen\" instead. You may also choose which gallery app to use.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Choose app</string>
     <string name="photo_widget_configure_tap_action_disable_tap">Disable tapping on the edges while cycling is paused</string>
 
     <string name="photo_widget_configure_add_to_home">Add to home screen</string>
     <string name="photo_widget_configure_save_changes">Save changes</string>
+
+    <string name="photo_widget_configure_widget_pinned">Widget added! Check your home screen…</string>
 
     <string name="photo_widget_time_picker_title">Select time</string>
 
@@ -228,10 +242,6 @@
 
     <string name="help_article_title_4">The widget size is too small</string>
     <string name="help_article_body_4">After adding the widget to your home screen, you can long press it to reveal the resizing option. Then, drag its borders to adjust it to your desired size.</string>
-
-    <string name="help_article_footer">Something else is not working?</string>
-
-    <string name="help_email_body">Write your message below. If you\'re reporting an issue, try to describe what you were doing when the problem happened.</string>
 
     <string name="restriction_warning_hint">Background activity is restricted. Widgets may not work correctly. Tap to learn more.</string>
     <string name="restriction_warning_dialog_title">Background work restrictions and battery optimization</string>

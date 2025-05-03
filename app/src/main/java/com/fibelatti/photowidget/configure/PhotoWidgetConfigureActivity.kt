@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,8 +17,10 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.fibelatti.photowidget.R
@@ -27,7 +30,6 @@ import com.fibelatti.photowidget.model.PhotoWidgetCycleMode
 import com.fibelatti.photowidget.model.PhotoWidgetSource
 import com.fibelatti.photowidget.model.PhotoWidgetTapAction
 import com.fibelatti.photowidget.platform.AppTheme
-import com.fibelatti.photowidget.platform.SelectionDialog
 import com.fibelatti.photowidget.platform.setIdentifierCompat
 import com.fibelatti.photowidget.widget.PhotoWidgetProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -65,7 +67,15 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private val finishReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == ACTION_FINISH) {
+            Timber.d("Broadcast received (action=${intent.action})")
+
+            Toast.makeText(
+                this@PhotoWidgetConfigureActivity,
+                R.string.photo_widget_configure_widget_pinned,
+                Toast.LENGTH_SHORT,
+            ).show()
+
+            if (ACTION_FINISH == intent.action) {
                 widgetAdded(appWidgetId = intent.appWidgetId)
             }
         }
@@ -83,36 +93,38 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             AppTheme {
                 val state by viewModel.state.collectAsStateWithLifecycle()
 
-                PhotoWidgetConfigureScreen(
-                    photoWidget = state.photoWidget,
-                    isUpdating = intent.appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID,
-                    selectedPhoto = state.selectedPhoto,
-                    isProcessing = state.isProcessing,
-                    onNavClick = onBackPressedDispatcher::onBackPressed,
-                    onAspectRatioClick = ::showAspectRatioPicker,
-                    onCropClick = viewModel::requestCrop,
-                    onRemoveClick = viewModel::photoRemoved,
-                    onMoveLeftClick = viewModel::moveLeft,
-                    onMoveRightClick = viewModel::moveRight,
-                    onChangeSource = ::showSourcePicker,
-                    onPhotoPickerClick = ::launchPhotoPicker,
-                    onDirPickerClick = ::launchFolderPicker,
-                    onPhotoClick = viewModel::previewPhoto,
-                    onReorderFinished = viewModel::reorderPhotos,
-                    onRemovedPhotoClick = viewModel::restorePhoto,
-                    onCycleModePickerClick = ::showCycleModePicker,
-                    onShuffleChange = viewModel::saveShuffle,
-                    onTapActionPickerClick = ::showTapActionPicker,
-                    onShapeChange = viewModel::shapeSelected,
-                    onCornerRadiusChange = viewModel::cornerRadiusSelected,
-                    onBorderChange = viewModel::borderSelected,
-                    onOpacityChange = viewModel::opacitySelected,
-                    onSaturationChange = viewModel::saturationSelected,
-                    onBrightnessChange = viewModel::brightnessSelected,
-                    onOffsetChange = viewModel::offsetSelected,
-                    onPaddingChange = viewModel::paddingSelected,
-                    onAddToHomeClick = viewModel::addNewWidget,
-                )
+                CompositionLocalProvider(LocalSamplePhoto provides state.selectedPhoto) {
+                    PhotoWidgetConfigureScreen(
+                        photoWidget = state.photoWidget,
+                        isUpdating = intent.appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID,
+                        selectedPhoto = state.selectedPhoto,
+                        isProcessing = state.isProcessing,
+                        onNavClick = onBackPressedDispatcher::onBackPressed,
+                        onAspectRatioClick = ::showAspectRatioPicker,
+                        onCropClick = viewModel::requestCrop,
+                        onRemoveClick = viewModel::photoRemoved,
+                        onMoveLeftClick = viewModel::moveLeft,
+                        onMoveRightClick = viewModel::moveRight,
+                        onChangeSource = ::showSourcePicker,
+                        onPhotoPickerClick = ::launchPhotoPicker,
+                        onDirPickerClick = ::launchFolderPicker,
+                        onPhotoClick = viewModel::previewPhoto,
+                        onReorderFinished = viewModel::reorderPhotos,
+                        onRemovedPhotoClick = viewModel::restorePhoto,
+                        onCycleModePickerClick = ::showCycleModePicker,
+                        onShuffleChange = viewModel::saveShuffle,
+                        onTapActionPickerClick = ::showTapActionPicker,
+                        onShapeChange = viewModel::shapeSelected,
+                        onCornerRadiusChange = viewModel::cornerRadiusSelected,
+                        onBorderChange = viewModel::borderSelected,
+                        onOpacityChange = viewModel::opacitySelected,
+                        onSaturationChange = viewModel::saturationSelected,
+                        onBrightnessChange = viewModel::brightnessSelected,
+                        onOffsetChange = viewModel::offsetSelected,
+                        onPaddingChange = viewModel::paddingSelected,
+                        onAddToHomeClick = viewModel::addNewWidget,
+                    )
+                }
 
                 LaunchedEffect(state.hasEdits) {
                     onBackPressedCallback.isEnabled = state.hasEdits
@@ -226,12 +238,9 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun showAspectRatioPicker() {
-        SelectionDialog.show(
+        PhotoWidgetAspectRatioPicker.show(
             context = this,
-            title = getString(R.string.photo_widget_aspect_ratio_title),
-            options = PhotoWidgetAspectRatio.entries,
-            optionName = { option -> getString(option.label) },
-            onOptionSelected = viewModel::setAspectRatio,
+            onAspectRatioSelected = viewModel::setAspectRatio,
         )
     }
 
@@ -324,6 +333,10 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun requestPin() {
+        if (lifecycle.currentState != Lifecycle.State.RESUMED) {
+            return
+        }
+
         val callbackIntent = Intent(this, PhotoWidgetPinnedReceiver::class.java).apply {
             setIdentifierCompat("$PIN_REQUEST_CODE")
         }

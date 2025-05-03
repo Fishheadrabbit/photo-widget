@@ -23,8 +23,8 @@ import kotlin.math.min
 import timber.log.Timber
 
 fun Bitmap.withRoundedCorners(
-    aspectRatio: PhotoWidgetAspectRatio,
     radius: Float,
+    aspectRatio: PhotoWidgetAspectRatio = PhotoWidgetAspectRatio.ROUNDED_SQUARE,
     colors: PhotoWidgetColors = PhotoWidgetColors(),
     @ColorInt borderColor: Int? = null,
     @FloatRange(from = 0.0) borderPercent: Float = .0F,
@@ -144,13 +144,7 @@ private fun Bitmap.sourceRect(
         bitmapWidth = width.toFloat(),
         bitmapHeight = height.toFloat(),
         aspectRatio = when (aspectRatio) {
-            PhotoWidgetAspectRatio.SQUARE, PhotoWidgetAspectRatio.TALL, PhotoWidgetAspectRatio.WIDE -> {
-                aspectRatio.aspectRatio
-            }
-
-            PhotoWidgetAspectRatio.ORIGINAL -> {
-                width / height.toFloat()
-            }
+            PhotoWidgetAspectRatio.ORIGINAL -> width / height.toFloat()
 
             PhotoWidgetAspectRatio.FILL_WIDGET -> {
                 if (widgetSize != null && widgetSize.width > 0 && widgetSize.height > 0) {
@@ -159,6 +153,8 @@ private fun Bitmap.sourceRect(
                     width / height.toFloat()
                 }
             }
+
+            else -> aspectRatio.aspectRatio
         },
     ).toRect().also { Timber.d("Output rect: $it") }
 }
@@ -171,7 +167,7 @@ private fun Bitmap.sourceRect(
  * @param aspectRatio Width/height ratio the created rect should maintain
  * @return A RectF centered in the bitmap with the specified aspect ratio
  */
-fun createCenteredRectWithAspectRatio(
+private fun createCenteredRectWithAspectRatio(
     bitmapWidth: Float,
     bitmapHeight: Float,
     aspectRatio: Float,

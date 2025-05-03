@@ -1,8 +1,6 @@
 package com.fibelatti.photowidget.configure
 
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
@@ -56,6 +54,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -76,7 +75,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -96,6 +94,7 @@ import com.fibelatti.photowidget.model.PhotoWidgetSource
 import com.fibelatti.photowidget.model.PhotoWidgetTapAction
 import com.fibelatti.photowidget.platform.ComposeBottomSheetDialog
 import com.fibelatti.photowidget.platform.formatPercent
+import com.fibelatti.photowidget.platform.formatRangeValue
 import com.fibelatti.photowidget.platform.withRoundedCorners
 import com.fibelatti.photowidget.preferences.BooleanDefault
 import com.fibelatti.photowidget.preferences.CornerRadiusPicker
@@ -107,7 +106,6 @@ import com.fibelatti.photowidget.preferences.ShapePicker
 import com.fibelatti.photowidget.ui.LoadingIndicator
 import com.fibelatti.photowidget.ui.ShapedPhoto
 import com.fibelatti.photowidget.ui.SliderSmallThumb
-import com.fibelatti.photowidget.ui.WarningSign
 import com.fibelatti.ui.foundation.dpToPx
 import com.fibelatti.ui.foundation.fadingEdges
 import com.fibelatti.ui.preview.AllPreviews
@@ -192,36 +190,42 @@ fun PhotoWidgetConfigureScreen(
             },
             onCornerRadiusClick = {
                 ComposeBottomSheetDialog(localContext) {
-                    CornerRadiusPicker(
-                        currentValue = photoWidget.cornerRadius,
-                        onApplyClick = { newValue ->
-                            onCornerRadiusChange(newValue)
-                            dismiss()
-                        },
-                    )
+                    CompositionLocalProvider(LocalSamplePhoto provides selectedPhoto) {
+                        CornerRadiusPicker(
+                            currentValue = photoWidget.cornerRadius,
+                            onApplyClick = { newValue ->
+                                onCornerRadiusChange(newValue)
+                                dismiss()
+                            },
+                        )
+                    }
                 }.show()
             },
             onBorderClick = {
                 PhotoWidgetBorderPicker.show(
                     context = localContext,
+                    localPhoto = selectedPhoto,
                     currentBorder = photoWidget.border,
                     onApplyClick = onBorderChange,
                 )
             },
             onOpacityClick = {
                 ComposeBottomSheetDialog(localContext) {
-                    OpacityPicker(
-                        currentValue = photoWidget.colors.opacity,
-                        onApplyClick = { newValue ->
-                            onOpacityChange(newValue)
-                            dismiss()
-                        },
-                    )
+                    CompositionLocalProvider(LocalSamplePhoto provides selectedPhoto) {
+                        OpacityPicker(
+                            currentValue = photoWidget.colors.opacity,
+                            onApplyClick = { newValue ->
+                                onOpacityChange(newValue)
+                                dismiss()
+                            },
+                        )
+                    }
                 }.show()
             },
             onSaturationClick = {
                 PhotoWidgetSaturationPicker.show(
                     context = localContext,
+                    localPhoto = selectedPhoto,
                     currentSaturation = photoWidget.colors.saturation,
                     onApplyClick = onSaturationChange,
                 )
@@ -229,31 +233,36 @@ fun PhotoWidgetConfigureScreen(
             onBrightnessClick = {
                 PhotoWidgetBrightnessPicker.show(
                     context = localContext,
+                    localPhoto = selectedPhoto,
                     currentBrightness = photoWidget.colors.brightness,
                     onApplyClick = onBrightnessChange,
                 )
             },
             onOffsetClick = {
                 ComposeBottomSheetDialog(localContext) {
-                    PhotoWidgetOffsetPicker(
-                        horizontalOffset = photoWidget.horizontalOffset,
-                        verticalOffset = photoWidget.verticalOffset,
-                        onApplyClick = { newHorizontalOffset, newVerticalOffset ->
-                            onOffsetChange(newHorizontalOffset, newVerticalOffset)
-                            dismiss()
-                        },
-                    )
+                    CompositionLocalProvider(LocalSamplePhoto provides selectedPhoto) {
+                        PhotoWidgetOffsetPicker(
+                            horizontalOffset = photoWidget.horizontalOffset,
+                            verticalOffset = photoWidget.verticalOffset,
+                            onApplyClick = { newHorizontalOffset, newVerticalOffset ->
+                                onOffsetChange(newHorizontalOffset, newVerticalOffset)
+                                dismiss()
+                            },
+                        )
+                    }
                 }.show()
             },
             onPaddingClick = {
                 ComposeBottomSheetDialog(localContext) {
-                    PaddingPicker(
-                        currentValue = photoWidget.padding,
-                        onApplyClick = { newValue ->
-                            onPaddingChange(newValue)
-                            dismiss()
-                        },
-                    )
+                    CompositionLocalProvider(LocalSamplePhoto provides selectedPhoto) {
+                        PaddingPicker(
+                            currentValue = photoWidget.padding,
+                            onApplyClick = { newValue ->
+                                onPaddingChange(newValue)
+                                dismiss()
+                            },
+                        )
+                    }
                 }.show()
             },
             onAddToHomeClick = onAddToHomeClick,
@@ -613,21 +622,6 @@ private fun AppearanceTab(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        val systemWidgetRadius = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            dimensionResource(android.R.dimen.system_app_widget_background_radius)
-        } else {
-            0.dp
-        }
-        val showRoundnessWarning = PhotoWidgetAspectRatio.FILL_WIDGET == photoWidget.aspectRatio &&
-            systemWidgetRadius > 0.dp
-
-        if (showRoundnessWarning) {
-            WarningSign(
-                text = stringResource(R.string.photo_widget_configure_roundness_warning),
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
-        }
-
         PickerDefault(
             title = stringResource(id = R.string.photo_widget_aspect_ratio_title),
             currentValue = stringResource(id = photoWidget.aspectRatio.label),
@@ -642,28 +636,42 @@ private fun AppearanceTab(
                 onClick = onShapeClick,
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
-        } else {
+        } else if (PhotoWidgetAspectRatio.FILL_WIDGET != photoWidget.aspectRatio) {
             PickerDefault(
                 title = stringResource(id = R.string.widget_defaults_corner_radius),
                 currentValue = photoWidget.cornerRadius.toString(),
                 onClick = onCornerRadiusClick,
                 modifier = Modifier.padding(horizontal = 16.dp),
-                warning = stringResource(R.string.photo_widget_configure_border_warning).takeIf {
-                    showRoundnessWarning && photoWidget.border != PhotoWidgetBorder.None
-                },
             )
         }
 
-        PickerDefault(
-            title = stringResource(R.string.photo_widget_configure_border),
-            currentValue = when (photoWidget.border) {
-                is PhotoWidgetBorder.None -> stringResource(id = R.string.photo_widget_configure_border_none)
-                is PhotoWidgetBorder.Color -> "#${photoWidget.border.colorHex}".toUpperCase(Locale.current)
-                is PhotoWidgetBorder.Dynamic -> stringResource(R.string.photo_widget_configure_border_dynamic)
-            },
-            onClick = onBorderClick,
-            modifier = Modifier.padding(horizontal = 16.dp),
-        )
+        if (PhotoWidgetAspectRatio.FILL_WIDGET != photoWidget.aspectRatio) {
+            PickerDefault(
+                title = stringResource(R.string.photo_widget_configure_border),
+                currentValue = when (photoWidget.border) {
+                    is PhotoWidgetBorder.None -> stringResource(id = R.string.photo_widget_configure_border_none)
+                    is PhotoWidgetBorder.Color -> "#${photoWidget.border.colorHex}".toUpperCase(Locale.current)
+                    is PhotoWidgetBorder.Dynamic -> stringResource(R.string.photo_widget_configure_border_dynamic)
+                    is PhotoWidgetBorder.MatchPhoto -> {
+                        when (photoWidget.border.type) {
+                            PhotoWidgetBorder.MatchPhoto.Type.DOMINANT -> {
+                                stringResource(R.string.photo_widget_configure_border_color_palette_dominant)
+                            }
+
+                            PhotoWidgetBorder.MatchPhoto.Type.VIBRANT -> {
+                                stringResource(R.string.photo_widget_configure_border_color_palette_vibrant)
+                            }
+
+                            PhotoWidgetBorder.MatchPhoto.Type.MUTED -> {
+                                stringResource(R.string.photo_widget_configure_border_color_palette_muted)
+                            }
+                        }
+                    }
+                },
+                onClick = onBorderClick,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+        }
 
         PickerDefault(
             title = stringResource(id = R.string.widget_defaults_opacity),
@@ -674,14 +682,14 @@ private fun AppearanceTab(
 
         PickerDefault(
             title = stringResource(R.string.widget_defaults_saturation),
-            currentValue = formatPercent(value = photoWidget.colors.saturation, fractionDigits = 0),
+            currentValue = formatRangeValue(value = PhotoWidgetColors.pickerSaturation(photoWidget.colors.saturation)),
             onClick = onSaturationClick,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
 
         PickerDefault(
             title = stringResource(R.string.widget_defaults_brightness),
-            currentValue = formatPercent(value = photoWidget.colors.brightness, fractionDigits = 0),
+            currentValue = formatRangeValue(value = photoWidget.colors.brightness),
             onClick = onBrightnessClick,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
@@ -1120,18 +1128,11 @@ private fun PaddingPicker(
         title = stringResource(id = R.string.photo_widget_configure_padding),
         modifier = modifier,
     ) {
-        val localContext = LocalContext.current
-        val baseBitmap = remember {
-            BitmapFactory.decodeResource(localContext.resources, R.drawable.image_sample)
-        }
         var value by remember(currentValue) { mutableIntStateOf(currentValue) }
 
         Image(
-            bitmap = baseBitmap
-                .withRoundedCorners(
-                    aspectRatio = PhotoWidgetAspectRatio.SQUARE,
-                    radius = PhotoWidget.DEFAULT_CORNER_RADIUS.dpToPx(),
-                )
+            bitmap = rememberSampleBitmap()
+                .withRoundedCorners(radius = PhotoWidget.DEFAULT_CORNER_RADIUS.dpToPx())
                 .asImageBitmap(),
             contentDescription = null,
             modifier = Modifier

@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.room)
     alias(libs.plugins.about.libraries)
+    alias(libs.plugins.licensee)
 }
 
 object AppInfo {
@@ -17,8 +18,8 @@ object AppInfo {
     const val APPLICATION_ID = "com.fibelatti.photowidget"
 
     private const val VERSION_MAJOR = 1
-    private const val VERSION_MINOR = 26
-    private const val VERSION_PATCH = 1
+    private const val VERSION_MINOR = 29
+    private const val VERSION_PATCH = 0
     private const val VERSION_BUILD = 0
 
     val versionCode: Int = (VERSION_MAJOR * 1_000_000)
@@ -155,6 +156,10 @@ aboutLibraries {
     registerAndroidTasks = false
 }
 
+licensee {
+    allow("Apache-2.0")
+}
+
 afterEvaluate {
     // aboutlibraries caches the result of this task, leading to the JSON containing
     // outdated versions after a library update
@@ -177,6 +182,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.graphics.shapes)
     implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.palette)
 
     // Compose
     implementation(platform(libs.compose.bom))
