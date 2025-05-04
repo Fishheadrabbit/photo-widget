@@ -151,7 +151,7 @@
     <string name="photo_widget_configure_border_dynamic">主题颜色</string>
     <string name="photo_widget_configure_border_color">自主选色</string>
     <string name="photo_widget_configure_border_explanation">更改将在您更改手机的主题颜色后的下一个小组件更新,要立即更新所有小组件,只需打开应用</string>
-    <string name="photo_widget_configure_border_color_palette">调色板</string>
+    <string name="photo_widget_configure_border_color_palette">主色</string>
     <string name="photo_widget_configure_border_color_palette_vibrant">鲜艳色</string>
     <string name="photo_widget_configure_border_color_palette_muted">柔和色</string>
     <string name="photo_widget_configure_offset">偏移</string>
@@ -190,9 +190,6 @@
     <!-- Viewer -->
     <string name="photo_widget_viewer_actions_pinch">捏合以缩放</string>
     <string name="restriction_warning_hint">后台活动受到限制,小组件可能无法正常工作\n点击了解更多信息</string>
-    <string name="photo_widget_configure_border_color_palette_dominant">主色</string>
-    <string name="photo_widget_configure_border_color_palette_vibrant">鲜艳色</string>
-    <string name="photo_widget_configure_border_color_palette_muted">柔和色</string>
     <string name="restriction_warning_dialog_title">后台活动受到限制,小组件可能无法正常工作\n点击了解更多信息</string>
     <string name="restriction_warning_dialog_body_1">Material Photo Widget需要在后台运行来更新你的小组件,它只在需要时运行,但如果电池优化设置为“优化”,Android可能会停止应用程序,导致小组件停止正常工作</string>
     <string name="restriction_warning_dialog_body_2">打开应用程序设置,将电池使用情况更改为无限制,如果此选项不可用,请检查手机的电源设置</string>
