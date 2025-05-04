@@ -174,7 +174,6 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">查看原始照片（没有裁剪）</string>
     <string name="photo_widget_configure_tap_action_gallery_description">可用于基于文件夹的小组件,基于照片的小组件将使用“全屏查看照片”,你也可以选择使用哪个相册</string>
     <string name="photo_widget_configure_tap_action_choose_app">选择应用</string>
-    <string name="photo_widget_configure_tap_action_disable_tap">循环暂停时，禁用点击边缘区域</string>
     <string name="photo_widget_configure_tap_action_disable_tap">循环暂停时,禁止点击边缘区域</string>
     <string name="photo_widget_configure_add_to_home">添加到桌面</string>
     <string name="photo_widget_configure_save_changes">保存更改</string>
