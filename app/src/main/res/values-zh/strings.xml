@@ -4,7 +4,7 @@
     <string name="photo_widget_host_description">把你最喜欢的照片放到桌面</string>
     <!-- Home -->
     <string name="photo_widget_home_title">把你最喜欢的照片放到桌面</string>
-      <string name="photo_widget_home_instruction">通过点击其中一个选项新建小组件\n别担心,你可以随时更改！</string>
+    <string name="photo_widget_home_instruction">通过点击其中一个选项新建小组件\n别担心,你可以随时更改！</string>
     <string name="photo_widget_home_new">小组件</string>
     <string name="photo_widget_home_current">我的小组件</string>
     <string name="photo_widget_home_settings">设置</string>
@@ -14,43 +14,43 @@
     <string name="photo_widget_home_dynamic_colors">颜色</string>
     <string name="photo_widget_home_share">分享应用</string>
     <string name="photo_widget_home_rate">评价</string>
-  <string name="photo_widget_home_help">无法正常运行?</string>
+    <string name="photo_widget_home_help">无法正常运行?</string>
     <string name="photo_widget_home_common_issues">常见问题</string>
     <string name="photo_widget_home_privacy_policy">隐私策略</string>
     <string name="photo_widget_home_developer">由Filipe Belatti开发❤</string>
     <string name="photo_widget_home_version">版本号: %s</string>
     <string name="photo_widget_home_view_licenses">OSS Licenses</string>
     <plurals name="photo_widget_home_share_received">
-        <item quantity="other">收到%d张照片,添加到新的小组件或现有的小组件</item>
+    <item quantity="other">收到%d张照片,添加到新的小组件或现有的小组件</item>
     </plurals>
    <!-- My Widgets -->
     <string name="photo_widget_home_empty_widgets">您还没有添加任何小组件\n添加到桌面的小组件会出现在这里</string>
     <string name="photo_widget_home_filter_all">所有</string>
     <string name="photo_widget_home_filter_photos">照片</string>
-    <string name="photo_widget_home_pinning_not_supported_title">Add a widget directly from your home screen</string>
-      <string name="photo_widget_home_pinning_not_supported_message">1. Tap and hold an empty space\n\n2. Choose the widgets menu\n\n3. Search for Material Photo Widget\n\n4. Configure and save!</string>
+    <string name="photo_widget_home_pinning_not_supported_title">直接从桌面添加小组件</string>
+    <string name="photo_widget_home_pinning_not_supported_message">1.按住桌面空白地方\n\n2.选择小组件菜单\n\n3.搜索Material Photo Widget\n\n4.配置并保存!</string>
     <string name="photo_widget_home_filter_folder">文件夹</string>
     <string name="photo_widget_home_removed_label">移除</string>
     <string name="photo_widget_home_removed_widgets_hint">被删除的小组件将不再在桌面上,并在一周后永久删除,你可以选择保留它们</string>
-    <string name="photo_widget_home_my_widget_action_edit">View / Edit</string>
-    <string name="photo_widget_home_my_widget_action_duplicate">Duplicate</string>
+    <string name="photo_widget_home_my_widget_action_edit">编辑</string>
+    <string name="photo_widget_home_my_widget_action_duplicate">复制</string>
     <string name="photo_widget_home_removed_widget_action_restore">恢复</string>
     <string name="photo_widget_home_locked_label">锁定</string>
     <string name="photo_widget_home_removed_widget_action_keep">保留</string>
     <string name="photo_widget_home_removed_widget_action_delete">彻底删除</string>
     <!-- Preferences -->
     <string name="preferences_data_saver">减少存储占用</string>
-     <string name="photo_widget_home_my_widget_action_sync">Sync with folder photos</string>
+    <string name="photo_widget_home_my_widget_action_sync">与文件夹照片同步</string>
     <string name="preferences_data_saver_description">启用后,添加到小组件中的照片会被压缩以节省存储空间。,通常不会影响照片的质量,但如果你的照片中的文字比较小,建议关闭这一功能\n\n此设置仅影响更改后添加的照片\n\n不适用于同步文件夹,因为这些照片是直接从你的设备存储中读取的</string>
-    <string name="photo_widget_home_my_widget_action_lock">Lock with current photo</string>
-    <string name="photo_widget_home_my_widget_action_unlock">Unlock widget</string>
-    <string name="photo_widget_home_my_widget_lock_explainer">Photos will not change automatically or on tap when the widget is locked</string>
+    <string name="photo_widget_home_my_widget_action_lock">锁定</string>
+    <string name="photo_widget_home_my_widget_action_unlock">取消锁定</string>
+    <string name="photo_widget_home_my_widget_lock_explainer">锁定时，照片不会自动更改或点击</string>
     <string name="preferences_appearance_follow_system">跟随系统</string>
     <string name="preferences_appearance_light">亮色</string>
     <string name="preferences_appearance_dark">暗色</string>
     <string name="preferences_dynamic_colors_enabled"> 动态颜色</string>
     <string name="preferences_dynamic_colors_disabled">默认颜色</string>
-    <string name="photo_widget_home_my_widget_syncing_feedback">Fetching latest photos from folder…</string>
+    <string name="photo_widget_home_my_widget_syncing_feedback">从文件夹获取最新照片…</string>
     <!-- Widget Defaults -->
     <string name="widget_defaults_title">小组件默认参数</string>
     <string name="widget_defaults_explanation">这些值是在创建新小组件时预加载的,它们对于使用相同的配置设置多个小组件非常有用,从而避免了每次调整设置的需要(注意:对这些值的任何更改都不会影响现有的小组件)</string>
@@ -62,8 +62,8 @@
     <string name="widget_defaults_opacity">不透明度</string>
     <string name="widget_defaults_tap_action">点击行为</string>
     <string name="widget_defaults_saturation">饱和度</string>
-   <string name="widget_defaults_brightness">亮度</string>
-   <string name="widget_defaults_reset">重置</string>
+    <string name="widget_defaults_brightness">亮度</string>
+    <string name="widget_defaults_reset">重置</string>
     <!-- Share -->
     <string name="share_title">Spread the word</string>
     <string name="share_text">添加您最喜欢的照片到您的桌面小部件,链接%s</string>
@@ -86,13 +86,13 @@
     <string name="photo_widget_configure_import_prompt">从其他小组件导入？</string>
     <string name="photo_widget_configure_import_prompt_action">选择</string>
     <string name="photo_widget_configure_import_dialog_title">选择小组件</string>
-    <string name="photo_widget_aspect_ratio_title">Format</string>
+    <string name="photo_widget_aspect_ratio_title">设计</string>
     <string name="photo_widget_aspect_ratio_shape">Shapes</string>
-     <string name="photo_widget_aspect_ratio_shape_description">Material You shapes</string>
+    <string name="photo_widget_aspect_ratio_shape_description">Material You shapes</string>
     <string name="photo_widget_configure_import_dialog_description">所有照片和设置会复制到新的小组件上</string>
-   <string name="photo_widget_configure_import_error">所有选择的图片无法导入</string>
+    <string name="photo_widget_configure_import_error">所有选择的照片无法导入</string>
     <string name="photo_widget_configure_too_many_photos_error">每个同步文件夹最多可以包含3000张照片。您可以选择多个子文件夹,并且每个子文件夹将单独计算\n\n你不能选择连拍照片,照片是一个接一个地处理的,而包含数千张照片的文件夹会导致小组件编辑器出现严重的性能问题,在切换照片时也会出现在主屏幕上</string>
-    <string name="photo_widget_configure_missing_photos_error">The widget must have at least one photo. Widgets can only be deleted directly from the home screen.</string>
+    <string name="photo_widget_configure_missing_photos_error">小组件必须至少包含一张照片。小组件只能直接从主屏幕删除。</string>
     <string name="photo_widget_configure_menu_source">资源</string>
     <string name="photo_widget_configure_source_description">您可以单独选择每张照片,也可以将这个小组件与一个或多个文件夹同步,同步时,文件夹中的所有照片都会自动添加到小组件中,每24小时更新一次</string>
     <string name="photo_widget_configure_source_selection_photos">只有您选择的照片才会显示在这个小组件中</string>
@@ -102,10 +102,10 @@
     <string name="photo_widget_configure_source_set_directory">设置为文件夹</string>
     <string name="photo_widget_configure_source_set_photos">设置为照片</string>
     <string name="photo_widget_configure_source_warning">更改资源将替换此小组件中的当前照片</string>
-    <string name="photo_widget_configure_menu_crop">Crop</string>
-    <string name="photo_widget_configure_menu_remove">Remove</string>
-    <string name="photo_widget_configure_menu_move_left">Move left</string>
-    <string name="photo_widget_configure_menu_move_right">Move right</string>
+    <string name="photo_widget_configure_menu_crop">裁剪</string>
+    <string name="photo_widget_configure_menu_remove">移除</string>
+    <string name="photo_widget_configure_menu_move_left">向左移动</string>
+    <string name="photo_widget_configure_menu_move_right">向右移动</string>
     <string name="photo_widget_configure_photos_pending_deletion">最近删除</string>
     <string name="photo_widget_configure_photos_excluded">被排除的照片</string>
     <string name="photo_widget_configure_pick_photo">选择照片</string>
@@ -142,15 +142,19 @@
         <item quantity="other">选择%d时间</item>
     </plurals>
     <string name="photo_widget_configure_interval_warning">由于Android为优化电池而施加的限制,实际间隔或时间可能会有所不同,为了它按预期工作,请授予以下权限</string>
-   <string name="photo_widget_configure_interval_grant_permission">Grant exact alarm permission</string>
-    <string name="photo_widget_configure_interval_permission_dialog_title">About this permission</string>
-    <string name="photo_widget_configure_interval_permission_dialog_description">Android can restrict background work to optimize battery life, resulting in longer intervals between each photo.\n\nTo update widgets precisely at the selected interval, open settings and allow setting alarms and reminders.</string>
+    <string name="photo_widget_configure_interval_grant_permission">授予精确闹钟权限</string>
+    <string name="photo_widget_configure_interval_permission_dialog_title">关于此权限</string>
+    <string name="photo_widget_configure_interval_permission_dialog_description">Android可能会为了优化电池寿命而限制后台工作，从而导致每张照片之间的间隔时间更长。\n\n要在选定的时间更新小组件，请打开设置并允许设置闹钟和提醒。</string>
     <string name="photo_widget_configure_interval_open_settings">打开设置</string>
-   <string name="photo_widget_configure_border">边框</string>
+    <string name="photo_widget_configure_border">边框</string>
     <string name="photo_widget_configure_border_none">无</string>
-        <string name="photo_widget_configure_border_dynamic">主题颜色</string>
+    <string name="photo_widget_configure_border_dynamic">主题颜色</string>
     <string name="photo_widget_configure_border_color">自主选色</string>
     <string name="photo_widget_configure_border_explanation">更改将在您更改手机的主题颜色后的下一个小组件更新,要立即更新所有小组件,只需打开应用</string>
+    <string name="photo_widget_configure_border_color_palette">调色板</string>
+    <string name="photo_widget_configure_border_color_palette_dominant">主色</string>
+    <string name="photo_widget_configure_border_color_palette_vibrant">鲜艳色</string>
+    <string name="photo_widget_configure_border_color_palette_muted">柔和色</string>
     <string name="photo_widget_configure_offset">偏移</string>
     <string name="photo_widget_configure_offset_current_values">水平: %1$d, 竖直: %2$d</string>
     <string name="photo_widget_configure_offset_current_horizontal">水平: %1$d</string>
@@ -160,7 +164,7 @@
     <string name="photo_widget_configure_tap_action_description">选择中间区域的点击动作（绿色闪烁部分）,在尺寸大于1x1的小组件上,你可以点击两侧来切换照片\n如果小组件被锁定,此操作无效</string>
     <string name="photo_widget_configure_tap_action_none">无</string>
     <string name="photo_widget_configure_tap_action_view_full_screen">全屏查看照片</string>
-     <string name="photo_widget_configure_tap_action_view_in_gallery">使用相册查看</string>
+    <string name="photo_widget_configure_tap_action_view_in_gallery">使用相册查看</string>
     <string name="photo_widget_configure_tap_action_app_shortcut">打开应用</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">打开链接</string>
     <string name="photo_widget_configure_tap_action_view_next_photo">显示下一张照片</string>
@@ -170,6 +174,7 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">查看原始照片（没有裁剪）</string>
     <string name="photo_widget_configure_tap_action_gallery_description">可用于基于文件夹的小组件,基于照片的小组件将使用“全屏查看照片”,你也可以选择使用哪个相册</string>
     <string name="photo_widget_configure_tap_action_choose_app">选择应用</string>
+    <string name="photo_widget_configure_tap_action_disable_tap">循环暂停时，禁用点击边缘区域</string>
     <string name="photo_widget_configure_tap_action_disable_tap">循环暂停时,禁止点击边缘区域</string>
     <string name="photo_widget_configure_add_to_home">添加到桌面</string>
     <string name="photo_widget_configure_save_changes">保存更改</string>
@@ -184,36 +189,36 @@
     <string name="help_article_title_4">某个小组件太小了</string>
     <string name="help_article_body_4">将小组件添加到桌面后,可以长按它显示调整大小选项,然后,拖动边框到所需的大小</string>
     <!-- Viewer -->
-    <string name="photo_widget_viewer_actions_pinch">Pinch to zoom</string>
-        <string name="restriction_warning_hint">后台活动受到限制,小组件可能无法正常工作\n点击了解更多信息</string>
-        <string name="photo_widget_configure_border_color_palette">Palette</string>
-    <string name="photo_widget_configure_border_color_palette_dominant">Dominant color</string>
-    <string name="photo_widget_configure_border_color_palette_vibrant">Vibrant color</string>
-    <string name="photo_widget_configure_border_color_palette_muted">Muted color</string>
+    <string name="photo_widget_viewer_actions_pinch">捏合以缩放</string>
+    <string name="restriction_warning_hint">后台活动受到限制,小组件可能无法正常工作\n点击了解更多信息</string>
+    <string name="photo_widget_configure_border_color_palette">调色板</string>
+    <string name="photo_widget_configure_border_color_palette_dominant">主色</string>
+    <string name="photo_widget_configure_border_color_palette_vibrant">鲜艳色</string>
+    <string name="photo_widget_configure_border_color_palette_muted">柔和色</string>
     <string name="restriction_warning_dialog_title">后台活动受到限制,小组件可能无法正常工作\n点击了解更多信息</string>
     <string name="restriction_warning_dialog_body_1">Material Photo Widget需要在后台运行来更新你的小组件,它只在需要时运行,但如果电池优化设置为“优化”,Android可能会停止应用程序,导致小组件停止正常工作</string>
     <string name="restriction_warning_dialog_body_2">打开应用程序设置,将电池使用情况更改为无限制,如果此选项不可用,请检查手机的电源设置</string>
     <string name="restriction_warning_dialog_body_3">有些手机的限制甚至更严格,可能会在重启后阻止应用程序自动启动,设置因设备而异-访问https://dontkillmyapp.com获取具体说明</string>
     <string name="restriction_warning_open_app_settings">打开应用设置</string>
     <string name="restriction_warning_open_power_settings">打开电池设置</string>
-<string name="photo_widget_viewer_actions_drag">Drag to move</string>
-    <string name="photo_widget_viewer_actions_tap">Tap to dismiss</string>
+    <string name="photo_widget_viewer_actions_drag">拖动以移动</string>
+    <string name="photo_widget_viewer_actions_tap">点击以关闭</string>
     <!-- Cycling feedback -->
-    <string name="photo_widget_cycling_feedback_paused">循环停止</string>
-    <string name="photo_widget_cycling_feedback_resumed">循环继续</string>
+    <string name="photo_widget_cycling_feedback_paused">循环已暂停</string>
+    <string name="photo_widget_cycling_feedback_resumed">循环已继续</string>
     <!-- Common Actions -->
     <string name="photo_widget_action_yes">是</string>
     <string name="photo_widget_action_no">否</string>
-    <string name="photo_widget_action_continue">Continue</string>
+    <string name="photo_widget_action_continue">继续</string>
     <string name="photo_widget_action_cancel">取消</string>
-    <string name="photo_widget_configure_tap_action_choose_next_photo">选择下一个图片</string>
+    <string name="photo_widget_configure_tap_action_choose_next_photo">选择下一个照片</string>
     <string name="photo_widget_action_apply">应用</string>
-    <string name="photo_widget_action_confirm">Confirm</string>
+    <string name="photo_widget_action_confirm">确认</string>
     <string name="photo_widget_action_got_it">知道了</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Material Photo home screen widget</string>
-    <string name="photo_widget_configure_tap_action_do_not_shuffle">Do not shuffle when using the viewer buttons</string>
-    <string name="photo_widget_configure_tap_action_keep_current_photo">Do not change the current photo when using the viewer buttons</string>
-    <string name="photo_widget_configure_tap_action_disable_side_actions">Disable tapping on the edges on the home screen</string>
+    <string name="photo_widget_configure_tap_action_do_not_shuffle">使用查看器按钮时不随机播放</string>
+    <string name="photo_widget_configure_tap_action_keep_current_photo">使用查看器按钮时不更改当前照片</string>
+    <string name="photo_widget_configure_tap_action_disable_side_actions">禁用桌面上的边缘点击</string>
     <string name="photo_widget_configure_widget_pinned">已添加小组件!请检查桌面</string>
 </resources>
