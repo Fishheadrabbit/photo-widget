@@ -152,7 +152,6 @@
     <string name="photo_widget_configure_border_color">自主选色</string>
     <string name="photo_widget_configure_border_explanation">更改将在您更改手机的主题颜色后的下一个小组件更新,要立即更新所有小组件,只需打开应用</string>
     <string name="photo_widget_configure_border_color_palette">调色板</string>
-    <string name="photo_widget_configure_border_color_palette_dominant">主色</string>
     <string name="photo_widget_configure_border_color_palette_vibrant">鲜艳色</string>
     <string name="photo_widget_configure_border_color_palette_muted">柔和色</string>
     <string name="photo_widget_configure_offset">偏移</string>
