@@ -87,12 +87,12 @@
     <string name="photo_widget_configure_import_prompt_action">选择</string>
     <string name="photo_widget_configure_import_dialog_title">选择小组件</string>
     <string name="photo_widget_aspect_ratio_title">设计</string>
-    <string name="photo_widget_aspect_ratio_shape">Shapes</string>
+    <string name="photo_widget_aspect_ratio_shape">形状</string>
     <string name="photo_widget_aspect_ratio_shape_description">Material You shapes</string>
     <string name="photo_widget_configure_import_dialog_description">所有照片和设置会复制到新的小组件上</string>
     <string name="photo_widget_configure_import_error">所有选择的照片无法导入</string>
     <string name="photo_widget_configure_too_many_photos_error">每个同步文件夹最多可以包含3000张照片。您可以选择多个子文件夹,并且每个子文件夹将单独计算\n\n你不能选择连拍照片,照片是一个接一个地处理的,而包含数千张照片的文件夹会导致小组件编辑器出现严重的性能问题,在切换照片时也会出现在主屏幕上</string>
-    <string name="photo_widget_configure_missing_photos_error">小组件必须至少包含一张照片。小组件只能直接从主屏幕删除。</string>
+    <string name="photo_widget_configure_missing_photos_error">小组件必须至少包含一张照片。小组件只能直接从桌面删除。</string>
     <string name="photo_widget_configure_menu_source">资源</string>
     <string name="photo_widget_configure_source_description">您可以单独选择每张照片,也可以将这个小组件与一个或多个文件夹同步,同步时,文件夹中的所有照片都会自动添加到小组件中,每24小时更新一次</string>
     <string name="photo_widget_configure_source_selection_photos">只有您选择的照片才会显示在这个小组件中</string>
@@ -199,21 +199,21 @@
     <string name="photo_widget_viewer_actions_drag">拖动以移动</string>
     <string name="photo_widget_viewer_actions_tap">点击以关闭</string>
     <!-- Cycling feedback -->
-    <string name="photo_widget_cycling_feedback_paused">循环已暂停</string>
-    <string name="photo_widget_cycling_feedback_resumed">循环已继续</string>
+    <string name="photo_widget_cycling_feedback_paused">循环暂停</string>
+    <string name="photo_widget_cycling_feedback_resumed">循环继续</string>
     <!-- Common Actions -->
     <string name="photo_widget_action_yes">是</string>
     <string name="photo_widget_action_no">否</string>
     <string name="photo_widget_action_continue">继续</string>
     <string name="photo_widget_action_cancel">取消</string>
-    <string name="photo_widget_configure_tap_action_choose_next_photo">选择下一个照片</string>
+    <string name="photo_widget_configure_tap_action_choose_next_photo">选择下一张照片</string>
     <string name="photo_widget_action_apply">应用</string>
     <string name="photo_widget_action_confirm">确认</string>
     <string name="photo_widget_action_got_it">知道了</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Material Photo home screen widget</string>
-    <string name="photo_widget_configure_tap_action_do_not_shuffle">使用查看器按钮时不随机播放</string>
-    <string name="photo_widget_configure_tap_action_keep_current_photo">使用查看器按钮时不更改当前照片</string>
+    <string name="photo_widget_configure_tap_action_do_not_shuffle">使用查看器时不随机播放</string>
+    <string name="photo_widget_configure_tap_action_keep_current_photo">使用查看器时不更改当前照片</string>
     <string name="photo_widget_configure_tap_action_disable_side_actions">禁用桌面上的边缘点击</string>
     <string name="photo_widget_configure_widget_pinned">已添加小组件!请检查桌面</string>
 </resources>
