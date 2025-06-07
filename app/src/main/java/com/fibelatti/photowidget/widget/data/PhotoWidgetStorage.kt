@@ -1,12 +1,14 @@
 package com.fibelatti.photowidget.widget.data
 
 import android.net.Uri
+import com.fibelatti.photowidget.model.DirectorySorting
 import com.fibelatti.photowidget.model.LocalPhoto
 import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
 import com.fibelatti.photowidget.model.PhotoWidgetBorder
 import com.fibelatti.photowidget.model.PhotoWidgetCycleMode
 import com.fibelatti.photowidget.model.PhotoWidgetSource
 import com.fibelatti.photowidget.model.PhotoWidgetTapAction
+import com.fibelatti.photowidget.model.TapActionArea
 import com.fibelatti.photowidget.model.WidgetPhotos
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -53,7 +55,7 @@ class PhotoWidgetStorage @Inject constructor(
         return internalFileStorage.newWidgetPhoto(appWidgetId = appWidgetId, source = source)
     }
 
-    suspend fun getNewDirPhotos(dirUri: Uri): List<LocalPhoto>? {
+    suspend fun getNewDirPhotos(dirUri: Uri, sorting: DirectorySorting): List<LocalPhoto>? {
         if (dirUri.toString().endsWith("DCIM%2FCamera", ignoreCase = true)) {
             return null
         }
@@ -63,6 +65,7 @@ class PhotoWidgetStorage @Inject constructor(
             externalFileStorage.getPhotos(
                 dirUri = setOf(dirUri),
                 croppedPhotos = emptyMap(),
+                sorting = sorting,
                 applyValidation = true,
             )
         } catch (_: InvalidDirException) {
@@ -118,7 +121,11 @@ class PhotoWidgetStorage @Inject constructor(
         Timber.d("Cropped photos found: ${croppedPhotos.size}")
 
         val loadedPhotos = if (PhotoWidgetSource.DIRECTORY == source) {
-            externalFileStorage.getPhotos(dirUri = getWidgetSyncDir(appWidgetId), croppedPhotos = croppedPhotos)
+            externalFileStorage.getPhotos(
+                dirUri = getWidgetSyncDir(appWidgetId),
+                croppedPhotos = croppedPhotos,
+                sorting = getWidgetSorting(appWidgetId),
+            )
         } else {
             // Check for legacy storage value
             // Migrate found value to the new storage
@@ -313,6 +320,14 @@ class PhotoWidgetStorage @Inject constructor(
         return sharedPreferences.getWidgetShuffle(appWidgetId = appWidgetId)
     }
 
+    fun saveWidgetSorting(appWidgetId: Int, sorting: DirectorySorting) {
+        sharedPreferences.saveWidgetSorting(appWidgetId = appWidgetId, sorting = sorting)
+    }
+
+    fun getWidgetSorting(appWidgetId: Int): DirectorySorting {
+        return sharedPreferences.getWidgetSorting(appWidgetId = appWidgetId)
+    }
+
     fun saveWidgetCycleMode(appWidgetId: Int, cycleMode: PhotoWidgetCycleMode) {
         sharedPreferences.saveWidgetCycleMode(appWidgetId = appWidgetId, cycleMode = cycleMode)
     }
@@ -425,12 +440,19 @@ class PhotoWidgetStorage @Inject constructor(
         return sharedPreferences.getWidgetPadding(appWidgetId = appWidgetId)
     }
 
-    fun saveWidgetTapAction(appWidgetId: Int, tapAction: PhotoWidgetTapAction) {
-        sharedPreferences.saveWidgetTapAction(appWidgetId = appWidgetId, tapAction = tapAction)
+    fun saveWidgetTapAction(appWidgetId: Int, tapAction: PhotoWidgetTapAction, tapActionArea: TapActionArea) {
+        sharedPreferences.saveWidgetTapAction(
+            appWidgetId = appWidgetId,
+            tapAction = tapAction,
+            tapActionArea = tapActionArea,
+        )
     }
 
-    fun getWidgetTapAction(appWidgetId: Int): PhotoWidgetTapAction {
-        return sharedPreferences.getWidgetTapAction(appWidgetId = appWidgetId)
+    fun getWidgetTapAction(appWidgetId: Int, tapActionArea: TapActionArea): PhotoWidgetTapAction {
+        return sharedPreferences.getWidgetTapAction(
+            appWidgetId = appWidgetId,
+            tapActionArea = tapActionArea,
+        )
     }
 
     fun saveWidgetDeletionTimestamp(appWidgetId: Int, timestamp: Long?) {

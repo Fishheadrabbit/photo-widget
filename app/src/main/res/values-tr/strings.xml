@@ -12,6 +12,7 @@
     <string name="photo_widget_home_appearance">Uygulama teması</string>
     <string name="photo_widget_home_true_black_background">Gerçek siyah arka plan</string>
     <string name="photo_widget_home_dynamic_colors">Uygulama renkleri</string>
+    <string name="photo_widget_home_translations">Uygulama dili</string>
     <string name="photo_widget_home_share">Uygulamayı paylaş</string>
     <string name="photo_widget_home_rate">Yorum yaz</string>
     <string name="photo_widget_home_help">Bir şey mi çalışmıyor?</string>
@@ -167,11 +168,15 @@
     <string name="photo_widget_configure_offset_current_vertical">Dikey: %1$d</string>
     <string name="photo_widget_configure_padding">Dolgu</string>
     <string name="photo_widget_configure_tap_action">Dokunma eylemi</string>
-    <string name="photo_widget_configure_tap_action_description">1x1 widget\'lar tek dokunuş eylemine sahip olabilir. Bu, daha büyük widget\'ların orta alanına uygulanır (yeşil yanıp söner) ve ayrıca fotoğrafları değiştirmek için yanlara da dokunabilirsiniz.</string>
+    <string name="photo_widget_configure_tap_action_description">Her alan için dokunma eylemini özelleştirin. 1x1 widget\'lar yalnızca merkez dokunma eylemini kullanır.</string>
+    <string name="photo_widget_configure_tap_action_area_left">Sol</string>
+    <string name="photo_widget_configure_tap_action_area_center">Merkez</string>
+    <string name="photo_widget_configure_tap_action_area_right">Sağ</string>
     <string name="photo_widget_configure_tap_action_none">Hiçbiri</string>
     <string name="photo_widget_configure_tap_action_view_full_screen">Fotoğrafı tam ekranda görüntüle</string>
     <string name="photo_widget_configure_tap_action_view_in_gallery">Galeri uygulamasıyla görüntüle</string>
     <string name="photo_widget_configure_tap_action_view_next_photo">Sonraki fotoğrafı görüntüle</string>
+    <string name="photo_widget_configure_tap_action_view_previous_photo">Önceki fotoğrafı görüntüle</string>
     <string name="photo_widget_configure_tap_action_choose_next_photo">Sonraki fotoğrafı seçin</string>
     <string name="photo_widget_configure_tap_action_app_shortcut">Bir uygulama açın</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Bir bağlantı aç</string>
@@ -181,14 +186,21 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">Orijinal fotoğrafı görüntüle (kırpma veya döndürme yok)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">Görüntüleyici düğmelerini kullanırken karıştırma yapmayın</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">Görüntüleyici düğmelerini kullanırken geçerli fotoğrafı değiştirme</string>
-    <string name="photo_widget_configure_tap_action_disable_side_actions">Ana ekran kenar dokunuşlarını devre dışı bırak</string>
-    <string name="photo_widget_configure_tap_action_gallery_description">Klasör tabanlı widget\'lar için kullanılabilir. Fotoğraf tabanlı widget\'lar bunun yerine \"Fotoğrafı tam ekranda görüntüle\"yi kullanır. Ayrıca hangi galeri uygulamasını kullanacağınızı da seçebilirsiniz.</string>
+    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">Klasör tabanlı widget\'larla uyumlu olan fotoğraf tabanlı widget\'lar bunun yerine \"Fotoğrafı tam ekranda görüntüle\" seçeneğini kullanacaktır.</string>
+    <string name="photo_widget_configure_tap_action_gallery_description_warning">Bu eylem, mevcut fotoğrafı galeri uygulamasıyla açar. Diğer fotoğrafları görüntülemek veya onlara geçmek mümkün olmayacaktır.</string>
+    <string name="photo_widget_configure_tap_action_gallery_description_app_selection">Hangi galeri uygulamasını kullanacağınızı da seçebilirsiniz.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Uygulama seç</string>
-    <string name="photo_widget_configure_tap_action_disable_tap">Döngü duraklatıldığında dokunma kenarlarını devre dışı bırakın</string>
+    <string name="photo_widget_configure_tap_action_disable_tap">Döngü duraklatıldığında diğer dokunma alanlarını devre dışı bırak</string>
+    <string name="photo_widget_configure_tap_action_shared_preferences">Bu tercihler, bu dokunma eylemini kullanan tüm alanlar tarafından kullanılır.</string>
+    <string name="photo_widget_configure_tap_action_shared_selected_app">Seçilen uygulama, bu dokunma eylemini kullanan tüm alanlar tarafından kullanılır.</string>
     <string name="photo_widget_configure_add_to_home">Ana ekrana ekle</string>
     <string name="photo_widget_configure_save_changes">Değişiklikleri kaydet</string>
     <string name="photo_widget_configure_widget_pinned">Widget eklendi! Ana ekranınızı kontrol edin…</string>
     <string name="photo_widget_time_picker_title">Zamanı seçin</string>
+    <string name="photo_widget_directory_sort_title">Fotoğrafları sırala</string>
+    <string name="photo_widget_directory_sort_newest_first">En yeniler önce</string>
+    <string name="photo_widget_directory_sort_oldest_first">En eskiler önce</string>
+    <string name="photo_widget_directory_sort_explanation">Sıralama, orijinal görsel dosyasının son değiştirilme tarihine göre yapılır ve yalnızca klasörlerle senkronize edilen widget\'lara uygulanır.</string>
     <!-- Help -->
     <string name="help_article_title_1">Ana ekrana bir widget eklemek çalışmıyor</string>
     <string name="help_article_body_1">Bir widget yapılandırdıysanız ve ana ekrana eklemeye çalıştığınızda hiçbir şey olmuyorsa veya eklendiği halde seçilen fotoğrafları göstermiyorsa, widget\'ı doğrudan ana ekranınızdan eklemeyi deneyebilirsiniz.\n\nTalimatlar Android sürümünüze, cihaz üreticinize ve ana ekran başlatıcınıza bağlı olarak değişiklik gösterebilir, ancak genellikle süreç şu şekildedir:\n\n1. Ana ekranınızdaki boş bir alana uzun basın ve bir açılır menü görünene kadar bekleyin.\n2. \"Widget\'lar\" seçeneğini bulun.\n3. Mevcut widget\'lar arasında \"Material Photo Widget\" arayın.\n4. Ana ekranınıza sürükleyin ve her zamanki gibi yapılandırın.</string>
@@ -205,10 +217,13 @@
     <string name="restriction_warning_dialog_body_3">Bazı telefonlar daha da kısıtlayıcı olabilir ve uygulamanın yeniden başlatmadan sonra otomatik olarak başlamasını engelleyebilir. Ayarlar cihaza göre değişir — özel talimatlar için https://dontkillmyapp.com adresini ziyaret edin.</string>
     <string name="restriction_warning_open_app_settings">Uygulama ayarlarını aç</string>
     <string name="restriction_warning_open_power_settings">Güç ayarlarını aç</string>
+    <!-- Translations -->
+    <string name="translations_dialog_title">Kendi dilinize çeviriye yardım edin!</string>
+    <string name="translations_dialog_body">Bu uygulama çeviriler için topluluk odaklı bir yaklaşım kullanır ve sizin yardımınız onu daha iyi hale getirebilir. Yeni bir dilin kullanılabilir olmasını istiyorsanız veya doğru görünmeyen bir şey fark ettiyseniz katkıda bulunabilirsiniz.</string>
+    <string name="translations_dialog_positive_action">Crowdin\'i Aç</string>
+    <string name="translations_dialog_negative_action">Şimdi değil</string>
     <!-- Viewer -->
-    <string name="photo_widget_viewer_actions_pinch">Yakınlaştırmak için kıstır</string>
-    <string name="photo_widget_viewer_actions_drag">Taşımak için sürükle</string>
-    <string name="photo_widget_viewer_actions_tap">Kapatmak için dokun</string>
+    <string name="photo_widget_viewer_all_photos">Tüm fotoğraflar</string>
     <!-- Cycling feedback -->
     <string name="photo_widget_cycling_feedback_paused">Duraklatılan döngü</string>
     <string name="photo_widget_cycling_feedback_resumed">Döngü devam ettirildi</string>
@@ -220,6 +235,7 @@
     <string name="photo_widget_action_apply">Uygula</string>
     <string name="photo_widget_action_confirm">Onaylamak</string>
     <string name="photo_widget_action_got_it">Anladım</string>
+    <string name="photo_widget_action_dismiss">Kapatmak için</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Material Photo ana ekran widget\'ı</string>
 </resources>

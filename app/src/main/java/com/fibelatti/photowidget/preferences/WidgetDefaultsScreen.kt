@@ -58,21 +58,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fibelatti.photowidget.R
+import com.fibelatti.photowidget.configure.DirectorySortingPicker
 import com.fibelatti.photowidget.configure.PhotoWidgetBrightnessPicker
 import com.fibelatti.photowidget.configure.PhotoWidgetCycleModePicker
 import com.fibelatti.photowidget.configure.PhotoWidgetSaturationPicker
-import com.fibelatti.photowidget.configure.PhotoWidgetTapActionPicker
 import com.fibelatti.photowidget.configure.rememberSampleBitmap
+import com.fibelatti.photowidget.model.DirectorySorting
 import com.fibelatti.photowidget.model.PhotoWidget
 import com.fibelatti.photowidget.model.PhotoWidgetColors
 import com.fibelatti.photowidget.model.PhotoWidgetCycleMode
 import com.fibelatti.photowidget.model.PhotoWidgetShapeBuilder
 import com.fibelatti.photowidget.model.PhotoWidgetSource
-import com.fibelatti.photowidget.model.PhotoWidgetTapAction
 import com.fibelatti.photowidget.platform.ComposeBottomSheetDialog
 import com.fibelatti.photowidget.platform.SelectionDialog
 import com.fibelatti.photowidget.platform.formatPercent
@@ -162,11 +163,10 @@ fun WidgetDefaultsScreen(
             )
         },
         onShuffleChange = preferencesViewModel::saveDefaultShuffle,
-        onTapActionClick = {
-            PhotoWidgetTapActionPicker.show(
+        onSortClick = {
+            DirectorySortingPicker.show(
                 context = localContext,
-                currentTapAction = preferences.defaultTapAction,
-                onApplyClick = preferencesViewModel::saveDefaultTapAction,
+                onItemClick = preferencesViewModel::saveDefaultSorting,
             )
         },
         onClearDefaultsClick = preferencesViewModel::clearDefaults,
@@ -186,7 +186,7 @@ private fun WidgetDefaultsScreen(
     onBrightnessClick: () -> Unit,
     onIntervalClick: () -> Unit,
     onShuffleChange: (Boolean) -> Unit,
-    onTapActionClick: () -> Unit,
+    onSortClick: () -> Unit,
     onClearDefaultsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -297,9 +297,9 @@ private fun WidgetDefaultsScreen(
             )
 
             PickerDefault(
-                title = stringResource(id = R.string.widget_defaults_tap_action),
-                currentValue = stringResource(id = userPreferences.defaultTapAction.label),
-                onClick = onTapActionClick,
+                title = stringResource(R.string.photo_widget_directory_sort_title),
+                currentValue = stringResource(id = userPreferences.defaultDirectorySorting.label),
+                onClick = onSortClick,
             )
 
             OutlinedButton(
@@ -394,8 +394,10 @@ fun PickerDefault(
 
                 AutoSizeText(
                     text = currentValue,
-                    textAlign = TextAlign.End,
                     style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.End,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 3,
                 )
             }
 
@@ -646,13 +648,13 @@ private fun WidgetDefaultsScreenPreview() {
                 dynamicColors = true,
                 defaultSource = PhotoWidgetSource.PHOTOS,
                 defaultShuffle = false,
+                defaultDirectorySorting = DirectorySorting.NEWEST_FIRST,
                 defaultCycleMode = PhotoWidgetCycleMode.DEFAULT,
                 defaultShape = PhotoWidget.DEFAULT_SHAPE_ID,
                 defaultCornerRadius = PhotoWidget.DEFAULT_CORNER_RADIUS,
                 defaultOpacity = PhotoWidget.DEFAULT_OPACITY,
                 defaultSaturation = PhotoWidget.DEFAULT_SATURATION,
                 defaultBrightness = PhotoWidget.DEFAULT_BRIGHTNESS,
-                defaultTapAction = PhotoWidgetTapAction.DEFAULT,
             ),
             onNavClick = {},
             onSourceClick = {},
@@ -663,7 +665,7 @@ private fun WidgetDefaultsScreenPreview() {
             onBrightnessClick = {},
             onIntervalClick = {},
             onShuffleChange = {},
-            onTapActionClick = {},
+            onSortClick = {},
             onClearDefaultsClick = {},
         )
     }

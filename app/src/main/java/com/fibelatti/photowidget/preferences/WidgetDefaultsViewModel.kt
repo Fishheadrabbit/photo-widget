@@ -1,9 +1,9 @@
 package com.fibelatti.photowidget.preferences
 
 import androidx.lifecycle.ViewModel
+import com.fibelatti.photowidget.model.DirectorySorting
 import com.fibelatti.photowidget.model.PhotoWidgetCycleMode
 import com.fibelatti.photowidget.model.PhotoWidgetSource
-import com.fibelatti.photowidget.model.PhotoWidgetTapAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +21,10 @@ class WidgetDefaultsViewModel @Inject constructor(
 
     fun saveDefaultShuffle(value: Boolean) {
         userPreferencesStorage.defaultShuffle = value
+    }
+
+    fun saveDefaultSorting(value: DirectorySorting) {
+        userPreferencesStorage.defaultDirectorySorting = value
     }
 
     fun saveDefaultCycleMode(cycleMode: PhotoWidgetCycleMode) {
@@ -45,10 +49,6 @@ class WidgetDefaultsViewModel @Inject constructor(
 
     fun saveDefaultBrightness(value: Float) {
         userPreferencesStorage.defaultBrightness = value
-    }
-
-    fun saveDefaultTapAction(tapAction: PhotoWidgetTapAction) {
-        userPreferencesStorage.defaultTapAction = tapAction
     }
 
     fun clearDefaults() {

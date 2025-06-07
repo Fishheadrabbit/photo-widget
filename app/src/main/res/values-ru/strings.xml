@@ -12,6 +12,7 @@
     <string name="photo_widget_home_appearance">Тема приложения</string>
     <string name="photo_widget_home_true_black_background">Настоящий черный фон</string>
     <string name="photo_widget_home_dynamic_colors">Цвета приложения</string>
+    <string name="photo_widget_home_translations">Язык приложения</string>
     <string name="photo_widget_home_share">Поделиться приложением</string>
     <string name="photo_widget_home_rate">Оставить отзыв</string>
     <string name="photo_widget_home_help">Что-то не работает?</string>
@@ -179,11 +180,15 @@
     <string name="photo_widget_configure_offset_current_vertical">Вертикальное: %1$d</string>
     <string name="photo_widget_configure_padding">Отступ</string>
     <string name="photo_widget_configure_tap_action">Действие по нажатию</string>
-    <string name="photo_widget_configure_tap_action_description">Виджеты 1x1 могут иметь действие одного нажатия. Это применяется к средней области больших виджетов (мигает зеленым), и вы также можете нажимать на стороны, чтобы переключать фотографии.</string>
+    <string name="photo_widget_configure_tap_action_description">Настройте действие при нажатии для каждой области. Виджеты 1x1 будут использовать только центральное нажатие.</string>
+    <string name="photo_widget_configure_tap_action_area_left">Слева</string>
+    <string name="photo_widget_configure_tap_action_area_center">Центр</string>
+    <string name="photo_widget_configure_tap_action_area_right">Справа</string>
     <string name="photo_widget_configure_tap_action_none">Нет</string>
     <string name="photo_widget_configure_tap_action_view_full_screen">Просмотр фото на весь экран</string>
     <string name="photo_widget_configure_tap_action_view_in_gallery">Просмотр с помощью приложения галереи</string>
     <string name="photo_widget_configure_tap_action_view_next_photo">Посмотреть следующее фото</string>
+    <string name="photo_widget_configure_tap_action_view_previous_photo">Просмотреть предыдущую фотографию</string>
     <string name="photo_widget_configure_tap_action_choose_next_photo">Выбрать следующее фото</string>
     <string name="photo_widget_configure_tap_action_app_shortcut">Открыть приложение</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Открыть ссылку</string>
@@ -193,14 +198,21 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">Просмотреть оригинальную фотографию (без обрезки или поворота)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">Не перемешивать при использовании кнопок просмотра</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">Не менять текущую фотографию при использовании кнопок просмотра</string>
-    <string name="photo_widget_configure_tap_action_disable_side_actions">Отключить нажатия на края главного экрана</string>
-    <string name="photo_widget_configure_tap_action_gallery_description">Доступно для виджетов на основе папок. Виджеты на основе фотографий будут использовать \"Просмотр фото на весь экран\" вместо этого. Вы также можете выбрать, какое приложение галереи использовать.</string>
+    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">Совместимо с виджетами на основе папок, виджеты на основе фотографий будут использовать «Просмотреть фото на весь экран» вместо этого.</string>
+    <string name="photo_widget_configure_tap_action_gallery_description_warning">Это действие откроет текущую фотографию через приложение галереи. Невозможно будет просматривать или переходить к другим фотографиям.</string>
+    <string name="photo_widget_configure_tap_action_gallery_description_app_selection">Вы также можете выбрать, какое приложение галереи использовать.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Выбрать приложение</string>
-    <string name="photo_widget_configure_tap_action_disable_tap">Отключить сенсорные края во время паузы цикла</string>
+    <string name="photo_widget_configure_tap_action_disable_tap">Отключить другие зоны нажатия во время паузы прокрутки</string>
+    <string name="photo_widget_configure_tap_action_shared_preferences">Эти настройки используются всеми зонами, применяющими это действие нажатия.</string>
+    <string name="photo_widget_configure_tap_action_shared_selected_app">Выбранное приложение используется всеми зонами, применяющими это действие нажатия.</string>
     <string name="photo_widget_configure_add_to_home">Добавить на главный экран</string>
     <string name="photo_widget_configure_save_changes">Сохранить изменения</string>
     <string name="photo_widget_configure_widget_pinned">Виджет добавлен! Проверьте домашний экран…</string>
     <string name="photo_widget_time_picker_title">Выбрать время</string>
+    <string name="photo_widget_directory_sort_title">Сортировать фото</string>
+    <string name="photo_widget_directory_sort_newest_first">Сначала новые</string>
+    <string name="photo_widget_directory_sort_oldest_first">Сначала старые</string>
+    <string name="photo_widget_directory_sort_explanation">Сортировка использует дату последнего изменения исходного файла изображения и применяется только к виджетам, синхронизированным с папками.</string>
     <!-- Help -->
     <string name="help_article_title_1">Не получается добавить виджет на главный экран</string>
     <string name="help_article_body_1">Если вы настроили виджет, но при попытке добавить его на главный экран ничего не происходит или он добавлен, но не отображает выбранные фотографии, попробуйте добавить его напрямую с главного экрана.\n\nИнструкции могут различаться в зависимости от версии Android, производителя устройства и лаунчера, но, как правило, процесс выглядит следующим образом:\n\n1. Нажмите и удерживайте пустое пространство на главном экране, пока не появится всплывающее меню.\n2. Найдите опцию «Виджеты».\n3. Найдите «Material Photo Widget» среди доступных виджетов.\n4. Перетащите его на главный экран и настройте, как обычно.</string>
@@ -217,10 +229,13 @@
     <string name="restriction_warning_dialog_body_3">Некоторые телефоны имеют еще более строгие ограничения и могут блокировать автоматический запуск приложения после перезагрузки. Настройки зависят от устройства — посетите https://dontkillmyapp.com для получения конкретных инструкций.</string>
     <string name="restriction_warning_open_app_settings">Открыть настройки приложения</string>
     <string name="restriction_warning_open_power_settings">Открыть настройки питания</string>
+    <!-- Translations -->
+    <string name="translations_dialog_title">Помогите перевести на ваш язык!</string>
+    <string name="translations_dialog_body">Это приложение использует подход сообщества для переводов, и ваша помощь может сделать его лучше. Вы можете внести свой вклад, если хотите увидеть новый доступный язык или заметили что-то, что выглядит неправильно.</string>
+    <string name="translations_dialog_positive_action">Открыть Crowdin</string>
+    <string name="translations_dialog_negative_action">Не сейчас</string>
     <!-- Viewer -->
-    <string name="photo_widget_viewer_actions_pinch">Сожмите для увеличения</string>
-    <string name="photo_widget_viewer_actions_drag">Перетащите для перемещения</string>
-    <string name="photo_widget_viewer_actions_tap">Нажмите, чтобы закрыть</string>
+    <string name="photo_widget_viewer_all_photos">Все фото</string>
     <!-- Cycling feedback -->
     <string name="photo_widget_cycling_feedback_paused">Цикл приостановлен</string>
     <string name="photo_widget_cycling_feedback_resumed">Цикл возобновлен</string>
@@ -232,6 +247,7 @@
     <string name="photo_widget_action_apply">Применить</string>
     <string name="photo_widget_action_confirm">Подтвердить</string>
     <string name="photo_widget_action_got_it">Я понял</string>
+    <string name="photo_widget_action_dismiss">Закрыть</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Виджет главного экрана Material Photo</string>
 </resources>

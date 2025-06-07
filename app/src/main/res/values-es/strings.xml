@@ -9,10 +9,11 @@
     <string name="photo_widget_home_current">Mis Widgets</string>
     <string name="photo_widget_home_settings">Ajustes</string>
     <string name="photo_widget_home_data_saver">Almacenamiento optimizado</string>
-    <string name="photo_widget_home_appearance">Tema de la aplicación</string>
+    <string name="photo_widget_home_appearance">Tema de la app</string>
     <string name="photo_widget_home_true_black_background">Fondo negro verdadero</string>
-    <string name="photo_widget_home_dynamic_colors">Colores de la aplicación</string>
-    <string name="photo_widget_home_share">Comparte la aplicación</string>
+    <string name="photo_widget_home_dynamic_colors">Colores de la app</string>
+    <string name="photo_widget_home_translations">Idioma de la app</string>
+    <string name="photo_widget_home_share">Comparte la app</string>
     <string name="photo_widget_home_rate">Escribe una reseña</string>
     <string name="photo_widget_home_help">¿Algo no está funcionando?</string>
     <string name="photo_widget_home_common_issues">Problemas comunes</string>
@@ -167,11 +168,15 @@
     <string name="photo_widget_configure_offset_current_vertical">Vertical: %1$d</string>
     <string name="photo_widget_configure_padding">Espaciamiento</string>
     <string name="photo_widget_configure_tap_action">Acción de toque</string>
-    <string name="photo_widget_configure_tap_action_description">Los widgets 1x1 pueden tener una acción de un solo toque. Esto se aplica al área central de los widgets más grandes (que parpadea en verde) y también puedes tocar los costados para cambiar de foto.</string>
+    <string name="photo_widget_configure_tap_action_description">Personaliza la acción al tocar en cada área. Los widgets 1x1 solo usarán la acción de toque central.</string>
+    <string name="photo_widget_configure_tap_action_area_left">Izquierda</string>
+    <string name="photo_widget_configure_tap_action_area_center">Centro</string>
+    <string name="photo_widget_configure_tap_action_area_right">Derecha</string>
     <string name="photo_widget_configure_tap_action_none">Ninguna</string>
     <string name="photo_widget_configure_tap_action_view_full_screen">Ver foto en pantalla completa</string>
     <string name="photo_widget_configure_tap_action_view_in_gallery">Ver con la aplicación de galería</string>
     <string name="photo_widget_configure_tap_action_view_next_photo">Ver siguiente foto</string>
+    <string name="photo_widget_configure_tap_action_view_previous_photo">Ver foto anterior</string>
     <string name="photo_widget_configure_tap_action_choose_next_photo">Elige la siguiente foto</string>
     <string name="photo_widget_configure_tap_action_app_shortcut">Abrir una aplicación</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Abrir un enlace</string>
@@ -181,14 +186,21 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">Ver foto original (sin recorte ni rotación)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">No barajar al usar los botones del visor</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">No cambiar la foto actual al usar los botones del visor</string>
-    <string name="photo_widget_configure_tap_action_disable_side_actions">Desactivar toques en el borde de la pantalla de inicio</string>
-    <string name="photo_widget_configure_tap_action_gallery_description">Disponible para widgets basados en carpetas. Los widgets basados en fotos usarán \"Ver foto en pantalla completa\". También puedes elegir qué aplicación de galería usar.</string>
+    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">Compatible con widgets basados en carpetas, los widgets basados en fotos usarán \"Ver foto en pantalla completa\" en su lugar.</string>
+    <string name="photo_widget_configure_tap_action_gallery_description_warning">Esta acción abre la foto actual usando la aplicación de galería. No será posible ver ni navegar a otras fotos.</string>
+    <string name="photo_widget_configure_tap_action_gallery_description_app_selection">También puedes elegir qué aplicación de galería usar.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Elige la aplicación</string>
-    <string name="photo_widget_configure_tap_action_disable_tap">Desactivar los bordes táctiles mientras el ciclo está en pausa</string>
+    <string name="photo_widget_configure_tap_action_disable_tap">Desactivar otras áreas de toque mientras el ciclo esté en pausa</string>
+    <string name="photo_widget_configure_tap_action_shared_preferences">Estas preferencias se usan en todas las áreas que utilizan esta acción de toque.</string>
+    <string name="photo_widget_configure_tap_action_shared_selected_app">La aplicación seleccionada se usa en todas las áreas que utilizan esta acción de toque.</string>
     <string name="photo_widget_configure_add_to_home">Agregar a la pantalla principal</string>
     <string name="photo_widget_configure_save_changes">Guardar cambios</string>
     <string name="photo_widget_configure_widget_pinned">¡Widget añadido! Revisa tu pantalla de inicio…</string>
     <string name="photo_widget_time_picker_title">Seleccione la hora</string>
+    <string name="photo_widget_directory_sort_title">Ordenar fotos</string>
+    <string name="photo_widget_directory_sort_newest_first">Más recientes primero</string>
+    <string name="photo_widget_directory_sort_oldest_first">Más antiguas primero</string>
+    <string name="photo_widget_directory_sort_explanation">La ordenación utiliza la fecha de última modificación del archivo de imagen original y solo se aplica a los widgets sincronizados con carpetas.</string>
     <!-- Help -->
     <string name="help_article_title_1">Agregar un widget a la pantalla de inicio no está funcionando</string>
     <string name="help_article_body_1">Si has configurado un widget y no sucede nada cuando intentas agregarlo a la pantalla de inicio, o si se agregó pero no muestra las fotos seleccionadas, puedes intentar agregarlo directamente desde tu pantalla de inicio.\n\nLas instrucciones pueden variar según la versión de Android, el fabricante del dispositivo y el lanzador de la pantalla de inicio, pero generalmente el proceso es el siguiente:\n\n1. Mantén presionado un espacio vacío en tu pantalla de inicio hasta que aparezca un menú emergente.\n2. Busca la opción \"Widgets\".\n3. Busca \"Material Photo Widget\" dentro de los widgets disponibles.\n4. Arrástralo a tu pantalla de inicio y configúralo como de costumbre.</string>
@@ -205,10 +217,13 @@
     <string name="restriction_warning_dialog_body_3">Algunos teléfonos son aún más restrictivos y pueden bloquear la aplicación para que no se inicie automáticamente después de un reinicio. La configuración varía según el dispositivo — visita https://dontkillmyapp.com para obtener instrucciones específicas.</string>
     <string name="restriction_warning_open_app_settings">Abrir configuración de la aplicación</string>
     <string name="restriction_warning_open_power_settings">Abrir configuración de energía</string>
+    <!-- Translations -->
+    <string name="translations_dialog_title">¡Ayuda a traducir a tu idioma!</string>
+    <string name="translations_dialog_body">Esta aplicación utiliza un enfoque comunitario para las traducciones, y tu ayuda puede mejorarla. Puedes contribuir si quieres ver un nuevo idioma disponible o si detectas algo que no se ve bien.</string>
+    <string name="translations_dialog_positive_action">Abrir Crowdin</string>
+    <string name="translations_dialog_negative_action">Ahora no</string>
     <!-- Viewer -->
-    <string name="photo_widget_viewer_actions_pinch">Pellizcar para hacer zoom</string>
-    <string name="photo_widget_viewer_actions_drag">Arrastra para mover</string>
-    <string name="photo_widget_viewer_actions_tap">Toca para cerrar</string>
+    <string name="photo_widget_viewer_all_photos">Todas las fotos</string>
     <!-- Cycling feedback -->
     <string name="photo_widget_cycling_feedback_paused">Ciclo pausado</string>
     <string name="photo_widget_cycling_feedback_resumed">Ciclo reanudado</string>
@@ -220,6 +235,7 @@
     <string name="photo_widget_action_apply">Aplicar</string>
     <string name="photo_widget_action_confirm">Confirmar</string>
     <string name="photo_widget_action_got_it">Lo entendí</string>
+    <string name="photo_widget_action_dismiss">Cerrar</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Widget de pantalla principal de Material Photo</string>
 </resources>

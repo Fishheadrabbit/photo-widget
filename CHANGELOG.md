@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v1.30.0] - 2025-05-25
+[v1.30.0]: https://github.com/fibelatti/photo-widget/releases/tag/v1.30.0
+
+### Added
+
+* In-app link to Crowdin (crowdsourced localization)
+* Customization option to sort the directory photos
+
+### Changed
+
+* Updated the explanation for the "View with a gallery app" tap action
+* Improved the full screen viewer
+* It's now possible to choose a tap action for each tap area
+
+### Removed
+
+* Default tap action setting
+
 ## [v1.29.0] - 2025-04-14
 [v1.29.0]: https://github.com/fibelatti/photo-widget/releases/tag/v1.29.0
 

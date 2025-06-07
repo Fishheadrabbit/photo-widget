@@ -5,13 +5,14 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fibelatti.photowidget.model.DirectorySorting
 import com.fibelatti.photowidget.model.LocalPhoto
 import com.fibelatti.photowidget.model.PhotoWidget
 import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
 import com.fibelatti.photowidget.model.PhotoWidgetBorder
 import com.fibelatti.photowidget.model.PhotoWidgetCycleMode
 import com.fibelatti.photowidget.model.PhotoWidgetSource
-import com.fibelatti.photowidget.model.PhotoWidgetTapAction
+import com.fibelatti.photowidget.model.PhotoWidgetTapActions
 import com.fibelatti.photowidget.platform.savedState
 import com.fibelatti.photowidget.widget.DeleteStaleDataUseCase
 import com.fibelatti.photowidget.widget.DuplicatePhotoWidgetUseCase
@@ -19,6 +20,7 @@ import com.fibelatti.photowidget.widget.LoadPhotoWidgetUseCase
 import com.fibelatti.photowidget.widget.data.PhotoWidgetStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -241,7 +243,10 @@ class PhotoWidgetConfigureViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { current -> current.copy(isProcessing = true) }
 
-            val newDirPhotos = photoWidgetStorage.getNewDirPhotos(dirUri = source)
+            val newDirPhotos = photoWidgetStorage.getNewDirPhotos(
+                dirUri = source,
+                sorting = _state.value.photoWidget.directorySorting,
+            )
             if (newDirPhotos == null) {
                 _state.update { current ->
                     current.copy(
@@ -465,10 +470,32 @@ class PhotoWidgetConfigureViewModel @Inject constructor(
         }
     }
 
-    fun tapActionSelected(tapAction: PhotoWidgetTapAction) {
+    fun saveSorting(sorting: DirectorySorting) {
+        viewModelScope.launch {
+            val updatedPhotos: List<LocalPhoto> = withContext(Dispatchers.Default) {
+                _state.value.photoWidget.photos.let { photos ->
+                    when (sorting) {
+                        DirectorySorting.NEWEST_FIRST -> photos.sortedByDescending { it.timestamp }
+                        DirectorySorting.OLDEST_FIRST -> photos.sortedBy { it.timestamp }
+                    }
+                }
+            }
+
+            _state.update { current ->
+                current.copy(
+                    photoWidget = current.photoWidget.copy(
+                        photos = updatedPhotos,
+                        directorySorting = sorting,
+                    ),
+                )
+            }
+        }
+    }
+
+    fun tapActionSelected(tapActions: PhotoWidgetTapActions) {
         _state.update { current ->
             current.copy(
-                photoWidget = current.photoWidget.copy(tapAction = tapAction),
+                photoWidget = current.photoWidget.copy(tapActions = tapActions),
             )
         }
     }
