@@ -2,7 +2,7 @@
 <resources>
     <!-- Widget Host -->
     <string name="photo_widget_host_description">设置你喜欢的照片到桌面</string>
-    <string name="photo_widget_host_loading">加载小组件中...</string>
+    <string name="photo_widget_host_loading">加载小组件中…</string>
     <string name="photo_widget_host_failed">加载失败\n再试一次？</string>
     <!-- Home -->
     <string name="photo_widget_home_title">使用你最爱的图片来装扮桌面</string>
@@ -30,7 +30,7 @@
     <string name="photo_widget_home_pinning_not_supported_title">直接从主屏幕添加小组件</string>
     <string name="photo_widget_home_pinning_not_supported_message">1. 长按桌面的空白处\n\n2. 选择小组件菜单\n\n3. 搜索“Material Photo Widget”\n\n4. 进行配置，然后保存！</string>
     <string name="photo_widget_home_crash_report_title">你的帮助使这个软件变得更好</string>
-    <string name="photo_widget_home_crash_report_body">看上去这个软件或小组件发生了预料之外的崩溃。你可以选择发送日志到我的电子邮箱，帮助改善这个软件</string>
+    <string name="photo_widget_home_crash_report_body">看上去这个软件或小组件发生了预料之外的崩溃。你可以选择发送日志到我的电子邮箱，帮助改善这个软件。</string>
     <string name="photo_widget_home_crash_report_action_confirm">分享</string>
     <string name="photo_widget_home_crash_report_action_cancel">不分享</string>
     <string name="photo_widget_home_crash_report_choose_title">发送电子邮件</string>
@@ -119,13 +119,13 @@
     <string name="photo_widget_configure_pick_photo">选择照片</string>
     <string name="photo_widget_configure_pick_folder">选择文件夹</string>
     <string name="photo_widget_configure_change_source">Change source</string>
-    <string name="photo_widget_configure_select_cycling_mode">Photo timer</string>
-    <string name="photo_widget_configure_cycling_mode_interval">Interval</string>
-    <string name="photo_widget_configure_cycling_mode_schedule">Schedule</string>
-    <string name="photo_widget_configure_cycling_mode_disabled">Disabled</string>
+    <string name="photo_widget_configure_select_cycling_mode">循环</string>
+    <string name="photo_widget_configure_cycling_mode_interval">按间间隔</string>
+    <string name="photo_widget_configure_cycling_mode_schedule">按时间</string>
+    <string name="photo_widget_configure_cycling_mode_disabled">关闭</string>
     <string name="photo_widget_configure_cycling_mode_interval_description">The widget will automatically change to the next photo at the following interval:</string>
-    <string name="photo_widget_configure_cycling_mode_schedule_description">The widget will automatically change to the next photo every day at the following scheduled times:</string>
-    <string name="photo_widget_configure_cycling_mode_disabled_description">The widget won\'t change photos automatically.</string>
+    <string name="photo_widget_configure_cycling_mode_schedule_description">这个小组件将会在每天的以下时间自动切换下一张图片：</string>
+    <string name="photo_widget_configure_cycling_mode_disabled_description">这个小组件不会自动切换。</string>
     <string name="photo_widget_configure_interval_current_label">每 %s</string>
     <plurals name="photo_widget_configure_interval_current_seconds">
         <item quantity="other">%d 秒</item>
@@ -143,37 +143,37 @@
     <string name="photo_widget_configure_interval_minutes_label">分钟</string>
     <string name="photo_widget_configure_interval_hours_label">小时</string>
     <string name="photo_widget_configure_interval_days_label">天</string>
-    <string name="photo_widget_configure_schedule_placeholder">Schedule up to 4 times to switch your photos automatically.</string>
-    <string name="photo_widget_configure_schedule_add_new">Add new</string>
+    <string name="photo_widget_configure_schedule_placeholder">最多设置4个时间自动切换照片。</string>
+    <string name="photo_widget_configure_schedule_add_new">新增时间</string>
     <string name="photo_widget_configure_schedule_limit_reached">Maximum of 4 times reached</string>
     <plurals name="photo_widget_configure_schedule_times">
-        <item quantity="other">%d times selected</item>
+        <item quantity="other">选择了%d个时间</item>
     </plurals>
     <string name="photo_widget_configure_interval_warning">The actual interval or scheduled time can vary due to restrictions imposed by Android to optimize battery life. To ensure it works as desired, grant the permission below</string>
     <string name="photo_widget_configure_interval_grant_permission">Grant exact alarm permission</string>
     <string name="photo_widget_configure_interval_permission_dialog_title">About this permission</string>
     <string name="photo_widget_configure_interval_permission_dialog_description">Android can restrict background work to optimize battery life, resulting in longer intervals between each photo.\n\nTo update widgets precisely at the selected interval, open settings and allow setting alarms and reminders.</string>
     <string name="photo_widget_configure_interval_open_settings">打开设置</string>
-    <string name="photo_widget_configure_border">Border</string>
-    <string name="photo_widget_configure_border_none">None</string>
+    <string name="photo_widget_configure_border">边框</string>
+    <string name="photo_widget_configure_border_none">无</string>
     <string name="photo_widget_configure_border_dynamic">Dynamic</string>
-    <string name="photo_widget_configure_border_color">Colored</string>
+    <string name="photo_widget_configure_border_color">自己选择</string>
     <string name="photo_widget_configure_border_color_palette">Palette</string>
     <string name="photo_widget_configure_border_color_palette_dominant">Dominant color</string>
     <string name="photo_widget_configure_border_color_palette_vibrant">Vibrant color</string>
     <string name="photo_widget_configure_border_color_palette_muted">Muted color</string>
     <string name="photo_widget_configure_border_explanation">Changes will take place during the next widget update after you change your phone\'s theme color. To update all widgets immediately, simply open the app.</string>
-    <string name="photo_widget_configure_offset">Offset</string>
-    <string name="photo_widget_configure_offset_current_values">Horizontal: %1$d, Vertical: %2$d</string>
-    <string name="photo_widget_configure_offset_current_horizontal">Horizontal: %1$d</string>
-    <string name="photo_widget_configure_offset_current_vertical">Vertical: %1$d</string>
+    <string name="photo_widget_configure_offset">偏移</string>
+    <string name="photo_widget_configure_offset_current_values">水平偏移：%1$d，竖直偏移：%2$d</string>
+    <string name="photo_widget_configure_offset_current_horizontal">水平偏移：%1$d</string>
+    <string name="photo_widget_configure_offset_current_vertical">竖直偏移：%1$d</string>
     <string name="photo_widget_configure_padding">Padding</string>
     <string name="photo_widget_configure_tap_action">Tap action</string>
     <string name="photo_widget_configure_tap_action_description">Customize the tap action of each area.</string>
     <string name="photo_widget_configure_tap_action_area_left">Left</string>
     <string name="photo_widget_configure_tap_action_area_center">Center</string>
     <string name="photo_widget_configure_tap_action_area_right">Right</string>
-    <string name="photo_widget_configure_tap_action_none">None</string>
+    <string name="photo_widget_configure_tap_action_none">无</string>
     <string name="photo_widget_configure_tap_action_view_full_screen">全屏显示照片</string>
     <string name="photo_widget_configure_tap_action_view_in_gallery">View with a gallery app</string>
     <string name="photo_widget_configure_tap_action_view_next_photo">显示下一张照片</string>
@@ -189,7 +189,7 @@
     <string name="photo_widget_configure_tap_action_keep_current_photo">Do not change the current photo when using the viewer buttons</string>
     <string name="photo_widget_configure_tap_action_gallery_description_compatibility">Compatible with folder-based widgets, photo-based widgets will use \"View photo in full screen\" instead.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_warning">This action opens the current photo using the gallery app. It won\'t be possible to view or navigate to other photos.</string>
-    <string name="photo_widget_configure_tap_action_gallery_description_app_selection">你也可以选择使用哪个相册程序</string>
+    <string name="photo_widget_configure_tap_action_gallery_description_app_selection">你也可以选择使用哪个相册程序。</string>
     <string name="photo_widget_configure_tap_action_choose_app">选择软件</string>
     <string name="photo_widget_configure_tap_action_disable_tap">Disable other tapping areas while the timer is paused</string>
     <string name="photo_widget_configure_tap_action_shared_preferences">These preferences are used by all areas that use this tap action.</string>
@@ -211,7 +211,9 @@
     <string name="help_article_title_3">重启手机后小组件不正常</string>
     <string name="help_article_body_3">When your phone restarts, Android sends a signal to apps to notify them, so they can restart themselves. Unfortunately, some device manufacturers (such as Xiaomi, Redmi, Huawei, and others) block this signal.\n\nTo enable this functionality, change the \"Auto Start\" permission in your security app.</string>
     <string name="help_article_title_4">组件尺寸太小</string>
-    <string name="help_article_body_4">将小组件添加到桌面后，可以长按它更改显示更改大小选项，之后拖动边框更改大小</string>
+    <string name="help_article_body_4">将小组件添加到桌面后，可以长按它更改显示更改大小选项，之后拖动边框更改大小。</string>
+    <string name="help_article_title_5">The widget sometimes turns into an error icon</string>
+    <string name="help_article_body_5">The app itself is not used frequently — only when you need to edit a widget. Widgets run independently within your app launcher. This can make Android think that the app is not important, and the system will stop it to claim back resources. When the app is stopped, its widgets are too. To prevent this, update the battery usage policy for the app, setting it to \"Unrestricted\".</string>
     <string name="restriction_warning_hint">Background activity is restricted. Widgets may not work correctly. Tap to learn more.</string>
     <string name="restriction_warning_dialog_title">Background work restrictions and battery optimization</string>
     <string name="restriction_warning_dialog_body_1">Material Photo Widget needs to run in the background to update your widgets. It only runs when needed, but if battery usage is set to \"optimized\" Android may stop the app, causing widgets to stop working correctly.</string>
@@ -220,7 +222,7 @@
     <string name="restriction_warning_open_app_settings">打开软件设置</string>
     <string name="restriction_warning_open_power_settings">打开电池设置</string>
     <!-- Translations -->
-    <string name="translations_dialog_title">需要你的帮助翻译!</string>
+    <string name="translations_dialog_title">需要你的帮助翻译 ！</string>
     <string name="translations_dialog_body">This app uses a community-driven approach for translations, and your help can make it better. You can contribute if you would like to see a new language available, or spotted something that doesn\'t look right.</string>
     <string name="translations_dialog_positive_action">打开Crowdin</string>
     <string name="translations_dialog_negative_action">不是现在</string>
@@ -245,7 +247,7 @@
     <string name="photo_widget_action_no">No</string>
     <string name="photo_widget_action_continue">Continue</string>
     <string name="photo_widget_action_cancel">Cancel</string>
-    <string name="photo_widget_action_apply">Apply</string>
+    <string name="photo_widget_action_apply">应用</string>
     <string name="photo_widget_action_confirm">Confirm</string>
     <string name="photo_widget_action_got_it">Got it</string>
     <string name="photo_widget_action_dismiss">Dismiss</string>
