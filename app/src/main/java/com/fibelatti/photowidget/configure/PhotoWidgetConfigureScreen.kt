@@ -2,10 +2,20 @@
 
 package com.fibelatti.photowidget.configure
 
+import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -63,6 +73,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
@@ -79,6 +90,7 @@ import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -90,6 +102,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.fibelatti.photowidget.R
 import com.fibelatti.photowidget.model.LocalPhoto
 import com.fibelatti.photowidget.model.PhotoWidget
@@ -102,6 +119,7 @@ import com.fibelatti.photowidget.model.canShuffle
 import com.fibelatti.photowidget.model.canSort
 import com.fibelatti.photowidget.platform.formatPercent
 import com.fibelatti.photowidget.platform.formatRangeValue
+import com.fibelatti.photowidget.platform.isBackgroundRestricted
 import com.fibelatti.photowidget.platform.withRoundedCorners
 import com.fibelatti.photowidget.preferences.BooleanDefault
 import com.fibelatti.photowidget.preferences.CornerRadiusPicker
@@ -110,6 +128,8 @@ import com.fibelatti.photowidget.preferences.OpacityPicker
 import com.fibelatti.photowidget.preferences.PickerDefault
 import com.fibelatti.photowidget.preferences.ShapeDefault
 import com.fibelatti.photowidget.preferences.ShapePicker
+import com.fibelatti.photowidget.ui.BackgroundRestrictionBottomSheet
+import com.fibelatti.photowidget.ui.BackgroundRestrictionWarningDialog
 import com.fibelatti.photowidget.ui.LoadingIndicator
 import com.fibelatti.photowidget.ui.ShapedPhoto
 import com.fibelatti.photowidget.ui.SliderSmallThumb
@@ -130,18 +150,68 @@ import sh.calvin.reorderable.rememberReorderableLazyGridState
 fun PhotoWidgetConfigureScreen(
     viewModel: PhotoWidgetConfigureViewModel,
     isUpdating: Boolean,
-    onNavClick: () -> Unit,
-    onPhotoPickerClick: () -> Unit,
-    onDirPickerClick: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val state: PhotoWidgetConfigureState by viewModel.state.collectAsStateWithLifecycle()
+    val configureBackStack: NavBackStack<NavKey> = rememberNavBackStack(PhotoWidgetConfigureNav.Home)
+
+    NavDisplay(
+        backStack = configureBackStack,
+        transitionSpec = {
+            slideInHorizontally(initialOffsetX = { it }) togetherWith ExitTransition.KeepUntilTransitionsFinished
+        },
+        popTransitionSpec = {
+            EnterTransition.None togetherWith slideOutHorizontally(targetOffsetX = { it })
+        },
+        predictivePopTransitionSpec = {
+            EnterTransition.None togetherWith slideOutHorizontally(targetOffsetX = { it })
+        },
+        entryProvider = entryProvider {
+            entry<PhotoWidgetConfigureNav.Home> {
+                PhotoWidgetConfigureHomeScreen(
+                    viewModel = viewModel,
+                    isUpdating = isUpdating,
+                    onNav = configureBackStack::add,
+                    onBack = onBack,
+                )
+            }
+
+            entry<PhotoWidgetConfigureNav.TapActionPicker> {
+                PhotoWidgetTapActionPicker(
+                    onNavClick = configureBackStack::pop,
+                    currentTapActions = state.photoWidget.tapActions,
+                    onApplyClick = { actions ->
+                        viewModel.tapActionSelected(actions)
+                        configureBackStack.pop()
+                    },
+                )
+            }
+        },
+    )
+}
+
+private fun NavBackStack<*>.pop() {
+    if (size > 1) removeLastOrNull()
+}
+
+@Composable
+private fun PhotoWidgetConfigureHomeScreen(
+    viewModel: PhotoWidgetConfigureViewModel,
+    isUpdating: Boolean,
+    onNav: (PhotoWidgetConfigureNav) -> Unit,
+    onBack: () -> Unit,
+) {
+    val state: PhotoWidgetConfigureState by viewModel.state.collectAsStateWithLifecycle()
+
+    // region Sheet States
+    var showBackgroundRestrictionDialog by remember { mutableStateOf(false) }
+    val backgroundRestrictionSheetState = rememberAppSheetState()
 
     val aspectRatioPickerSheetState = rememberAppSheetState()
     val sourceSheetState = rememberAppSheetState()
     val importFromWidgetSheetState = rememberAppSheetState()
     val cycleModePickerSheetState = rememberAppSheetState()
     val directoryPickerSheetState = rememberAppSheetState()
-    val tapActionPickerSheetState = rememberAppSheetState()
     val shapePickerSheetState = rememberAppSheetState()
     val cornerRadiusPickerSheetState = rememberAppSheetState()
     val borderPickerSheetState = rememberAppSheetState()
@@ -150,6 +220,27 @@ fun PhotoWidgetConfigureScreen(
     val brightnessPickerSheetState = rememberAppSheetState()
     val offsetPickerSheetState = rememberAppSheetState()
     val paddingPickerSheetState = rememberAppSheetState()
+    // endregion Sheet States
+
+    // region Picker Launchers
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents(),
+        onResult = viewModel::photoPicked,
+    )
+
+    val dirPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocumentTree(),
+        onResult = viewModel::dirPicked,
+    )
+    // endregion Picker Launchers
+
+    val localBackHandler: OnBackPressedDispatcherOwner? = LocalOnBackPressedDispatcherOwner.current
+    val localContext = LocalContext.current
+
+    BackHandler(
+        enabled = state.hasEdits,
+        onBack = onBack,
+    )
 
     CompositionLocalProvider(LocalSamplePhoto provides state.selectedPhoto) {
         PhotoWidgetConfigureScreen(
@@ -157,7 +248,7 @@ fun PhotoWidgetConfigureScreen(
             isUpdating = isUpdating,
             selectedPhoto = state.selectedPhoto,
             isProcessing = state.isProcessing,
-            onNavClick = onNavClick,
+            onNavClick = { localBackHandler?.onBackPressedDispatcher?.onBackPressed() },
             onAspectRatioClick = aspectRatioPickerSheetState::showBottomSheet,
             onCropClick = viewModel::requestCrop,
             onRemoveClick = viewModel::photoRemoved,
@@ -166,15 +257,21 @@ fun PhotoWidgetConfigureScreen(
             onChangeSourceClick = sourceSheetState::showBottomSheet,
             isImportAvailable = state.isImportAvailable,
             onImportClick = importFromWidgetSheetState::showBottomSheet,
-            onPhotoPickerClick = onPhotoPickerClick,
-            onDirPickerClick = onDirPickerClick,
+            onPhotoPickerClick = { photoPickerLauncher.launch(input = "image/*") },
+            onDirPickerClick = { dirPickerLauncher.launch(input = null) },
             onPhotoClick = viewModel::previewPhoto,
             onReorderFinished = viewModel::reorderPhotos,
             onRemovedPhotoClick = viewModel::restorePhoto,
-            onCycleModePickerClick = cycleModePickerSheetState::showBottomSheet,
+            onCycleModePickerClick = {
+                if (localContext.isBackgroundRestricted(checkUnrestrictedBattery = true)) {
+                    showBackgroundRestrictionDialog = true
+                } else {
+                    cycleModePickerSheetState.showBottomSheet()
+                }
+            },
             onShuffleChange = viewModel::saveShuffle,
             onSortClick = directoryPickerSheetState::showBottomSheet,
-            onTapActionPickerClick = tapActionPickerSheetState::showBottomSheet,
+            onTapActionPickerClick = { onNav(PhotoWidgetConfigureNav.TapActionPicker) },
             onShapeClick = shapePickerSheetState::showBottomSheet,
             onCornerRadiusClick = cornerRadiusPickerSheetState::showBottomSheet,
             onBorderClick = borderPickerSheetState::showBottomSheet,
@@ -186,7 +283,24 @@ fun PhotoWidgetConfigureScreen(
             onAddToHomeClick = viewModel::addNewWidget,
         )
 
-        // region Bottom Sheets
+        // region Bottom Sheets and Dialogs
+        if (showBackgroundRestrictionDialog) {
+            BackgroundRestrictionWarningDialog(
+                onLearnMoreClick = {
+                    showBackgroundRestrictionDialog = false
+                    backgroundRestrictionSheetState.showBottomSheet()
+                },
+                onIgnoreClick = {
+                    showBackgroundRestrictionDialog = false
+                    cycleModePickerSheetState.showBottomSheet()
+                },
+            )
+        }
+
+        BackgroundRestrictionBottomSheet(
+            sheetState = backgroundRestrictionSheetState,
+        )
+
         PhotoWidgetAspectRatioBottomSheet(
             sheetState = aspectRatioPickerSheetState,
             onAspectRatioSelected = viewModel::setAspectRatio,
@@ -214,12 +328,6 @@ fun PhotoWidgetConfigureScreen(
         DirectorySortingBottomSheet(
             sheetState = directoryPickerSheetState,
             onItemClick = viewModel::saveSorting,
-        )
-
-        PhotoWidgetTapActionBottomSheet(
-            sheetState = tapActionPickerSheetState,
-            currentTapActions = state.photoWidget.tapActions,
-            onApplyClick = viewModel::tapActionSelected,
         )
 
         AppBottomSheet(
@@ -300,7 +408,7 @@ fun PhotoWidgetConfigureScreen(
                 },
             )
         }
-        // endregion Bottom Sheets
+        // endregion Bottom Sheets and Dialogs
     }
 }
 
@@ -359,7 +467,7 @@ fun PhotoWidgetConfigureScreen(
             onCropClick = onCropClick,
             onRemoveClick = onRemoveClick,
             onChangeSourceClick = onChangeSourceClick,
-            isImportAvailable = isImportAvailable,
+            isImportAvailable = isImportAvailable && !isProcessing,
             onImportClick = onImportClick,
             onPhotoPickerClick = onPhotoPickerClick,
             onDirPickerClick = onDirPickerClick,
