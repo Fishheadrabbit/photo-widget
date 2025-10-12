@@ -11,7 +11,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.getSystemService
-import com.fibelatti.photowidget.model.PhotoWidget
 import com.google.android.material.color.DynamicColors
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -48,8 +47,11 @@ fun Context?.findActivity(): AppCompatActivity? {
 }
 
 fun Context.isBackgroundRestricted(checkUnrestrictedBattery: Boolean = false): Boolean {
-    val manufacturer = Build.MANUFACTURER.lowercase()
-    val restrictiveManufacturers = listOf(
+    val isBackgroundRestricted: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
+        getSystemService<ActivityManager>()?.isBackgroundRestricted == true
+
+    val manufacturer: String = Build.MANUFACTURER.lowercase()
+    val restrictiveManufacturers: List<String> = listOf(
         "huawei",
         "xiaomi",
         "redmi",
@@ -60,14 +62,10 @@ fun Context.isBackgroundRestricted(checkUnrestrictedBattery: Boolean = false): B
         "tecno",
         "infinix",
     )
-    val isRestrictive = manufacturer in restrictiveManufacturers
+    val isRestrictive: Boolean = isBackgroundRestricted && manufacturer in restrictiveManufacturers
 
-    val activityManager: ActivityManager? = getSystemService()
-    val isBackgroundRestricted = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
-        activityManager?.isBackgroundRestricted == true
-
-    val checkBattery = checkUnrestrictedBattery || manufacturer in listOf("samsung", "motorola")
-    val isBatteryUsageRestricted = if (checkBattery) {
+    val checkBattery: Boolean = checkUnrestrictedBattery || manufacturer in listOf("samsung", "motorola")
+    val isBatteryUsageRestricted: Boolean = if (checkBattery) {
         getSystemService<PowerManager>()?.isIgnoringBatteryOptimizations(packageName) != true
     } else {
         false
@@ -86,11 +84,8 @@ fun widgetPinningNotAvailable(): Boolean {
     return manufacturer in notAvailable
 }
 
-fun Context.getMaxBitmapWidgetDimension(
-    coerceMaxMemory: Boolean = false,
-    coerceDimension: Boolean = false,
-): Int {
-    Timber.d("Calculating max dimension (coerceMaxMemory=$coerceMaxMemory, coerceDimension=$coerceDimension)")
+fun Context.getMaxBitmapWidgetDimension(coerceMaxMemory: Boolean = false): Int {
+    Timber.d("Calculating max dimension (coerceMaxMemory=$coerceMaxMemory)")
 
     val displayMetrics: DisplayMetrics = resources.displayMetrics
     val maxMemoryAllowed: Int = if (coerceMaxMemory) {
@@ -98,12 +93,7 @@ fun Context.getMaxBitmapWidgetDimension(
     } else {
         (displayMetrics.heightPixels * displayMetrics.widthPixels * 4 * 1.5).roundToInt()
     }
-    val maxMemoryDimension: Int = sqrt(maxMemoryAllowed / 4 / displayMetrics.density).roundToInt()
-    val maxDimension: Int = if (coerceDimension) {
-        maxMemoryDimension.coerceAtMost(maximumValue = PhotoWidget.MAX_WIDGET_DIMENSION)
-    } else {
-        maxMemoryDimension
-    }
+    val maxDimension: Int = sqrt(maxMemoryAllowed / 4 / displayMetrics.density).roundToInt()
 
     Timber.d("Max dimension allowed: $maxDimension (maxMemoryAllowed=$maxMemoryAllowed)")
 

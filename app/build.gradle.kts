@@ -19,8 +19,8 @@ object AppInfo {
     const val APPLICATION_ID = "com.fibelatti.photowidget"
 
     private const val VERSION_MAJOR = 1
-    private const val VERSION_MINOR = 32
-    private const val VERSION_PATCH = 3
+    private const val VERSION_MINOR = 33
+    private const val VERSION_PATCH = 1
     private const val VERSION_BUILD = 0
 
     val versionCode: Int = (VERSION_MAJOR * 1_000_000)
@@ -191,6 +191,9 @@ dependencies {
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.palette)
     implementation(libs.work.runtime.ktx)
+
+    implementation(libs.navigation3.runtime)
+    implementation(libs.navigation3.ui)
 
     // Compose
     implementation(platform(libs.compose.bom))
