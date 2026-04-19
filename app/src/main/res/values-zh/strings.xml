@@ -83,8 +83,10 @@
     <!-- Source -->
     <string name="photo_widget_source_photos">照片</string>
     <string name="photo_widget_source_directory">文件夹</string>
+    <string name="photo_widget_source_gif">GIF</string>
     <string name="photo_widget_source_photos_description">使用您的默认照片库选取器选择一张或多张照片。</string>
     <string name="photo_widget_source_directory_description">选择一个或多个文件夹进行同步。照片将自动添加并定期刷新。</string>
+    <string name="photo_widget_source_gif_description">选择一个GIF在你的桌面上播放。推荐短小与简单的GIF</string>
     <!-- Aspect Ratio -->
     <string name="photo_widget_aspect_ratio_title">布局</string>
     <string name="photo_widget_aspect_ratio_shape">形状</string>
@@ -114,7 +116,7 @@
     <string name="photo_widget_configure_menu_source">来源</string>
     <string name="photo_widget_configure_source_selection_directory_empty">此组件尚未与任何文件夹同步.</string>
     <string name="photo_widget_configure_source_selection_directory_non_empty">此小组件已与这些文件夹同步：</string>
-    <string name="photo_widget_configure_source_warning">更改源将替换当前的这个小组件中的照片</string>
+    <string name="photo_widget_configure_source_warning">Changing the source will erase all content data from this widget once you confirm. This change cannot be reversed, and you will have to select photos or folders again.</string>
     <string name="photo_widget_configure_menu_crop">裁切</string>
     <string name="photo_widget_configure_menu_remove">移除</string>
     <string name="photo_widget_configure_menu_move_left">左移</string>
@@ -123,6 +125,8 @@
     <string name="photo_widget_configure_photos_excluded">从小组件中删除</string>
     <string name="photo_widget_configure_pick_photo">选择照片</string>
     <string name="photo_widget_configure_pick_folder">选择文件夹</string>
+    <string name="photo_widget_configure_pick_gif">选择gif</string>
+    <string name="photo_widget_configure_pick_gif_replace">Picking another GIF will replace the existing one, continue?</string>
     <string name="photo_widget_configure_change_source">更改源</string>
     <string name="photo_widget_configure_select_cycling_mode">照片定时器</string>
     <string name="photo_widget_configure_cycling_mode_interval">间隔</string>
@@ -197,25 +201,30 @@
     <string name="photo_widget_configure_tap_action_app_folder">应用文件夹</string>
     <string name="photo_widget_configure_tap_action_app_folder_description">最多选择12个应用</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">打开一个链接</string>
+    <string name="photo_widget_configure_tap_action_file_shortcut">打开文件</string>
+    <string name="photo_widget_configure_tap_action_choose_file">选择文件</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling">启用/禁用定时器</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling_description">点击暂停照片计时器。再次点击以恢复。在小组件被锁定时此操作将被禁用。</string>
+    <string name="photo_widget_configure_tap_action_toggle_gif_playback">Enable/disable GIF playback</string>
     <string name="photo_widget_configure_tap_action_share_photo">分享照片</string>
     <string name="photo_widget_configure_tap_action_set_wallpaper">设为壁纸</string>
     <string name="photo_widget_configure_tap_action_remove_photo">移除照片</string>
-    <string name="photo_widget_configure_tap_action_remove_photo_description">​仅从微件中排除，原图不会从手机中删除。</string>
+    <string name="photo_widget_configure_tap_action_remove_photo_description">​仅从小组件中排除，原图不会从手机中删除。</string>
     <string name="photo_widget_remove_action_feedback_positive">移除照片！</string>
     <string name="photo_widget_remove_action_feedback_negative">只剩余一张照片，无法移除</string>
     <string name="photo_widget_configure_tap_action_increase_brightness">自动提高亮度</string>
     <string name="photo_widget_configure_tap_action_view_original_photo">查看原始照片(没有裁剪和旋转)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">在查看器中切换照片时不会随机播放</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">在查看器中切换照片时不要更改当前照片</string>
-    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">与基于文件夹的小组件兼容，基于照片的小组件将使用\"在全屏查看照片\"。</string>
     <string name="photo_widget_configure_tap_action_gallery_description_warning">此操作使用图库应用打开当前照片。它将无法查看或导航到其他照片。</string>
     <string name="photo_widget_configure_tap_action_gallery_description_app_selection">你也可以选择使用哪个相册程序。</string>
     <string name="photo_widget_configure_tap_action_choose_app">选择软件</string>
     <string name="photo_widget_configure_tap_action_disable_tap">暂停计时器时禁用其他触摸区域</string>
     <string name="photo_widget_configure_tap_action_shared_preferences">所有使用此点击动作的区域都使用这些首选项。</string>
     <string name="photo_widget_configure_tap_action_shared_selected_app">所有使用此点击动作的区域都使用了所选应用程序。</string>
+    <string name="photo_widget_configure_gif_frame_interval">Frame interval</string>
+    <string name="photo_widget_configure_gif_frame_interval_description">Control the playing speed of the animated GIF. The smaller the value, the quicker the GIF.</string>
+    <string name="photo_widget_configure_gif_frame_interval_presets">Presets</string>
     <string name="photo_widget_configure_add_to_home">添加到桌面</string>
     <string name="photo_widget_configure_save_changes">保存更改</string>
     <string name="photo_widget_configure_widget_pinned">已添加! 检查你的桌面…</string>
@@ -272,11 +281,20 @@
     <!-- Viewer -->
     <string name="photo_widget_viewer_all_photos">所有照片</string>
     <!-- Cycling feedback -->
-    <string name="photo_widget_cycling_feedback_paused">计时器已暂停</string>
-    <string name="photo_widget_cycling_feedback_resumed">计时器已恢复</string>
+    <string name="photo_widget_cycling_feedback_paused">Widget paused</string>
+    <string name="photo_widget_cycling_feedback_resumed">Widget resumed</string>
     <!-- Folder -->
     <string name="photo_widget_app_folder_empty">您尚未添加应用到此文件夹。点击继续打开小组件编辑器。</string>
     <string name="photo_widget_app_folder_add_app">添加应用</string>
+    <!-- Keep-alive service -->
+    <string name="photo_widget_keep_alive_service_dialog_title">后台服务</string>
+    <string name="photo_widget_keep_alive_service_dialog_toggle">启动后台服务</string>
+    <string name="photo_widget_keep_alive_service_dialog_body">You can enable the background service to let Android know the app is important and that it shouldn\'t be stopped. Don\'t worry, the app only does what\'s needed to keep your widgets showing photos on schedule, without extra battery drain.&lt;br/&gt;&lt;br/&gt;Widgets on your home screen are managed by your app launcher, not directly by the app. Since the app rarely runs in the foreground, &lt;b&gt;the system may assume it\'s not important and stop it&lt;/b&gt;. When that happens, &lt;b&gt;widgets are stopped too, causing photos not to appear&lt;/b&gt;. This is especially common on &lt;b&gt;Samsung devices&lt;/b&gt;.</string>
+    <string name="photo_widget_keep_alive_service_required_for_gif">GIF widgets require the background service to play animations. You can find more about it in the settings tab. Would you like to enable it?</string>
+    <string name="photo_widget_keep_alive_service_gif_widgets_warning">There are active GIF widgets that depend on the background service. Disabling it may cause them to stop playing animations.</string>
+    <!-- Notifications -->
+    <string name="notification_channel_name_keep_alive">Background Service</string>
+    <string name="notification_channel_description_keep_alive">Keeps the app alive, even if backgrounded for a long time. Ensures that widgets can be updated as expected.</string>
     <!-- Common Actions -->
     <string name="photo_widget_action_yes">是</string>
     <string name="photo_widget_action_no">否</string>
@@ -294,6 +312,8 @@
     <string name="photo_widget_action_reset">重置</string>
     <!-- Hints -->
     <string name="hint_scroll_to_view_more">滚动查看更多</string>
+    <string name="warning_experimental">Experimental</string>
+    <string name="warning_gif_widget_battery_usage">GIF widgets may use more battery! The app must do constant work in order to play the animation. Work is paused when the screen is off to save resources, but the app cannot detect when your home screen is not visible while using other apps.</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Material Photo 桌面组件</string>
 </resources>
