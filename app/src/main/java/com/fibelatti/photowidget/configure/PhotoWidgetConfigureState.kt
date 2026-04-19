@@ -39,6 +39,10 @@ data class PhotoWidgetConfigureState(
         data object MissingBackupData : Message()
 
         data object CancelWidget : Message()
+
+        data object DraftSaved : Message()
+
+        data object KeepAliveRequired : Message()
     }
 }
 

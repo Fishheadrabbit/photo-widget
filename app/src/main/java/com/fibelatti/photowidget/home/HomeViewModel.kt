@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -67,7 +68,7 @@ class HomeViewModel @Inject constructor(
             photoWidgetStorage.getKnownWidgetIds(),
             photoWidgetStorage.getDraftWidgetIds(),
             updateSignal.receiveAsFlow(),
-        ) { ids: List<Int>, draftIds: List<Int>, _: Unit -> ids + draftIds }
+        ) { ids: List<Int>, draftIds: List<Int>, _: Unit -> ids + draftIds.filterNot(PhotoWidget::isDraftWidgetId) }
             .flatMapLatest { allIds: List<Int> ->
                 if (allIds.isEmpty()) return@flatMapLatest flowOf(emptyMap())
 
@@ -93,12 +94,13 @@ class HomeViewModel @Inject constructor(
                     widget.copy(status = status)
                 }.toList()
             }
+            .flowOn(Dispatchers.Default)
     }
 
     fun syncPhotos(appWidgetId: Int) {
         scope.launch {
             withContext(NonCancellable) {
-                if (PhotoWidgetSource.DIRECTORY == photoWidgetStorage.getWidgetSource(appWidgetId = appWidgetId)) {
+                if (photoWidgetStorage.getWidgetSource(appWidgetId = appWidgetId) == PhotoWidgetSource.DIRECTORY) {
                     photoWidgetStorage.syncWidgetPhotos(appWidgetId = appWidgetId)
                 }
             }

@@ -116,7 +116,7 @@ object TapActionPendingIntentFactory {
                 )
             }
 
-            is PhotoWidgetTapAction.ToggleCycling -> {
+            is PhotoWidgetTapAction.ToggleCycling, is PhotoWidgetTapAction.ToggleGifPlayback -> {
                 val intent = Intent(context, ToggleCyclingFeedbackActivity::class.java).apply {
                     setIdentifierCompat("$appWidgetId")
                     this.appWidgetId = appWidgetId
@@ -163,6 +163,26 @@ object TapActionPendingIntentFactory {
                 if (tapAction.url.isNullOrBlank()) return null
 
                 val intent = Intent(Intent.ACTION_VIEW, tapAction.url.toUri())
+                    .setIdentifierCompat("$appWidgetId")
+
+                return PendingIntent.getActivity(
+                    /* context = */ context,
+                    /* requestCode = */ appWidgetId,
+                    /* intent = */ intent,
+                    /* flags = */ PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+                )
+            }
+
+            is PhotoWidgetTapAction.FileShortcut -> {
+                if (tapAction.fileUri.isNullOrBlank()) return null
+
+                val fileUri: Uri = tapAction.fileUri.toUri()
+                val mimeType: String = context.contentResolver.getType(fileUri) ?: "*/*"
+
+                val intent = Intent(Intent.ACTION_VIEW)
+                    .setDataAndType(fileUri, mimeType)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .setIdentifierCompat("$appWidgetId")
 
                 return PendingIntent.getActivity(

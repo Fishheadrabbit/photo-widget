@@ -13,6 +13,7 @@ import com.fibelatti.photowidget.widget.data.PhotoWidgetStorage
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.time.Duration
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
@@ -43,13 +44,15 @@ class PhotoWidgetSyncWorker @AssistedInject constructor(
 
                 val source = photoWidgetStorage.getWidgetSource(appWidgetId = id)
 
-                if (PhotoWidgetSource.DIRECTORY == source) {
+                if (source == PhotoWidgetSource.DIRECTORY) {
                     coroutineScope.launch {
                         withContext(NonCancellable) {
                             photoWidgetStorage.syncWidgetPhotos(appWidgetId = id)
                         }
                     }
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "Error processing widget (id=$id). Will retry.")
                 shouldRetry = true

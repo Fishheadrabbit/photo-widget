@@ -56,12 +56,14 @@ import com.fibelatti.photowidget.model.PhotoWidgetColors
 import com.fibelatti.photowidget.model.PhotoWidgetShapeBuilder
 import com.fibelatti.photowidget.model.PhotoWidgetSource
 import com.fibelatti.photowidget.model.PhotoWidgetStatus
+import com.fibelatti.photowidget.model.canLock
+import com.fibelatti.photowidget.model.canSync
 import com.fibelatti.photowidget.model.isWidgetRemoved
 import com.fibelatti.photowidget.platform.letIf
 import com.fibelatti.photowidget.ui.ColoredShape
 import com.fibelatti.photowidget.ui.MyWidgetBadge
 import com.fibelatti.photowidget.ui.ShapedPhoto
-import com.fibelatti.ui.preview.AllPreviews
+import com.fibelatti.ui.preview.PreviewsAll
 import com.fibelatti.ui.text.AutoSizeText
 import com.fibelatti.ui.theme.ExtendedTheme
 
@@ -79,7 +81,7 @@ fun MyWidgetsScreen(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter,
     ) {
-        val options: List<PhotoWidgetSource?> = listOf(null, PhotoWidgetSource.PHOTOS, PhotoWidgetSource.DIRECTORY)
+        val options: List<PhotoWidgetSource?> = listOf(null) + PhotoWidgetSource.entries
         var selectedSource: PhotoWidgetSource? by remember { mutableStateOf(null) }
         val filteredWidgets: List<Pair<Int, PhotoWidget>> by remember(widgets) {
             derivedStateOf {
@@ -119,7 +121,7 @@ fun MyWidgetsScreen(
                                 .aspectRatio(1f)
                                 .clickable {
                                     when {
-                                        PhotoWidgetStatus.DRAFT == widget.status -> {
+                                        widget.status == PhotoWidgetStatus.DRAFT -> {
                                             onDraftWidgetClick(id)
                                         }
 
@@ -127,16 +129,16 @@ fun MyWidgetsScreen(
                                             onRemovedWidgetClick(id, widget.status)
                                         }
 
-                                        PhotoWidgetStatus.INVALID == widget.status -> {
+                                        widget.status == PhotoWidgetStatus.INVALID -> {
                                             onInvalidWidgetClick(id)
                                         }
 
                                         else -> {
                                             onCurrentWidgetClick(
                                                 /* appWidgetId = */ id,
-                                                /* canSync = */ widget.source == PhotoWidgetSource.DIRECTORY,
-                                                /* canLock = */ widget.photos.isNotEmpty(),
-                                                /* isLocked = */ PhotoWidgetStatus.LOCKED == widget.status,
+                                                /* canSync = */ widget.canSync,
+                                                /* canLock = */ widget.canLock,
+                                                /* isLocked = */ widget.status == PhotoWidgetStatus.LOCKED,
                                             )
                                         }
                                     }
@@ -159,7 +161,7 @@ fun MyWidgetsScreen(
                             )
 
                             when {
-                                PhotoWidgetStatus.DRAFT == widget.status -> {
+                                widget.status == PhotoWidgetStatus.DRAFT -> {
                                     MyWidgetBadge(
                                         text = stringResource(R.string.photo_widget_home_draft_label),
                                         backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -168,7 +170,7 @@ fun MyWidgetsScreen(
                                     )
                                 }
 
-                                PhotoWidgetStatus.LOCKED == widget.status -> {
+                                widget.status == PhotoWidgetStatus.LOCKED -> {
                                     MyWidgetBadge(
                                         text = stringResource(R.string.photo_widget_home_locked_label),
                                         backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -184,11 +186,11 @@ fun MyWidgetsScreen(
                                         contentColor = MaterialTheme.colorScheme.onErrorContainer,
                                         modifier = Modifier.padding(bottom = 8.dp),
                                         icon = painterResource(R.drawable.ic_trash_clock)
-                                            .takeIf { PhotoWidgetStatus.REMOVED == widget.status },
+                                            .takeIf { widget.status == PhotoWidgetStatus.REMOVED },
                                     )
                                 }
 
-                                PhotoWidgetStatus.INVALID == widget.status -> {
+                                widget.status == PhotoWidgetStatus.INVALID -> {
                                     MyWidgetBadge(
                                         text = stringResource(R.string.photo_widget_home_invalid_label),
                                         backgroundColor = Color(0xFFFF8A65),
@@ -259,7 +261,7 @@ fun MyWidgetsScreen(
 
 // region Previews
 @Composable
-@AllPreviews
+@PreviewsAll
 private fun MyWidgetsScreenPreview() {
     ExtendedTheme {
         val allShapeIds = PhotoWidgetShapeBuilder.shapes.map { it.id }
@@ -284,7 +286,7 @@ private fun MyWidgetsScreenPreview() {
                     shapeId = allShapeIds.random(),
                     colors = PhotoWidgetColors(opacity = opacities.random()),
                     status = status,
-                    deletionTimestamp = if (PhotoWidgetStatus.REMOVED == status) 1 else -1,
+                    deletionTimestamp = if (status == PhotoWidgetStatus.REMOVED) 1 else -1,
                 )
             },
             onCurrentWidgetClick = { _, _, _, _ -> },
@@ -296,7 +298,7 @@ private fun MyWidgetsScreenPreview() {
 }
 
 @Composable
-@AllPreviews
+@PreviewsAll
 private fun MyWidgetsScreenEmptyPreview() {
     ExtendedTheme {
         MyWidgetsScreen(

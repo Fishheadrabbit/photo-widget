@@ -85,7 +85,9 @@
     <string name="photo_widget_source_photos">Fotoğraflar</string>
     <string name="photo_widget_source_directory">Klasör</string>
     <string name="photo_widget_source_photos_description">Varsayılan galeri seçiciyi kullanarak bir veya daha fazla fotoğraf seçin.</string>
+    <string name="photo_widget_source_gif">GIF</string>
     <string name="photo_widget_source_directory_description">Senkronize etmek için bir veya daha fazla klasör seçin. Fotoğraflar otomatik olarak eklenir ve düzenli aralıklarla yenilenir.</string>
+    <string name="photo_widget_source_gif_description">Ana ekranınızda oynatmak için animasyonlu bir GIF seçin. Daha kısa ve basit GIF\'ler önerilir.</string>
     <!-- Aspect Ratio -->
     <string name="photo_widget_aspect_ratio_title">Biçim</string>
     <string name="photo_widget_aspect_ratio_shape">Şekiller</string>
@@ -115,7 +117,7 @@
     <string name="photo_widget_configure_menu_source">Kaynak</string>
     <string name="photo_widget_configure_source_selection_directory_empty">Bu widget henüz herhangi bir klasör ile senkronize edilmedi.</string>
     <string name="photo_widget_configure_source_selection_directory_non_empty">Bu widget şu klasörler ile senkronize edildi:</string>
-    <string name="photo_widget_configure_source_warning">Kaynağı değiştirmek, bu widget\'teki mevcut fotoğrafları değiştirecek</string>
+    <string name="photo_widget_configure_source_warning">Kaynağı değiştirmek, onayladığınızda bu widget\'teki tüm içerik verilerini silecektir. Bu değişiklik geri alınamaz ve fotoğrafları veya klasörleri yeniden seçmeniz gerekecektir.</string>
     <string name="photo_widget_configure_menu_crop">Kırp</string>
     <string name="photo_widget_configure_menu_remove">Kaldır</string>
     <string name="photo_widget_configure_menu_move_left">Sola taşı</string>
@@ -124,6 +126,8 @@
     <string name="photo_widget_configure_photos_excluded">Widget\'tan silindi</string>
     <string name="photo_widget_configure_pick_photo">Fotoğraf seç</string>
     <string name="photo_widget_configure_pick_folder">Klasörü seç</string>
+    <string name="photo_widget_configure_pick_gif">GIF seç</string>
+    <string name="photo_widget_configure_pick_gif_replace">Başka bir GIF seçmek mevcut olanı değiştirecek, devam edilsin mi?</string>
     <string name="photo_widget_configure_change_source">Kaynağı değiştir</string>
     <string name="photo_widget_configure_select_cycling_mode">Fotoğraf Zamanlayıcı</string>
     <string name="photo_widget_configure_cycling_mode_interval">Aralık</string>
@@ -203,8 +207,11 @@
     <string name="photo_widget_configure_tap_action_app_folder">Uygulama klasörü</string>
     <string name="photo_widget_configure_tap_action_app_folder_description">En fazla 12 uygulama seçin</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Bir bağlantı aç</string>
+    <string name="photo_widget_configure_tap_action_file_shortcut">Bir dosya aç</string>
+    <string name="photo_widget_configure_tap_action_choose_file">Dosya seç</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling">Zamanlayıcıyı etkinleştir/devre dışı bırak</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling_description">Fotoğraf zamanlayıcısını duraklatmak için dokunun. Devam ettirmek için tekrar dokunun. Bu işlem, widget kilitliyken devre dışı olacaktır.</string>
+    <string name="photo_widget_configure_tap_action_toggle_gif_playback">GIF oynatmayı etkinleştir/devre dışı bırak</string>
     <string name="photo_widget_configure_tap_action_share_photo">Fotoğrafı paylaş</string>
     <string name="photo_widget_configure_tap_action_set_wallpaper">Duvar kağıdı olarak ayarla</string>
     <string name="photo_widget_configure_tap_action_remove_photo">Fotoğrafı kaldır</string>
@@ -215,13 +222,15 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">Orijinal fotoğrafı görüntüle (kırpma veya döndürme yok)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">Görüntüleyicide fotoğraflar değiştirilirken karıştırma</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">Görüntüleyicide fotoğraflar değiştirilirken geçerli fotoğrafı değiştirme</string>
-    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">Klasör tabanlı widget\'larla uyumlu olan fotoğraf tabanlı widget\'lar bunun yerine \"Fotoğrafı tam ekranda görüntüle\" seçeneğini kullanacaktır.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_warning">Bu eylem, mevcut fotoğrafı galeri uygulamasıyla açar. Diğer fotoğrafları görüntülemek veya onlara geçmek mümkün olmayacaktır.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_app_selection">Hangi galeri uygulamasını kullanacağınızı da seçebilirsiniz.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Uygulama seç</string>
     <string name="photo_widget_configure_tap_action_disable_tap">Zamanlayıcı duraklatıldığında diğer dokunma alanlarını devre dışı bırak</string>
     <string name="photo_widget_configure_tap_action_shared_preferences">Bu tercihler, bu dokunma eylemini kullanan tüm alanlar tarafından kullanılır.</string>
     <string name="photo_widget_configure_tap_action_shared_selected_app">Seçilen uygulama, bu dokunma eylemini kullanan tüm alanlar tarafından kullanılır.</string>
+    <string name="photo_widget_configure_gif_frame_interval">Kare aralığı</string>
+    <string name="photo_widget_configure_gif_frame_interval_description">Animasyonlu GIF\'in oynatma hızını kontrol edin. Değer ne kadar küçükse GIF o kadar hızlı oynar.</string>
+    <string name="photo_widget_configure_gif_frame_interval_presets">Ön ayarlar</string>
     <string name="photo_widget_configure_add_to_home">Ana ekrana ekle</string>
     <string name="photo_widget_configure_save_changes">Değişiklikleri kaydet</string>
     <string name="photo_widget_configure_widget_pinned">Widget eklendi! Ana ekranınızı kontrol edin…</string>
@@ -278,11 +287,20 @@
     <!-- Viewer -->
     <string name="photo_widget_viewer_all_photos">Tüm fotoğraflar</string>
     <!-- Cycling feedback -->
-    <string name="photo_widget_cycling_feedback_paused">Zamanlayıcı duraklatıldı</string>
-    <string name="photo_widget_cycling_feedback_resumed">Zamanlayıcı devam etti</string>
+    <string name="photo_widget_cycling_feedback_paused">Widget duraklatıldı</string>
+    <string name="photo_widget_cycling_feedback_resumed">Widget devam etti</string>
     <!-- Folder -->
     <string name="photo_widget_app_folder_empty">Bu klasöre henüz uygulama eklemediniz. Widget düzenleyicisini açmak için Devam\'a dokunun.</string>
     <string name="photo_widget_app_folder_add_app">Uygulama ekle</string>
+    <!-- Keep-alive service -->
+    <string name="photo_widget_keep_alive_service_dialog_title">Arka plan hizmeti</string>
+    <string name="photo_widget_keep_alive_service_dialog_toggle">Arka plan hizmetini etkinleştir</string>
+    <string name="photo_widget_keep_alive_service_dialog_body">Arka plan hizmetini etkinleştirerek Android\'e uygulamanın önemli olduğunu ve durdurulmaması gerektiğini bildirebilirsiniz. Merak etmeyin, uygulama yalnızca widget\'larınızın fotoğrafları zamanlamaya göre göstermesini sağlamak için gerekeni yapar ve ekstra pil tüketimi olmaz.&lt;br/&gt;&lt;br/&gt;Ana ekranınızdaki widget\'lar, doğrudan uygulama tarafından değil, uygulama başlatıcınız tarafından yönetilir. Uygulama ön planda nadiren çalıştığından, &lt;b&gt;sistem uygulamanın önemsiz olduğunu varsayarak durdurabilir&lt;/b&gt;. Bu olduğunda, &lt;b&gt;widget\'lar da durur ve fotoğraflar görünmez hale gelir&lt;/b&gt;. Bu durum özellikle &lt;b&gt;Samsung cihazlarda&lt;/b&gt; yaygındır.</string>
+    <string name="photo_widget_keep_alive_service_required_for_gif">GIF widget\'ları animasyon oynatmak için arka plan hizmetine ihtiyaç duyar. Bu konuda daha fazla bilgiyi ayarlar sekmesinde bulabilirsiniz. Etkinleştirmek ister misiniz?</string>
+    <string name="photo_widget_keep_alive_service_gif_widgets_warning">Arka plan hizmetine bağlı aktif GIF widget\'ları var. Hizmeti devre dışı bırakmak animasyonların durmasına neden olabilir.</string>
+    <!-- Notifications -->
+    <string name="notification_channel_name_keep_alive">Arka plan hizmeti</string>
+    <string name="notification_channel_description_keep_alive">Arka planda uzun süre olsa bile uygulamayı aktif tutar. Widget\'ların beklendiği gibi güncellenebilmesini sağlar.</string>
     <!-- Common Actions -->
     <string name="photo_widget_action_yes">Evet</string>
     <string name="photo_widget_action_no">Hayır</string>
@@ -300,6 +318,8 @@
     <string name="photo_widget_action_reset">Sıfırla</string>
     <!-- Hints -->
     <string name="hint_scroll_to_view_more">Daha fazlasını görmek için kaydırın</string>
+    <string name="warning_experimental">Deneysel</string>
+    <string name="warning_gif_widget_battery_usage">GIF widget\'ları daha fazla pil kullanabilir! Animasyonu oynatmak için uygulamanın sürekli çalışması gerekir. Kaynakları korumak amacıyla ekran kapalıyken çalışma duraklatılır, ancak uygulama diğer uygulamaları kullanırken ana ekranınızın görünür olmadığını tespit edemez.</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Material Photo ana ekran widget\'ı</string>
 </resources>

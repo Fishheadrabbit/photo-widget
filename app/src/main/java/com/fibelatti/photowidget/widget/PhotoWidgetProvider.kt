@@ -20,10 +20,12 @@ import com.fibelatti.photowidget.di.PhotoWidgetEntryPoint
 import com.fibelatti.photowidget.di.entryPoint
 import com.fibelatti.photowidget.model.PhotoWidget
 import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
+import com.fibelatti.photowidget.model.PhotoWidgetSource
 import com.fibelatti.photowidget.model.PhotoWidgetTapAction
 import com.fibelatti.photowidget.model.PhotoWidgetText
 import com.fibelatti.photowidget.model.tapActionDisableTap
 import com.fibelatti.photowidget.model.textToBitmap
+import com.fibelatti.photowidget.platform.KeepAliveService
 import com.fibelatti.photowidget.widget.data.PhotoWidgetStorage
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -102,6 +104,7 @@ class PhotoWidgetProvider : AppWidgetProvider() {
             for (appWidgetId in appWidgetIds) {
                 storage.saveWidgetDeletionTimestamp(appWidgetId = appWidgetId, timestamp = System.currentTimeMillis())
                 alarmManager.cancel(appWidgetId = appWidgetId)
+                KeepAliveService.sendTearDownGifBroadcast(context = context, appWidgetId = appWidgetId)
             }
         }
     }
@@ -174,6 +177,10 @@ class PhotoWidgetProvider : AppWidgetProvider() {
 
                 try {
                     appWidgetManager.updateAppWidget(appWidgetId, views)
+
+                    if (photoWidget.source == PhotoWidgetSource.GIF) {
+                        KeepAliveService.sendSetupGifBroadcast(context = context, appWidgetId = appWidgetId)
+                    }
                 } catch (ex: IllegalArgumentException) {
                     if (!recoveryMode) {
                         update(context = context, appWidgetId = appWidgetId, recoveryMode = true)
@@ -223,7 +230,7 @@ class PhotoWidgetProvider : AppWidgetProvider() {
                 val visibleImageViewId: Int
                 val hiddenImageViewId: Int
 
-                if (PhotoWidgetAspectRatio.FILL_WIDGET == photoWidget.aspectRatio) {
+                if (photoWidget.aspectRatio == PhotoWidgetAspectRatio.FILL_WIDGET) {
                     visibleImageViewId = R.id.iv_widget_fill
                     hiddenImageViewId = R.id.iv_widget
                 } else {

@@ -22,7 +22,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,13 +34,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.getSystemService
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.fibelatti.photowidget.R
 import com.fibelatti.photowidget.platform.appSettingsIntent
 import com.fibelatti.photowidget.platform.disableBatteryOptimizationIntent
 import com.fibelatti.ui.foundation.AppBottomSheet
 import com.fibelatti.ui.foundation.AppSheetState
 import com.fibelatti.ui.foundation.TextWithLinks
-import com.fibelatti.ui.preview.AllPreviews
+import com.fibelatti.ui.foundation.hideBottomSheet
+import com.fibelatti.ui.preview.PreviewsAll
 import com.fibelatti.ui.theme.ExtendedTheme
 
 @Composable
@@ -102,14 +106,27 @@ fun BackgroundRestrictionWarningDialog(
 @Composable
 fun BackgroundRestrictionBottomSheet(
     sheetState: AppSheetState,
+    onDismissRequest: () -> Unit = {},
 ) {
     val localContext: Context = LocalContext.current
     val powerManager: PowerManager? = remember { localContext.getSystemService<PowerManager>() }
     val isBatteryUsageRestricted: Boolean = powerManager
         ?.isIgnoringBatteryOptimizations(localContext.packageName) != true
 
+    val currentOnDismissRequest by rememberUpdatedState(onDismissRequest)
+
+    LifecycleResumeEffect(localContext) {
+        if (powerManager?.isIgnoringBatteryOptimizations(localContext.packageName) == true) {
+            currentOnDismissRequest()
+            sheetState.hideBottomSheet()
+        }
+
+        onPauseOrDispose { /* Do nothing */ }
+    }
+
     AppBottomSheet(
         sheetState = sheetState,
+        onDismissRequest = onDismissRequest,
     ) {
         BackgroundPickerContent(
             isBatteryUsageRestricted = isBatteryUsageRestricted,
@@ -192,7 +209,7 @@ private fun BackgroundPickerContent(
 }
 
 @Composable
-@AllPreviews
+@PreviewsAll
 private fun BackgroundPickerContentPreviews() {
     ExtendedTheme {
         BackgroundPickerContent(

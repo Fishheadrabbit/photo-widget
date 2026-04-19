@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import com.fibelatti.photowidget.model.GifFrames
 import com.fibelatti.photowidget.model.LocalPhoto
 import com.fibelatti.photowidget.model.PhotoWidgetSource
 import com.fibelatti.photowidget.platform.ImageFormat
@@ -23,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import pl.droidsonroids.gif.GifDrawable
 import timber.log.Timber
 
 class PhotoWidgetInternalFileStorage @Inject constructor(
@@ -98,6 +100,61 @@ class PhotoWidgetInternalFileStorage @Inject constructor(
         }
     }
 
+    suspend fun newWidgetPhotosFromGif(directoryName: String, source: Uri): GifFrames {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                Timber.d("New widget photos from GIF: $source (directoryName=$directoryName)")
+
+                val widgetDir = getWidgetDir(directoryName = directoryName)
+                val originalPhotosDir: File = File("$widgetDir/original").apply { mkdirs() }
+
+                val gifDrawable: GifDrawable = contentResolver.openAssetFileDescriptor(source, "r")
+                    ?.let(::GifDrawable)
+                    ?: return@withContext GifFrames.EMPTY
+
+                val frameCount: Int = gifDrawable.numberOfFrames
+                val duration: Long = gifDrawable.duration.toLong()
+                Timber.d("GIF has $frameCount frames, over $duration milliseconds")
+
+                val photos = mutableListOf<LocalPhoto>()
+
+                for (i in 0 until frameCount) {
+                    val frameBitmap = gifDrawable.seekToFrameAndGet(i)
+                    val newPhotoName = "${UUID.randomUUID()}.png"
+
+                    val originalPhoto = File("$originalPhotosDir/$newPhotoName")
+                    val croppedPhoto = File("$widgetDir/$newPhotoName")
+
+                    listOf(originalPhoto, croppedPhoto).forEach { file ->
+                        file.runWithFileOutputStream { fos ->
+                            frameBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                        }
+                    }
+
+                    if (originalPhoto.exists() && croppedPhoto.exists()) {
+                        photos.add(
+                            LocalPhoto(
+                                photoId = newPhotoName,
+                                croppedPhotoPath = croppedPhoto.path,
+                                originalPhotoPath = originalPhoto.path,
+                            ),
+                        )
+                    }
+                }
+
+                gifDrawable.recycle()
+
+                return@withContext GifFrames(
+                    frames = photos,
+                    interval = (duration / frameCount).coerceIn(GifFrames.MIN_INTERVAL_MS, GifFrames.MAX_INTERVAL_MS),
+                )
+            }.getOrElse { throwable ->
+                Timber.e(throwable, "Failed to extract GIF frames")
+                GifFrames.EMPTY
+            }
+        }
+    }
+
     suspend fun getCropSources(
         directoryName: String,
         localPhoto: LocalPhoto,
@@ -161,16 +218,23 @@ class PhotoWidgetInternalFileStorage @Inject constructor(
             val originalPhotoNames = originalPhotosDir.list().orEmpty().toSet()
 
             val fileNameFilter = FilenameFilter { _, name ->
-                name != "original" && (name in originalPhotoNames || PhotoWidgetSource.DIRECTORY == source)
+                name != "original" && (name in originalPhotoNames || source == PhotoWidgetSource.DIRECTORY)
             }
 
             widgetDir.list(fileNameFilter)
                 .orEmpty()
                 .map { fileName ->
+                    val croppedPhotoPath = "$widgetDir/$fileName"
+
                     LocalPhoto(
                         photoId = fileName,
-                        croppedPhotoPath = "$widgetDir/$fileName",
+                        croppedPhotoPath = croppedPhotoPath,
                         originalPhotoPath = "$originalPhotosDir/$fileName",
+                        launcherUri = if (source == PhotoWidgetSource.GIF) {
+                            uriPermissionGrantor(path = croppedPhotoPath)
+                        } else {
+                            null
+                        },
                     )
                 }
         }

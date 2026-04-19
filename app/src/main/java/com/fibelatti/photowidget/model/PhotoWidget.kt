@@ -23,6 +23,7 @@ data class PhotoWidget(
     val verticalOffset: Int = 0,
     val padding: Int = 0,
     val text: PhotoWidgetText = PhotoWidgetText.None,
+    val gifInterval: Long = 0,
     val status: PhotoWidgetStatus = PhotoWidgetStatus.ACTIVE,
     val deletionTimestamp: Long = -1,
     val removedPhotos: List<LocalPhoto> = emptyList(),
@@ -77,10 +78,16 @@ val PhotoWidget.photoCycleEnabled: Boolean
     get() = photos.size > 1 && cycleMode !is PhotoWidgetCycleMode.Disabled
 
 val PhotoWidget.canSort: Boolean
-    get() = PhotoWidgetSource.PHOTOS == source && photos.size > 1 && !shuffle
+    get() = source == PhotoWidgetSource.PHOTOS && photos.size > 1 && !shuffle
 
 val PhotoWidget.canShuffle: Boolean
-    get() = photos.size > 1
+    get() = photos.size > 1 && source != PhotoWidgetSource.GIF
+
+val PhotoWidget.canSync: Boolean
+    get() = source == PhotoWidgetSource.DIRECTORY
+
+val PhotoWidget.canLock: Boolean
+    get() = photos.isNotEmpty() && source != PhotoWidgetSource.GIF
 
 val PhotoWidget.tapActionIncreaseBrightness: Boolean
     get() = tapActions.increaseBrightness

@@ -10,6 +10,7 @@ data class LocalPhoto(
     val croppedPhotoPath: String? = null,
     val originalPhotoPath: String? = null,
     val externalUri: Uri? = null,
+    val launcherUri: Uri? = null,
     val cropping: Boolean = false,
     val timestamp: Long = System.currentTimeMillis(),
 ) : Parcelable

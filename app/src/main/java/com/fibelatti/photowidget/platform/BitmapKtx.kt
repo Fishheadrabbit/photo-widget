@@ -202,5 +202,5 @@ private fun createCenteredRectWithAspectRatio(
  * Certain shapes can throw an exception when trying to draw something larger than this.
  */
 private fun Int.coerceForAspectRatio(aspectRatio: PhotoWidgetAspectRatio): Int {
-    return if (PhotoWidgetAspectRatio.SQUARE != aspectRatio) this else coerceAtMost(500)
+    return if (aspectRatio != PhotoWidgetAspectRatio.SQUARE) this else coerceAtMost(500)
 }

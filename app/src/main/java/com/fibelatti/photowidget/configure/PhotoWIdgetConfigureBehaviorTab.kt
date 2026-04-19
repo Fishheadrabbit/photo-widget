@@ -3,9 +3,7 @@ package com.fibelatti.photowidget.configure
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
@@ -29,9 +27,10 @@ import com.fibelatti.photowidget.platform.isBackgroundRestricted
 import com.fibelatti.photowidget.preferences.BooleanDefault
 import com.fibelatti.photowidget.preferences.PickerDefault
 import com.fibelatti.ui.foundation.AppSheetState
+import com.fibelatti.ui.foundation.Shapes
 import com.fibelatti.ui.foundation.rememberAppSheetState
 import com.fibelatti.ui.foundation.showBottomSheet
-import com.fibelatti.ui.preview.AllPreviews
+import com.fibelatti.ui.preview.PreviewsAll
 import com.fibelatti.ui.theme.ExtendedTheme
 import java.util.concurrent.TimeUnit
 
@@ -47,6 +46,7 @@ fun PhotoWidgetConfigureBehaviorTab(
 
     val backgroundRestrictionSheetState: AppSheetState = rememberAppSheetState()
     val cycleModePickerSheetState: AppSheetState = rememberAppSheetState()
+    val gifIntervalPickerSheetState: AppSheetState = rememberAppSheetState()
     val directoryPickerSheetState: AppSheetState = rememberAppSheetState()
 
     val localContext: Context = LocalContext.current
@@ -60,6 +60,7 @@ fun PhotoWidgetConfigureBehaviorTab(
                 cycleModePickerSheetState.showBottomSheet()
             }
         },
+        onGifIntervalPickerClick = gifIntervalPickerSheetState::showBottomSheet,
         onShuffleChange = viewModel::saveShuffle,
         onSortClick = directoryPickerSheetState::showBottomSheet,
         onTapActionPickerClick = { onNav(PhotoWidgetConfigureNav.TapActionPicker) },
@@ -89,6 +90,12 @@ fun PhotoWidgetConfigureBehaviorTab(
         onApplyClick = viewModel::cycleModeSelected,
     )
 
+    PhotoWidgetGifIntervalBottomSheet(
+        sheetState = gifIntervalPickerSheetState,
+        gifInterval = state.photoWidget.gifInterval,
+        onApplyClick = viewModel::saveGifFrameInterval,
+    )
+
     DirectorySortingBottomSheet(
         sheetState = directoryPickerSheetState,
         onItemClick = viewModel::saveSorting,
@@ -99,6 +106,7 @@ fun PhotoWidgetConfigureBehaviorTab(
 fun PhotoWidgetConfigureBehaviorTab(
     photoWidget: PhotoWidget,
     onCycleModePickerClick: () -> Unit,
+    onGifIntervalPickerClick: () -> Unit,
     onShuffleChange: (Boolean) -> Unit,
     onSortClick: () -> Unit,
     onTapActionPickerClick: () -> Unit,
@@ -109,7 +117,27 @@ fun PhotoWidgetConfigureBehaviorTab(
             .fillMaxSize()
             .padding(horizontal = 16.dp),
     ) {
-        if (photoWidget.photos.size > 1) {
+        val showTimerPicker: Boolean = photoWidget.photos.size > 1 && photoWidget.source != PhotoWidgetSource.GIF
+        val showGifIntervalPicker: Boolean = photoWidget.photos.size > 1 && photoWidget.source == PhotoWidgetSource.GIF
+        val showShufflePicker: Boolean = photoWidget.canShuffle
+        val showSortPicker: Boolean = photoWidget.source == PhotoWidgetSource.DIRECTORY && !photoWidget.shuffle
+
+        PickerDefault(
+            title = stringResource(id = R.string.widget_defaults_tap_action),
+            currentValue = buildString {
+                appendLine(stringResource(id = photoWidget.tapActions.left.label))
+                appendLine(stringResource(id = photoWidget.tapActions.center.label))
+                appendLine(stringResource(id = photoWidget.tapActions.right.label))
+            },
+            onClick = onTapActionPickerClick,
+            shape = if (showTimerPicker || showGifIntervalPicker || showShufflePicker || showSortPicker) {
+                Shapes.TopShape
+            } else {
+                Shapes.StandaloneShape
+            },
+        )
+
+        if (showTimerPicker) {
             PickerDefault(
                 title = stringResource(id = R.string.widget_defaults_cycling),
                 currentValue = when (photoWidget.cycleMode) {
@@ -140,46 +168,45 @@ fun PhotoWidgetConfigureBehaviorTab(
                     }
                 },
                 onClick = onCycleModePickerClick,
+                modifier = Modifier.padding(top = 2.dp),
+                shape = if (showShufflePicker || showSortPicker) Shapes.MiddleShape else Shapes.BottomShape,
             )
         }
 
-        if (photoWidget.canShuffle) {
-            Spacer(modifier = Modifier.height(12.dp))
+        if (showGifIntervalPicker) {
+            PickerDefault(
+                title = stringResource(R.string.photo_widget_configure_gif_frame_interval),
+                currentValue = "${photoWidget.gifInterval} ms",
+                onClick = onGifIntervalPickerClick,
+                modifier = Modifier.padding(top = 2.dp),
+                shape = Shapes.BottomShape,
+            )
+        }
 
+        if (showShufflePicker) {
             BooleanDefault(
                 title = stringResource(R.string.widget_defaults_shuffle),
                 currentValue = photoWidget.shuffle,
                 onCheckedChange = onShuffleChange,
+                modifier = Modifier.padding(top = 2.dp),
+                shape = if (showSortPicker) Shapes.MiddleShape else Shapes.BottomShape,
             )
         }
 
-        AnimatedVisibility(
-            visible = PhotoWidgetSource.DIRECTORY == photoWidget.source && !photoWidget.shuffle,
-        ) {
+        AnimatedVisibility(visible = showSortPicker) {
             PickerDefault(
                 title = stringResource(R.string.photo_widget_directory_sort_title),
                 currentValue = stringResource(id = photoWidget.directorySorting.label),
                 onClick = onSortClick,
-                modifier = Modifier.padding(top = 12.dp),
+                modifier = Modifier.padding(top = 2.dp),
+                shape = Shapes.BottomShape,
             )
         }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        PickerDefault(
-            title = stringResource(id = R.string.widget_defaults_tap_action),
-            currentValue = buildString {
-                appendLine(stringResource(id = photoWidget.tapActions.left.label))
-                appendLine(stringResource(id = photoWidget.tapActions.center.label))
-                appendLine(stringResource(id = photoWidget.tapActions.right.label))
-            },
-            onClick = onTapActionPickerClick,
-        )
     }
 }
 
 // region Previews
-@AllPreviews
+@PreviewsAll
 @Composable
 private fun PhotoWidgetConfigureBehaviorTabSinglePhotoPreview() {
     ExtendedTheme {
@@ -188,6 +215,7 @@ private fun PhotoWidgetConfigureBehaviorTabSinglePhotoPreview() {
                 photos = List(1) { index -> LocalPhoto(photoId = "photo-$index") },
             ),
             onCycleModePickerClick = {},
+            onGifIntervalPickerClick = {},
             onShuffleChange = {},
             onSortClick = {},
             onTapActionPickerClick = {},
@@ -196,7 +224,7 @@ private fun PhotoWidgetConfigureBehaviorTabSinglePhotoPreview() {
     }
 }
 
-@AllPreviews
+@PreviewsAll
 @Composable
 private fun PhotoWidgetConfigureBehaviorTabMultiPhotoPreview() {
     ExtendedTheme {
@@ -206,6 +234,7 @@ private fun PhotoWidgetConfigureBehaviorTabMultiPhotoPreview() {
                 source = PhotoWidgetSource.DIRECTORY,
             ),
             onCycleModePickerClick = {},
+            onGifIntervalPickerClick = {},
             onShuffleChange = {},
             onSortClick = {},
             onTapActionPickerClick = {},

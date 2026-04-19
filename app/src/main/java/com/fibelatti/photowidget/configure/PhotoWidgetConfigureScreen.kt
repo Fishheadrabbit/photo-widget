@@ -53,8 +53,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -86,9 +89,12 @@ import com.fibelatti.photowidget.ui.LoadingIndicator
 import com.fibelatti.photowidget.ui.LocalSamplePhoto
 import com.fibelatti.photowidget.ui.WidgetPositionViewer
 import com.fibelatti.ui.foundation.fadingEdges
-import com.fibelatti.ui.preview.AllPreviews
+import com.fibelatti.ui.preview.PreviewsAll
 import com.fibelatti.ui.theme.ExtendedTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 
+@Suppress("ktlint:compose:vm-forwarding-check")
 @Composable
 fun PhotoWidgetConfigureScreen(
     viewModel: PhotoWidgetConfigureViewModel,
@@ -123,6 +129,7 @@ fun PhotoWidgetConfigureScreen(
                 PhotoWidgetTapActionPicker(
                     onNavClick = configureBackStack::pop,
                     currentTapActions = state.photoWidget.tapActions,
+                    source = state.photoWidget.source,
                     onApplyClick = { actions ->
                         viewModel.tapActionSelected(actions)
                         configureBackStack.pop()
@@ -137,6 +144,7 @@ private fun NavBackStack<*>.pop() {
     if (size > 1) removeLastOrNull()
 }
 
+@Suppress("ktlint:compose:vm-forwarding-check")
 @Composable
 private fun PhotoWidgetConfigureHomeScreen(
     viewModel: PhotoWidgetConfigureViewModel,
@@ -227,6 +235,7 @@ fun PhotoWidgetConfigureScreen(
         PhotoWidgetConfigureContent(
             photoWidget = photoWidget,
             selectedPhoto = selectedPhoto,
+            isProcessing = isProcessing,
             onNavClick = onNavClick,
             onMoveLeftClick = onMoveLeftClick,
             onMoveRightClick = onMoveRightClick,
@@ -264,6 +273,7 @@ fun PhotoWidgetConfigureScreen(
 private fun PhotoWidgetConfigureContent(
     photoWidget: PhotoWidget,
     selectedPhoto: LocalPhoto?,
+    isProcessing: Boolean,
     onNavClick: () -> Unit,
     onCropClick: (LocalPhoto) -> Unit,
     onRemoveClick: (LocalPhoto) -> Unit,
@@ -287,6 +297,7 @@ private fun PhotoWidgetConfigureContent(
             PhotoWidgetViewer(
                 photoWidget = photoWidget,
                 selectedPhoto = selectedPhoto,
+                isProcessing = isProcessing,
                 onNavClick = onNavClick,
                 onCropClick = onCropClick,
                 onRemoveClick = onRemoveClick,
@@ -317,6 +328,7 @@ private fun PhotoWidgetConfigureContent(
             PhotoWidgetViewer(
                 photoWidget = photoWidget,
                 selectedPhoto = selectedPhoto,
+                isProcessing = isProcessing,
                 onNavClick = onNavClick,
                 onCropClick = onCropClick,
                 onRemoveClick = onRemoveClick,
@@ -348,6 +360,7 @@ private fun PhotoWidgetConfigureContent(
 private fun PhotoWidgetViewer(
     photoWidget: PhotoWidget,
     selectedPhoto: LocalPhoto?,
+    isProcessing: Boolean,
     onNavClick: () -> Unit,
     onCropClick: (LocalPhoto) -> Unit,
     onRemoveClick: (LocalPhoto) -> Unit,
@@ -380,6 +393,19 @@ private fun PhotoWidgetViewer(
                 .blur(10.dp),
         )
 
+        var current: LocalPhoto? by remember(selectedPhoto) { mutableStateOf(selectedPhoto) }
+        if (photoWidget.source == PhotoWidgetSource.GIF) {
+            LaunchedEffect(photoWidget.photos, photoWidget.gifInterval, selectedPhoto, isProcessing) {
+                if (photoWidget.photos.isEmpty() || isProcessing) return@LaunchedEffect
+
+                for (photo in photoWidget.photos) {
+                    delay(timeMillis = photoWidget.gifInterval)
+                    ensureActive()
+                    current = photo
+                }
+            }
+        }
+
         if (selectedPhoto != null) {
             Column(
                 modifier = Modifier
@@ -389,7 +415,7 @@ private fun PhotoWidgetViewer(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WidgetPositionViewer(
-                    photoWidget = photoWidget.copy(currentPhoto = selectedPhoto),
+                    photoWidget = photoWidget.copy(currentPhoto = current),
                     modifier = Modifier
                         .weight(1f)
                         .aspectRatio(.75f)
@@ -397,15 +423,17 @@ private fun PhotoWidgetViewer(
                     areaColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
 
-                EditingControls(
-                    onCropClick = { onCropClick(selectedPhoto) },
-                    onRemoveClick = { onRemoveClick(selectedPhoto) },
-                    showMoveControls = photoWidget.canSort,
-                    moveLeftEnabled = photoWidget.photos.indexOf(selectedPhoto) != 0,
-                    onMoveLeftClick = { onMoveLeftClick(selectedPhoto) },
-                    moveRightEnabled = photoWidget.photos.indexOf(selectedPhoto) < photoWidget.photos.size - 1,
-                    onMoveRightClick = { onMoveRightClick(selectedPhoto) },
-                )
+                if (photoWidget.source != PhotoWidgetSource.GIF) {
+                    EditingControls(
+                        onCropClick = { onCropClick(selectedPhoto) },
+                        onRemoveClick = { onRemoveClick(selectedPhoto) },
+                        showMoveControls = photoWidget.canSort,
+                        moveLeftEnabled = photoWidget.photos.indexOf(selectedPhoto) != 0,
+                        onMoveLeftClick = { onMoveLeftClick(selectedPhoto) },
+                        moveRightEnabled = photoWidget.photos.indexOf(selectedPhoto) < photoWidget.photos.size - 1,
+                        onMoveRightClick = { onMoveRightClick(selectedPhoto) },
+                    )
+                }
             }
         }
 
@@ -552,7 +580,7 @@ private fun PhotoWidgetEditor(
 
 // region Previews
 @Composable
-@AllPreviews
+@PreviewsAll
 private fun PhotoWidgetConfigureScreenPreview() {
     ExtendedTheme {
         PhotoWidgetConfigureScreen(
@@ -577,7 +605,7 @@ private fun PhotoWidgetConfigureScreenPreview() {
 }
 
 @Composable
-@AllPreviews
+@PreviewsAll
 private fun PhotoWidgetConfigureScreenTallPreview() {
     ExtendedTheme {
         PhotoWidgetConfigureScreen(

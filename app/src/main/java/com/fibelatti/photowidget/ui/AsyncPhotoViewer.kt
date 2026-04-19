@@ -5,7 +5,6 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -20,9 +19,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +39,6 @@ import com.fibelatti.photowidget.R
 import com.fibelatti.photowidget.di.PhotoWidgetEntryPoint
 import com.fibelatti.photowidget.di.entryPoint
 import com.fibelatti.photowidget.platform.PhotoDecoder
-import com.fibelatti.photowidget.platform.RememberedEffect
 import com.fibelatti.photowidget.platform.getMaxBitmapWidgetDimension
 import com.fibelatti.ui.foundation.dpToPx
 import kotlin.math.roundToInt
@@ -62,17 +62,10 @@ fun AsyncPhotoViewer(
         val localContext: Context = LocalContext.current
         val localResources: Resources = LocalResources.current
 
-        var photoBitmap: Bitmap? by remember {
-            mutableStateOf(
-                if (localInspectionMode) {
-                    BitmapFactory.decodeResource(localResources, R.drawable.widget_preview)
-                } else {
-                    null
-                },
-            )
-        }
-        val transformedBitmap: ImageBitmap? = remember(*dataKey.plus(photoBitmap)) {
-            photoBitmap?.let(transformer)?.asImageBitmap()
+        var photoBitmap: Bitmap? by remember { mutableStateOf(null) }
+        val bitmapTransformer: (Bitmap) -> Bitmap by rememberUpdatedState(transformer)
+        val transformedBitmap: ImageBitmap? by remember(*dataKey) {
+            derivedStateOf { photoBitmap?.let(bitmapTransformer)?.asImageBitmap() }
         }
 
         var showLoading: Boolean by remember { mutableStateOf(false) }
@@ -82,106 +75,110 @@ fun AsyncPhotoViewer(
             lazy { entryPoint<PhotoWidgetEntryPoint>(localContext).photoDecoder() }
         }
 
-        val largestSize: Int = max(maxWidth, maxHeight).dpToPx().roundToInt()
+        val maxViewportDimension: Int = max(maxWidth, maxHeight).dpToPx().roundToInt()
         val maxWidgetDimension: Int = localContext.getMaxBitmapWidgetDimension(
             coerceMaxMemory = constraintMode == AsyncPhotoViewer.BitmapSizeConstraintMode.MEMORY,
-        ).coerceAtMost(largestSize)
+        ).coerceAtMost(maxViewportDimension)
+        val maxDimension: Int = when (constraintMode) {
+            AsyncPhotoViewer.BitmapSizeConstraintMode.UNCONSTRAINED -> maxViewportDimension
+            else -> maxWidgetDimension
+        }
 
-        val viewerState: AsyncPhotoViewerState? = remember(showLoading, showError, transformedBitmap) {
+        val viewerState: AsyncPhotoViewerState? by remember {
+            derivedStateOf {
+                when {
+                    showLoading -> AsyncPhotoViewerState.Loading
+                    showError -> AsyncPhotoViewerState.Error
+                    else -> transformedBitmap?.let(AsyncPhotoViewerState::Success)
+                }
+            }
+        }
+
+        LaunchedEffect(data, maxDimension, isLoading) {
             when {
-                showLoading -> AsyncPhotoViewerState.Loading
-                showError -> AsyncPhotoViewerState.Error
-                transformedBitmap != null -> AsyncPhotoViewerState.Success(transformedBitmap)
-                else -> null
+                localInspectionMode -> {
+                    photoBitmap = BitmapFactory.decodeResource(localResources, R.drawable.widget_preview)
+                }
+
+                data != null -> {
+                    photoBitmap = decoder.decode(data = data, maxDimension = maxDimension)
+                    showLoading = false
+                    showError = false
+                }
+
+                !isLoading -> {
+                    showLoading = false
+                    showError = true
+                }
             }
-        }
 
-        var didFirstLoad: Boolean by remember { mutableStateOf(false) }
-
-        LaunchedEffect(*dataKey) {
-            if (localInspectionMode) return@LaunchedEffect
-            if (data != null) {
-                photoBitmap = decoder.decode(
-                    data = data,
-                    maxDimension = if (constraintMode == AsyncPhotoViewer.BitmapSizeConstraintMode.UNCONSTRAINED) {
-                        largestSize
-                    } else {
-                        maxWidgetDimension
-                    },
-                )
-                showLoading = false
-                showError = false
-            } else if (!isLoading) {
-                showLoading = false
-                showError = true
-            }
-        }
-
-        LaunchedEffect(*dataKey) {
             // Avoid flickering the indicator, only show if the photos takes a while to load
             delay(timeMillis = 500)
             showLoading = isLoading || (data != null && photoBitmap == null && !showError)
         }
 
-        AnimatedContent(
-            targetState = viewerState,
-            modifier = Modifier.fillMaxSize(),
-            transitionSpec = {
-                // The transition looks weird when switching between images, so only animate the very first load
-                val enterTransition: EnterTransition = if (didFirstLoad) {
-                    EnterTransition.None
-                } else {
-                    fadeIn(animationSpec = tween(220, delayMillis = 90)) +
-                        scaleIn(initialScale = 0.96f, animationSpec = tween(220, delayMillis = 90))
+        AsyncPhotoViewer(
+            viewerState = viewerState,
+            contentScale = contentScale,
+        )
+    }
+}
+
+@Composable
+private fun AsyncPhotoViewer(
+    viewerState: AsyncPhotoViewerState?,
+    contentScale: ContentScale,
+    modifier: Modifier = Modifier,
+) {
+    AnimatedContent(
+        targetState = viewerState,
+        modifier = modifier.fillMaxSize(),
+        transitionSpec = {
+            fadeIn(animationSpec = tween(220, delayMillis = 90))
+                .plus(scaleIn(initialScale = 0.96f, animationSpec = tween(220, delayMillis = 90)))
+                .togetherWith(ExitTransition.None)
+        },
+        contentAlignment = Alignment.Center,
+        contentKey = { state -> state?.let { state::class.java } },
+    ) { state: AsyncPhotoViewerState? ->
+        when (state) {
+            is AsyncPhotoViewerState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    LoadingIndicator(
+                        modifier = Modifier.fillMaxSize(fraction = 0.8f),
+                    )
                 }
+            }
 
-                enterTransition togetherWith ExitTransition.None
-            },
-            contentAlignment = Alignment.Center,
-        ) { state: AsyncPhotoViewerState? ->
-            when (state) {
-                is AsyncPhotoViewerState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        LoadingIndicator(
-                            modifier = Modifier.fillMaxSize(fraction = 0.8f),
-                        )
-                    }
-                }
-
-                is AsyncPhotoViewerState.Error -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color = MaterialTheme.colorScheme.errorContainer, shape = CircleShape),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_file_not_found),
-                            contentDescription = null,
-                            modifier = Modifier.fillMaxSize(fraction = 0.8f),
-                            contentScale = contentScale,
-                        )
-                    }
-                }
-
-                is AsyncPhotoViewerState.Success -> {
-                    RememberedEffect(viewerState) {
-                        didFirstLoad = true
-                    }
-
+            is AsyncPhotoViewerState.Error -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = MaterialTheme.colorScheme.errorContainer, shape = CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
                     Image(
-                        bitmap = state.bitmap,
+                        painter = painterResource(id = R.drawable.ic_file_not_found),
                         contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(fraction = 0.8f),
                         contentScale = contentScale,
                     )
                 }
-
-                null -> Unit // Still determining the first state to include in the composition
             }
+
+            is AsyncPhotoViewerState.Success -> {
+                Image(
+                    bitmap = state.bitmap,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = contentScale,
+                )
+            }
+
+            null -> Unit // Still determining the first state to include in the composition
         }
     }
 }

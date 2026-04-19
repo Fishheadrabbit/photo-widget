@@ -54,7 +54,7 @@ class CyclePhotoUseCase @Inject constructor(
         val displayedPhotos = photoWidgetStorage.getDisplayedPhotoIds(appWidgetId = appWidgetId).toMutableSet()
 
         var didClear = false
-        if (Direction.NEXT == direction && displayedPhotos.size >= widgetPhotoIds.size && !skipSaving) {
+        if (direction == Direction.NEXT && displayedPhotos.size >= widgetPhotoIds.size && !skipSaving) {
             Timber.d("All photos displayed, starting over")
             photoWidgetStorage.clearDisplayedPhotos(appWidgetId = appWidgetId)
             displayedPhotos.clear()
@@ -74,7 +74,7 @@ class CyclePhotoUseCase @Inject constructor(
         val newPhotoId: String = when {
             didClear || currentPhotoId() == null -> widgetPhotoIds.first()
 
-            shuffle && Direction.PREVIOUS == direction -> {
+            shuffle && direction == Direction.PREVIOUS -> {
                 if (!skipSaving) {
                     photoWidgetStorage.clearMostRecentPhoto(appWidgetId = appWidgetId)
                 }
@@ -86,8 +86,8 @@ class CyclePhotoUseCase @Inject constructor(
             else -> {
                 val currentIndex: Int = widgetPhotoIds.indexOfFirst { it == currentPhotoId() }
                 val newIndex: Int = when {
-                    Direction.PREVIOUS == direction && currentIndex <= 0 -> widgetPhotoIds.size - 1
-                    Direction.PREVIOUS == direction -> currentIndex - 1
+                    direction == Direction.PREVIOUS && currentIndex <= 0 -> widgetPhotoIds.size - 1
+                    direction == Direction.PREVIOUS -> currentIndex - 1
                     currentIndex == widgetPhotoIds.size - 1 -> 0
                     else -> currentIndex + 1
                 }.coerceIn(0, widgetPhotoIds.size - 1)

@@ -26,6 +26,7 @@ import com.fibelatti.photowidget.configure.PhotoCropActivity.Companion.outputPat
 import com.fibelatti.photowidget.model.PhotoWidget
 import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
 import com.fibelatti.photowidget.platform.AppTheme
+import com.fibelatti.photowidget.platform.KeepAliveService
 import com.fibelatti.photowidget.platform.RememberedEffect
 import com.fibelatti.photowidget.platform.setIdentifierCompat
 import com.fibelatti.photowidget.platform.showMaterialAlertDialog
@@ -121,7 +122,6 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             setMessage(R.string.photo_widget_configure_save_draft_prompt)
             setPositiveButton(R.string.photo_widget_action_yes) { _, _ ->
                 viewModel.saveDraft()
-                finish()
             }
             setNegativeButton(R.string.photo_widget_action_no) { _, _ ->
                 viewModel.discardDraft()
@@ -203,6 +203,23 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                 viewModel.discardDraft()
                 viewModel.messageHandled(message = message)
                 finish()
+            }
+
+            is PhotoWidgetConfigureState.Message.DraftSaved -> {
+                viewModel.messageHandled(message = message)
+                finish()
+            }
+
+            is PhotoWidgetConfigureState.Message.KeepAliveRequired -> {
+                showMaterialAlertDialog {
+                    setMessage(R.string.photo_widget_keep_alive_service_required_for_gif)
+                    setPositiveButton(R.string.photo_widget_action_continue) { _, _ ->
+                        viewModel.confirmKeepAliveForGif()
+                        KeepAliveService.tryStart(this@PhotoWidgetConfigureActivity)
+                    }
+                    setNegativeButton(R.string.photo_widget_action_cancel) { _, _ -> }
+                    setOnDismissListener { viewModel.messageHandled(message = message) }
+                }
             }
         }
     }

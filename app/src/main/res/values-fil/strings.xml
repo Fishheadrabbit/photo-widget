@@ -84,7 +84,9 @@
     <string name="photo_widget_source_photos">Mga Larawan</string>
     <string name="photo_widget_source_directory">Folder</string>
     <string name="photo_widget_source_photos_description">Pumili ng isa o higit pang larawan gamit ang default na gallery picker.</string>
+    <string name="photo_widget_source_gif">GIF</string>
     <string name="photo_widget_source_directory_description">Pumili ng isa o higit pang folder para i-sync. Awtomatikong idinadagdag ang mga larawan at regular na ina-update.</string>
+    <string name="photo_widget_source_gif_description">Pumili ng animated na GIF para i-play sa iyong home screen. Mas maikling at mas simpleng GIF ang inirerekomenda.</string>
     <!-- Aspect Ratio -->
     <string name="photo_widget_aspect_ratio_title">Porma</string>
     <string name="photo_widget_aspect_ratio_shape">Mga Hugis</string>
@@ -114,7 +116,7 @@
     <string name="photo_widget_configure_menu_source">Pinagmulan</string>
     <string name="photo_widget_configure_source_selection_directory_empty">Hindi pa naka-sync ang widget na ito sa kahit na anong folder.</string>
     <string name="photo_widget_configure_source_selection_directory_non_empty">Naka-sync ang widget sa mga folder na ito:</string>
-    <string name="photo_widget_configure_source_warning">Papalitan ang mga kasalukuyang larawan sa widget kapag binago ang pinagmulan</string>
+    <string name="photo_widget_configure_source_warning">Mabubura ang lahat ng nilalaman ng widget na ito kapag binago ang pinagmulan at nakumpirma mo na ito. Hindi maibabalik ang pagbabagong ito at kakailanganing pumili ulit ng mga larawan o folder.</string>
     <string name="photo_widget_configure_menu_crop">I-krop</string>
     <string name="photo_widget_configure_menu_remove">Tanggalin</string>
     <string name="photo_widget_configure_menu_move_left">Ilipat sa kaliwa</string>
@@ -123,6 +125,8 @@
     <string name="photo_widget_configure_photos_excluded">Mga hindi sinasama sa widget</string>
     <string name="photo_widget_configure_pick_photo">Pumili ng mga larawan</string>
     <string name="photo_widget_configure_pick_folder">Pumili ng folder</string>
+    <string name="photo_widget_configure_pick_gif">Pumili ng GIF</string>
+    <string name="photo_widget_configure_pick_gif_replace">Ang pagpili ng ibang GIF ay papalitan ang kasalukuyan, magpatuloy?</string>
     <string name="photo_widget_configure_change_source">Palitan ang pinagmulan</string>
     <string name="photo_widget_configure_select_cycling_mode">Timer sa paglipat ng larawan</string>
     <string name="photo_widget_configure_cycling_mode_interval">Agwat ng Oras</string>
@@ -201,8 +205,11 @@
     <string name="photo_widget_configure_tap_action_app_folder">Folder ng app</string>
     <string name="photo_widget_configure_tap_action_app_folder_description">Pumili ng hanggang 12 app</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Magbukas ng link</string>
+    <string name="photo_widget_configure_tap_action_file_shortcut">Magbukas ng file</string>
+    <string name="photo_widget_configure_tap_action_choose_file">Pumili ng file</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling">I-on/i-off ang timer</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling_description">Pindutin upang ihinto ang timer sa paglipat ng larawan. Muling pumindot upang ituloy. I-o-off ang aksyong ito pag naka-lock ang widget.</string>
+    <string name="photo_widget_configure_tap_action_toggle_gif_playback">I-on/i-off ang GIF playback</string>
     <string name="photo_widget_configure_tap_action_share_photo">Ibahagi ang larawan</string>
     <string name="photo_widget_configure_tap_action_set_wallpaper">Itakda bilang wallpaper</string>
     <string name="photo_widget_configure_tap_action_remove_photo">Alisin ang larawan</string>
@@ -215,13 +222,15 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">Tingnan ang orihinal na larawan (walang krop o pag-ikot)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">Huwag i-shuffle ang mga larawan kapag nagpapalit sa viewer</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">Huwag palitan ang kasalukuyang larawan kapag nagpapalit sa viewer</string>
-    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">Gumagana sa mga widget na gumagamit ng folder, gagamitin naman ng mga widget na gumagamit ng mga indibidwal na larawan ang \"View photo in full screen.\"</string>
     <string name="photo_widget_configure_tap_action_gallery_description_warning">Binubuksan ng aksyong ito ang kasalukuyang larawan gamit ang gallery app. Hindi ka makakatingin o makakalipat sa ibang mga larawan.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_app_selection">Maaari mo ring piliin ang gallery app na gagamitin.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Piliin ang app</string>
     <string name="photo_widget_configure_tap_action_disable_tap">Huwag gamitin ang ibang lugar na puwedeng pindutin habang nakahinto ang timer</string>
     <string name="photo_widget_configure_tap_action_shared_preferences">Ginagamit ng lahat ng lugar para sa aksyon sa pagpindot ang mga setting na ito.</string>
     <string name="photo_widget_configure_tap_action_shared_selected_app">Ginagamit ng lahat ng lugar para sa aksyon sa pagpindot ang napiling app.</string>
+    <string name="photo_widget_configure_gif_frame_interval">Agwat ng frame</string>
+    <string name="photo_widget_configure_gif_frame_interval_description">Kontrolin ang bilis ng paglalaro ng animated GIF. Mas maliit ang halaga, mas mabilis ang GIF.</string>
+    <string name="photo_widget_configure_gif_frame_interval_presets">Mga preset</string>
     <string name="photo_widget_configure_add_to_home">Idagdag sa home screen</string>
     <string name="photo_widget_configure_save_changes">I-save ang mga pagbabago</string>
     <string name="photo_widget_configure_widget_pinned">Nadagdag ang widget! Tingnan ang iyong home screen…</string>
@@ -278,11 +287,20 @@
     <!-- Viewer -->
     <string name="photo_widget_viewer_all_photos">Lahat ng larawan</string>
     <!-- Cycling feedback -->
-    <string name="photo_widget_cycling_feedback_paused">Naka-hinto ang timer</string>
-    <string name="photo_widget_cycling_feedback_resumed">Pinatuloy ang timer</string>
+    <string name="photo_widget_cycling_feedback_paused">Naka-hinto ang widget</string>
+    <string name="photo_widget_cycling_feedback_resumed">Pinatuloy ang widget</string>
     <!-- Folder -->
     <string name="photo_widget_app_folder_empty">Wala ka pang idinadagdag na app sa folder na ito. I-tap ang Magpatuloy para buksan ang widget editor.</string>
     <string name="photo_widget_app_folder_add_app">Magdagdag ng app</string>
+    <!-- Keep-alive service -->
+    <string name="photo_widget_keep_alive_service_dialog_title">Serbisyo sa background</string>
+    <string name="photo_widget_keep_alive_service_dialog_toggle">I-enable ang serbisyo sa background</string>
+    <string name="photo_widget_keep_alive_service_dialog_body">Maaari mong i-enable ang serbisyong pangkomunikasyon para malaman ng Android na mahalaga ang app at hindi ito dapat itigil. Huwag mag-alala, ginagawa lang ng app ang kailangan para maipakita ng iyong mga widget ang mga larawan ayon sa iskedyul, nang walang dagdag na pagkonsumo ng baterya.&lt;br/>&lt;br/>Ang mga widget sa iyong home screen ay pinamamahalaan ng iyong app launcher, hindi direkta ng app. Dahil bihirang tumatakbo ang app sa foreground, &lt;b>maaaring isipin ng system na hindi ito mahalaga at itigil ito&lt;/b>. Kapag nangyari iyon, &lt;b>ang mga widget ay titigil din, na magiging sanhi ng hindi paglitaw ng mga larawan&lt;/b>. Ito ay lalo na karaniwan sa &lt;b>mga Samsung na device&lt;/b>.</string>
+    <string name="photo_widget_keep_alive_service_required_for_gif">Ang mga GIF widget ay nangangailangan ng serbisyo sa background para mag-play ng mga animation. Maaari kang makahanap ng higit pa tungkol dito sa tab ng mga setting. Gusto mo bang i-enable ito?</string>
+    <string name="photo_widget_keep_alive_service_gif_widgets_warning">Mayroon mga aktibong GIF widget na umaasa sa serbisyo sa background. Ang pag-disable nito ay maaaring magdulot ng hindi paglalaro ng mga animation.</string>
+    <!-- Notifications -->
+    <string name="notification_channel_name_keep_alive">Serbisyo sa background</string>
+    <string name="notification_channel_description_keep_alive">Pinapanatiling buhay ang app, kahit na matagal itong naka-background. Tinitiyak na maaaring ma-update ang mga widget gaya ng inaasahan.</string>
     <!-- Common Actions -->
     <string name="photo_widget_action_yes">Oo</string>
     <string name="photo_widget_action_no">Hindi</string>
@@ -300,6 +318,8 @@
     <string name="photo_widget_action_reset">I-reset</string>
     <!-- Hints -->
     <string name="hint_scroll_to_view_more">Mag-scroll para makita pa</string>
+    <string name="warning_experimental">Pang-eksperimento</string>
+    <string name="warning_gif_widget_battery_usage">Maaaring gumamit ng mas maraming baterya ang mga GIF widget! Kailangang gumawa ng patuloy na trabaho ang app para maglaro ng animation. Nagpi-pause ang trabaho kapag naka-off ang screen para makatipid ng resources, pero hindi madetektahan ng app kung kailan hindi nakikita ang iyong home screen habang gumagamit ng ibang mga app.</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Widget ng Material Photo sa home screen</string>
 </resources>

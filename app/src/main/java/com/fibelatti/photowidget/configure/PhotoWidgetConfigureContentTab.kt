@@ -26,6 +26,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -34,8 +36,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,11 +62,12 @@ import com.fibelatti.photowidget.model.PhotoWidgetColors
 import com.fibelatti.photowidget.model.PhotoWidgetSource
 import com.fibelatti.photowidget.model.canSort
 import com.fibelatti.photowidget.ui.ShapedPhoto
+import com.fibelatti.photowidget.ui.WarningSign
 import com.fibelatti.ui.foundation.AppSheetState
 import com.fibelatti.ui.foundation.fadingEdges
 import com.fibelatti.ui.foundation.rememberAppSheetState
 import com.fibelatti.ui.foundation.showBottomSheet
-import com.fibelatti.ui.preview.AllPreviews
+import com.fibelatti.ui.preview.PreviewsAll
 import com.fibelatti.ui.text.AutoSizeText
 import com.fibelatti.ui.theme.ExtendedTheme
 import sh.calvin.reorderable.ReorderableItem
@@ -88,6 +94,13 @@ fun PhotoWidgetConfigureContentTab(
         onResult = viewModel::dirPicked,
     )
 
+    val gifPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = viewModel::gifPicked,
+    )
+
+    var showGifReplaceDialog by rememberSaveable { mutableStateOf(false) }
+
     PhotoWidgetConfigureContentTab(
         photoWidget = state.photoWidget,
         onChangeSourceClick = sourceSheetState::showBottomSheet,
@@ -95,26 +108,61 @@ fun PhotoWidgetConfigureContentTab(
         onImportClick = importFromWidgetSheetState::showBottomSheet,
         onPhotoPickerClick = { photoPickerLauncher.launch(input = "image/*") },
         onDirPickerClick = { dirPickerLauncher.launch(input = null) },
+        onGifPickerClick = {
+            if (state.photoWidget.photos.isNotEmpty()) {
+                showGifReplaceDialog = true
+            } else {
+                gifPickerLauncher.launch(input = "image/gif")
+            }
+        },
         onPhotoClick = viewModel::previewPhoto,
-        onReorderFinished = viewModel::reorderPhotos,
+        onReorderFinish = viewModel::reorderPhotos,
         onRemovedPhotoClick = { photo ->
             recentlyDeletedPhotoSheetState.showBottomSheet(data = photo)
         },
         modifier = modifier,
     )
 
+    if (showGifReplaceDialog) {
+        AlertDialog(
+            onDismissRequest = { showGifReplaceDialog = false },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showGifReplaceDialog = false
+                        gifPickerLauncher.launch(input = "image/gif")
+                    },
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(id = R.string.photo_widget_action_continue))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showGifReplaceDialog = false },
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(id = R.string.photo_widget_action_cancel))
+                }
+            },
+            text = {
+                Text(text = stringResource(id = R.string.photo_widget_configure_pick_gif_replace))
+            },
+        )
+    }
+
     // region Sheets
     PhotoWidgetSourceBottomSheet(
         sheetState = sourceSheetState,
         currentSource = state.photoWidget.source,
         syncedDir = state.photoWidget.syncedDir,
-        onDirRemoved = viewModel::removeDir,
+        onDirRemove = viewModel::removeDir,
         onChangeSource = viewModel::changeSource,
     )
 
     ImportFromWidgetBottomSheet(
         sheetState = importFromWidgetSheetState,
-        onWidgetSelected = viewModel::importFromWidget,
+        onWidgetSelect = viewModel::importFromWidget,
     )
 
     RecentlyDeletedPhotoBottomSheet(
@@ -133,8 +181,9 @@ fun PhotoWidgetConfigureContentTab(
     onImportClick: () -> Unit,
     onPhotoPickerClick: () -> Unit,
     onDirPickerClick: () -> Unit,
+    onGifPickerClick: () -> Unit,
     onPhotoClick: (LocalPhoto) -> Unit,
-    onReorderFinished: (List<LocalPhoto>) -> Unit,
+    onReorderFinish: (List<LocalPhoto>) -> Unit,
     onRemovedPhotoClick: (LocalPhoto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -147,8 +196,9 @@ fun PhotoWidgetConfigureContentTab(
         canSort = photoWidget.canSort,
         onPhotoPickerClick = onPhotoPickerClick,
         onDirPickerClick = onDirPickerClick,
+        onGifPickerClick = onGifPickerClick,
         onPhotoClick = onPhotoClick,
-        onReorderFinished = onReorderFinished,
+        onReorderFinish = onReorderFinish,
         removedPhotos = photoWidget.removedPhotos,
         onRemovedPhotoClick = onRemovedPhotoClick,
         aspectRatio = photoWidget.aspectRatio,
@@ -167,8 +217,9 @@ private fun PhotoPicker(
     canSort: Boolean,
     onPhotoPickerClick: () -> Unit,
     onDirPickerClick: () -> Unit,
+    onGifPickerClick: () -> Unit,
     onPhotoClick: (LocalPhoto) -> Unit,
-    onReorderFinished: (List<LocalPhoto>) -> Unit,
+    onReorderFinish: (List<LocalPhoto>) -> Unit,
     removedPhotos: List<LocalPhoto>,
     onRemovedPhotoClick: (LocalPhoto) -> Unit,
     aspectRatio: PhotoWidgetAspectRatio,
@@ -207,7 +258,7 @@ private fun PhotoPicker(
                     ShapedPhoto(
                         photo = photo,
                         aspectRatio = PhotoWidgetAspectRatio.SQUARE,
-                        shapeId = if (PhotoWidgetAspectRatio.SQUARE == aspectRatio) {
+                        shapeId = if (aspectRatio == PhotoWidgetAspectRatio.SQUARE) {
                             shapeId
                         } else {
                             PhotoWidget.DEFAULT_SHAPE_ID
@@ -221,7 +272,7 @@ private fun PhotoPicker(
                                     localHaptics.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
                                 },
                                 onDragStopped = {
-                                    onReorderFinished(currentPhotos)
+                                    onReorderFinish(currentPhotos)
                                     localHaptics.performHapticFeedback(HapticFeedbackType.GestureEnd)
                                 },
                             )
@@ -265,6 +316,7 @@ private fun PhotoPicker(
                         when (source) {
                             PhotoWidgetSource.PHOTOS -> onPhotoPickerClick()
                             PhotoWidgetSource.DIRECTORY -> onDirPickerClick()
+                            PhotoWidgetSource.GIF -> onGifPickerClick()
                         }
                     },
                     shapes = ButtonDefaults.shapes(),
@@ -279,6 +331,7 @@ private fun PhotoPicker(
                             id = when (source) {
                                 PhotoWidgetSource.PHOTOS -> R.string.photo_widget_configure_pick_photo
                                 PhotoWidgetSource.DIRECTORY -> R.string.photo_widget_configure_pick_folder
+                                PhotoWidgetSource.GIF -> R.string.photo_widget_configure_pick_gif
                             },
                         ),
                         textAlign = TextAlign.Center,
@@ -339,7 +392,7 @@ private fun PhotoPicker(
         }
 
         AnimatedVisibility(
-            visible = removedPhotos.isNotEmpty(),
+            visible = removedPhotos.isNotEmpty() && source != PhotoWidgetSource.GIF,
             modifier = Modifier.fillMaxWidth(),
         ) {
             RemovedPhotosPicker(
@@ -349,6 +402,8 @@ private fun PhotoPicker(
                     )
 
                     PhotoWidgetSource.DIRECTORY -> stringResource(R.string.photo_widget_configure_photos_excluded)
+
+                    PhotoWidgetSource.GIF -> error("GIF source does not support removing photos.")
                 },
                 photos = removedPhotos,
                 onPhotoClick = onRemovedPhotoClick,
@@ -366,6 +421,15 @@ private fun PhotoPicker(
                         ),
                     )
                     .padding(top = 32.dp),
+            )
+        }
+
+        if (source == PhotoWidgetSource.GIF) {
+            WarningSign(
+                text = stringResource(R.string.warning_gif_widget_battery_usage),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
             )
         }
     }
@@ -402,7 +466,7 @@ private fun RemovedPhotosPicker(
                 ShapedPhoto(
                     photo = photo,
                     aspectRatio = PhotoWidgetAspectRatio.SQUARE,
-                    shapeId = if (PhotoWidgetAspectRatio.SQUARE == aspectRatio) {
+                    shapeId = if (aspectRatio == PhotoWidgetAspectRatio.SQUARE) {
                         shapeId
                     } else {
                         PhotoWidget.DEFAULT_SHAPE_ID
@@ -426,7 +490,7 @@ private fun RemovedPhotosPicker(
 }
 
 // region Previews
-@AllPreviews
+@PreviewsAll
 @Composable
 private fun PhotoWidgetConfigureContentTabPreview() {
     ExtendedTheme {
@@ -439,15 +503,16 @@ private fun PhotoWidgetConfigureContentTabPreview() {
             onImportClick = {},
             onPhotoPickerClick = {},
             onDirPickerClick = {},
+            onGifPickerClick = {},
             onPhotoClick = {},
-            onReorderFinished = {},
+            onReorderFinish = {},
             onRemovedPhotoClick = {},
             modifier = Modifier.safeDrawingPadding(),
         )
     }
 }
 
-@AllPreviews
+@PreviewsAll
 @Composable
 private fun PhotoWidgetConfigureContentTabDirectoryPreview() {
     ExtendedTheme {
@@ -461,8 +526,9 @@ private fun PhotoWidgetConfigureContentTabDirectoryPreview() {
             onImportClick = {},
             onPhotoPickerClick = {},
             onDirPickerClick = {},
+            onGifPickerClick = {},
             onPhotoClick = {},
-            onReorderFinished = {},
+            onReorderFinish = {},
             onRemovedPhotoClick = {},
             modifier = Modifier.safeDrawingPadding(),
         )

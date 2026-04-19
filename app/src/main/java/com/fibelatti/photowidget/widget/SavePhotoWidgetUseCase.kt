@@ -32,6 +32,8 @@ class SavePhotoWidgetUseCase @Inject constructor(
 
         photoWidgetStorage.saveWidgetText(appWidgetId = appWidgetId, text = photoWidget.text)
 
+        photoWidgetStorage.saveWidgetGifInterval(appWidgetId = appWidgetId, interval = photoWidget.gifInterval)
+
         // Draft widgets won't have alarms yet...
         if (PhotoWidget.isDraftWidgetId(appWidgetId)) return
 
@@ -53,7 +55,7 @@ class SavePhotoWidgetUseCase @Inject constructor(
 
         photoWidgetStorage.saveWidgetSource(appWidgetId = appWidgetId, source = photoWidget.source)
 
-        if (PhotoWidgetSource.DIRECTORY == photoWidget.source) {
+        if (photoWidget.source == PhotoWidgetSource.DIRECTORY) {
             photoWidgetStorage.saveWidgetSyncedDir(appWidgetId = appWidgetId, dirUri = photoWidget.syncedDir)
         }
 
@@ -91,14 +93,14 @@ class SavePhotoWidgetUseCase @Inject constructor(
                 )
             }
 
-            PhotoWidgetSource.PHOTOS == photoWidget.source -> {
+            photoWidget.source == PhotoWidgetSource.PHOTOS -> {
                 photoWidgetStorage.replacePhotosForDeletion(
                     appWidgetId = appWidgetId,
                     photoIds = removedPhotoIds,
                 )
             }
 
-            PhotoWidgetSource.DIRECTORY == photoWidget.source -> {
+            photoWidget.source == PhotoWidgetSource.DIRECTORY -> {
                 photoWidgetStorage.replaceExcludedPhotos(
                     appWidgetId = appWidgetId,
                     photoIds = removedPhotoIds,
@@ -123,7 +125,7 @@ class SavePhotoWidgetUseCase @Inject constructor(
 
         photoWidgetStorage.saveWidgetCornerRadius(
             appWidgetId = appWidgetId,
-            cornerRadius = if (PhotoWidgetAspectRatio.FILL_WIDGET != photoWidget.aspectRatio) {
+            cornerRadius = if (photoWidget.aspectRatio != PhotoWidgetAspectRatio.FILL_WIDGET) {
                 photoWidget.cornerRadius
             } else {
                 PhotoWidget.DEFAULT_CORNER_RADIUS
@@ -132,7 +134,7 @@ class SavePhotoWidgetUseCase @Inject constructor(
 
         photoWidgetStorage.saveWidgetBorder(
             appWidgetId = appWidgetId,
-            border = if (PhotoWidgetAspectRatio.FILL_WIDGET != photoWidget.aspectRatio) {
+            border = if (photoWidget.aspectRatio != PhotoWidgetAspectRatio.FILL_WIDGET) {
                 photoWidget.border
             } else {
                 PhotoWidgetBorder.None
@@ -154,7 +156,7 @@ class SavePhotoWidgetUseCase @Inject constructor(
             brightness = photoWidget.colors.brightness,
         )
 
-        if (PhotoWidgetAspectRatio.FILL_WIDGET != photoWidget.aspectRatio) {
+        if (photoWidget.aspectRatio != PhotoWidgetAspectRatio.FILL_WIDGET) {
             photoWidgetStorage.saveWidgetOffset(
                 appWidgetId = appWidgetId,
                 horizontalOffset = photoWidget.horizontalOffset,

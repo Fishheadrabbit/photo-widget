@@ -85,7 +85,9 @@
     <string name="photo_widget_source_photos">Foto</string>
     <string name="photo_widget_source_directory">Cartella</string>
     <string name="photo_widget_source_photos_description">Scegli una o più foto utilizzando il selettore della galleria predefinito.</string>
+    <string name="photo_widget_source_gif">GIF</string>
     <string name="photo_widget_source_directory_description">Scegli una o più cartelle da sincronizzare. Le foto vengono aggiunte automaticamente e aggiornate a intervalli regolari.</string>
+    <string name="photo_widget_source_gif_description">Scegli una GIF animata da riprodurre nella schermata iniziale. Si consigliano GIF più brevi e semplici.</string>
     <!-- Aspect Ratio -->
     <string name="photo_widget_aspect_ratio_title">Formato</string>
     <string name="photo_widget_aspect_ratio_shape">Forme</string>
@@ -115,7 +117,7 @@
     <string name="photo_widget_configure_menu_source">Sorgente</string>
     <string name="photo_widget_configure_source_selection_directory_empty">Questo widget non è ancora sincronizzato con nessuna cartella.</string>
     <string name="photo_widget_configure_source_selection_directory_non_empty">Questo widget è sincronizzato con queste cartelle:</string>
-    <string name="photo_widget_configure_source_warning">La modifica della sorgente sostituirà le foto attuali di questo widget</string>
+    <string name="photo_widget_configure_source_warning">La modifica della sorgente eliminerà tutti i dati del contenuto di questo widget una volta confermata. Questa modifica non può essere annullata e dovrai selezionare nuovamente foto o cartelle.</string>
     <string name="photo_widget_configure_menu_crop">Ritaglia</string>
     <string name="photo_widget_configure_menu_remove">Rimuovi</string>
     <string name="photo_widget_configure_menu_move_left">Sposta a sinistra</string>
@@ -124,6 +126,8 @@
     <string name="photo_widget_configure_photos_excluded">Escluse dal widget</string>
     <string name="photo_widget_configure_pick_photo">Scegli foto</string>
     <string name="photo_widget_configure_pick_folder">Scegli cartella</string>
+    <string name="photo_widget_configure_pick_gif">Scegli GIF</string>
+    <string name="photo_widget_configure_pick_gif_replace">Scegliere un altro GIF sostituirà quello esistente, continuare?</string>
     <string name="photo_widget_configure_change_source">Cambia sorgente</string>
     <string name="photo_widget_configure_select_cycling_mode">Timer foto</string>
     <string name="photo_widget_configure_cycling_mode_interval">Intervallo</string>
@@ -203,8 +207,11 @@
     <string name="photo_widget_configure_tap_action_app_folder">Cartella app</string>
     <string name="photo_widget_configure_tap_action_app_folder_description">Scegli fino a 12 app</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Apri un link</string>
+    <string name="photo_widget_configure_tap_action_file_shortcut">Apri un file</string>
+    <string name="photo_widget_configure_tap_action_choose_file">Scegli file</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling">Attiva/disattiva timer</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling_description">Tocca per mettere in pausa il timer delle foto. Tocca di nuovo per riprendere. Questa azione sarà disattivata mentre il widget è bloccato.</string>
+    <string name="photo_widget_configure_tap_action_toggle_gif_playback">Abilita/disabilita riproduzione GIF</string>
     <string name="photo_widget_configure_tap_action_share_photo">Condividi foto</string>
     <string name="photo_widget_configure_tap_action_set_wallpaper">Imposta come sfondo</string>
     <string name="photo_widget_configure_tap_action_remove_photo">Rimuovi foto</string>
@@ -217,13 +224,15 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">Visualizza foto originale (senza ritaglio o rotazione)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">Non mescolare le foto quando si cambia foto nel visualizzatore</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">Non cambiare la foto corrente quando si cambia foto nel visualizzatore</string>
-    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">Compatibile con i widget basati su cartella, i widget basati su foto useranno invece \"Visualizza foto a schermo intero\".</string>
     <string name="photo_widget_configure_tap_action_gallery_description_warning">Questa azione apre la foto corrente usando l\'app galleria. Non sarà possibile visualizzare o navigare verso altre foto.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_app_selection">Puoi anche scegliere quale app galleria utilizzare.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Scegli app</string>
     <string name="photo_widget_configure_tap_action_disable_tap">Disattiva altre aree di tocco mentre il timer è in pausa</string>
     <string name="photo_widget_configure_tap_action_shared_preferences">Queste preferenze sono utilizzate da tutte le aree che usano questa azione al tocco.</string>
     <string name="photo_widget_configure_tap_action_shared_selected_app">L\'app selezionata è utilizzata da tutte le aree che usano questa azione al tocco.</string>
+    <string name="photo_widget_configure_gif_frame_interval">Intervallo fotogramma</string>
+    <string name="photo_widget_configure_gif_frame_interval_description">Controlla la velocità di riproduzione della GIF animata. Minore è il valore, più veloce è la GIF.</string>
+    <string name="photo_widget_configure_gif_frame_interval_presets">Predefiniti</string>
     <string name="photo_widget_configure_add_to_home">Aggiungi alla schermata iniziale</string>
     <string name="photo_widget_configure_save_changes">Salva modifiche</string>
     <string name="photo_widget_configure_widget_pinned">Widget aggiunto! Controlla la tua schermata iniziale…</string>
@@ -281,11 +290,20 @@
     <!-- Viewer -->
     <string name="photo_widget_viewer_all_photos">Tutte le foto</string>
     <!-- Cycling feedback -->
-    <string name="photo_widget_cycling_feedback_paused">Timer in pausa</string>
-    <string name="photo_widget_cycling_feedback_resumed">Timer ripreso</string>
+    <string name="photo_widget_cycling_feedback_paused">Widget in pausa</string>
+    <string name="photo_widget_cycling_feedback_resumed">Widget ripreso</string>
     <!-- Folder -->
     <string name="photo_widget_app_folder_empty">Non hai ancora aggiunto app a questa cartella. Tocca Continua per aprire l\'editor dei widget.</string>
     <string name="photo_widget_app_folder_add_app">Aggiungi app</string>
+    <!-- Keep-alive service -->
+    <string name="photo_widget_keep_alive_service_dialog_title">Servizio in background</string>
+    <string name="photo_widget_keep_alive_service_dialog_toggle">Abilita servizio in background</string>
+    <string name="photo_widget_keep_alive_service_dialog_body">Puoi abilitare il servizio in background per far sapere ad Android che l\'app è importante e che non dovrebbe essere arrestata. Non preoccuparti, l\'app fa solo ciò che è necessario per mantenere i tuoi widget che mostrano le foto in programma, senza un consumo aggiuntivo della batteria.&lt;br/>&lt;br/>I widget sulla tua schermata iniziale sono gestiti dal tuo launcher, non direttamente dall\'app. Poiché l\'app raramente viene eseguita in primo piano, &lt;b>il sistema potrebbe presumere che non sia importante e interromperla&lt;/b>. Quando ciò accade, &lt;b>anche i widget vengono interrotti, causando la mancata visualizzazione delle foto&lt;/b>. Questo è particolarmente comune sui &lt;b>dispositivi Samsung&lt;/b>.</string>
+    <string name="photo_widget_keep_alive_service_required_for_gif">I widget GIF richiedono il servizio in background per riprodurre le animazioni. Puoi trovare ulteriori informazioni nella scheda delle impostazioni. Vuoi abilitarlo?</string>
+    <string name="photo_widget_keep_alive_service_gif_widgets_warning">Ci sono widget GIF attivi che dipendono dal servizio in background. Disabilitarlo potrebbe impedire la riproduzione delle animazioni.</string>
+    <!-- Notifications -->
+    <string name="notification_channel_name_keep_alive">Servizio in background</string>
+    <string name="notification_channel_description_keep_alive">Mantiene l\'app attiva, anche se è rimasta in background per molto tempo. Garantisce che i widget possano essere aggiornati come previsto.</string>
     <!-- Common Actions -->
     <string name="photo_widget_action_yes">Sì</string>
     <string name="photo_widget_action_no">No</string>
@@ -303,6 +321,8 @@
     <string name="photo_widget_action_reset">Reimposta</string>
     <!-- Hints -->
     <string name="hint_scroll_to_view_more">Scorri per visualizzare altro</string>
+    <string name="warning_experimental">Sperimentale</string>
+    <string name="warning_gif_widget_battery_usage">I widget GIF potrebbero consumare più batteria! L\'app deve svolgere un lavoro costante per riprodurre l\'animazione. Il lavoro viene sospeso quando lo schermo è spento per risparmiare risorse, ma l\'app non è in grado di rilevare quando la schermata iniziale non è visibile durante l\'utilizzo di altre app.</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Widget schermata iniziale Material Photo</string>
 </resources>

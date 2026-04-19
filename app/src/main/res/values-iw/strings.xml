@@ -87,7 +87,9 @@
     <string name="photo_widget_source_photos">תמונות</string>
     <string name="photo_widget_source_directory">תיקייה</string>
     <string name="photo_widget_source_photos_description">בחר תמונה אחת או יותר באמצעות בורר הגלריה המוגדר כברירת מחדל.</string>
+    <string name="photo_widget_source_gif">GIF</string>
     <string name="photo_widget_source_directory_description">בחר תיקייה אחת או יותר לסנכרון. התמונות מתווספות אוטומטית ומתעדכנות במרווחי זמן קבועים.</string>
+    <string name="photo_widget_source_gif_description">בחר GIF מונפש לניגון על מסך הבית שלך. מומלץ להשתמש ב-GIF קצרים ופשוטים יותר.</string>
     <!-- Aspect Ratio -->
     <string name="photo_widget_aspect_ratio_title">פורמט</string>
     <string name="photo_widget_aspect_ratio_shape">צורות</string>
@@ -117,7 +119,7 @@
     <string name="photo_widget_configure_menu_source">מקור</string>
     <string name="photo_widget_configure_source_selection_directory_empty">ווידג\'ט זה עדיין לא מסונכרן עם אף תיקייה.</string>
     <string name="photo_widget_configure_source_selection_directory_non_empty">ווידג\'ט זה מסונכרן עם התיקיות הבאות:</string>
-    <string name="photo_widget_configure_source_warning">שינוי המקור יחליף את התמונות הנוכחיות מהווידג\'ט הזה</string>
+    <string name="photo_widget_configure_source_warning">שינוי המקור ימחק את כל נתוני התוכן מהווידג\'ט הזה ברגע שתאשר. לא ניתן לבטל שינוי זה ותצטרך לבחור שוב תמונות או תיקיות.</string>
     <string name="photo_widget_configure_menu_crop">חתוך</string>
     <string name="photo_widget_configure_menu_remove">הסר</string>
     <string name="photo_widget_configure_menu_move_left">הזז שמאלה</string>
@@ -126,6 +128,8 @@
     <string name="photo_widget_configure_photos_excluded">החרג מהווידג\'ט</string>
     <string name="photo_widget_configure_pick_photo">בחר תמונות</string>
     <string name="photo_widget_configure_pick_folder">בחר תיקיה</string>
+    <string name="photo_widget_configure_pick_gif">בחר GIF</string>
+    <string name="photo_widget_configure_pick_gif_replace">בחירת GIF אחר תחליף את הקיים, להמשיך?</string>
     <string name="photo_widget_configure_change_source">שנה מקור</string>
     <string name="photo_widget_configure_select_cycling_mode">טיימר צילום</string>
     <string name="photo_widget_configure_cycling_mode_interval">מרווח זמן</string>
@@ -215,8 +219,11 @@
     <string name="photo_widget_configure_tap_action_app_folder">תיקיית אפליקציות</string>
     <string name="photo_widget_configure_tap_action_app_folder_description">בחר עד 12 אפליקציות</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">פתח קישור</string>
+    <string name="photo_widget_configure_tap_action_file_shortcut">פתח קובץ</string>
+    <string name="photo_widget_configure_tap_action_choose_file">בחר קובץ</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling">הפעל/השבת טיימר</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling_description">הקש כדי להשהות את טיימר התמונות. הקש שוב כדי לחדש. פעולה זו תושבת כאשר הווידג\'ט נעול.</string>
+    <string name="photo_widget_configure_tap_action_toggle_gif_playback">הפעל/השבת הפעלת GIF</string>
     <string name="photo_widget_configure_tap_action_share_photo">שתף תמונה</string>
     <string name="photo_widget_configure_tap_action_set_wallpaper">הגדר כטפט</string>
     <string name="photo_widget_configure_tap_action_remove_photo">הסר תמונה</string>
@@ -227,13 +234,15 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">צפה בתמונה המקורית (ללא חיתוך או סיבוב)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">לא לערבב תמונות בעת החלפת תמונות בצופה</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">לא לשנות את התמונה הנוכחית בעת החלפת תמונות בצופה</string>
-    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">תואם לווידג\'טים מבוססי תיקיות, ווידג\'טים מבוססי תמונות ישתמשו במקום זאת באפשרות \"הצג תמונה במסך מלא\".</string>
     <string name="photo_widget_configure_tap_action_gallery_description_warning">פעולה זו פותחת את התמונה הנוכחית באמצעות אפליקציית הגלריה. לא ניתן יהיה לצפות בתמונות אחרות או לנווט אליהן.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_app_selection">באפשרותך גם לבחור באיזו אפליקציית גלריה להשתמש.</string>
     <string name="photo_widget_configure_tap_action_choose_app">בחר אפליקציה</string>
     <string name="photo_widget_configure_tap_action_disable_tap">השבת אזורי הקשה אחרים כאשר הטיימר מושהה</string>
     <string name="photo_widget_configure_tap_action_shared_preferences">העדפות אלה משמשות את כל האזורים המשתמשים בפעולת הקשה זו.</string>
     <string name="photo_widget_configure_tap_action_shared_selected_app">האפליקציה שנבחרה נמצאת בשימוש על ידי כל האזורים המשתמשים בפעולת הקשה זו.</string>
+    <string name="photo_widget_configure_gif_frame_interval">מרווח פריימים</string>
+    <string name="photo_widget_configure_gif_frame_interval_description">שלוט במהירות הצגת ה-GIF המונפש. ככל שהערך קטן יותר, כך ה-GIF מהיר יותר.</string>
+    <string name="photo_widget_configure_gif_frame_interval_presets">הגדרות מוגדרות מראש</string>
     <string name="photo_widget_configure_add_to_home">הוספה למסך הבית</string>
     <string name="photo_widget_configure_save_changes">שמור שינויים</string>
     <string name="photo_widget_configure_widget_pinned">הווידג\'ט נוסף! בדוק את מסך הבית שלך…</string>
@@ -290,11 +299,20 @@
     <!-- Viewer -->
     <string name="photo_widget_viewer_all_photos">כל התמונות</string>
     <!-- Cycling feedback -->
-    <string name="photo_widget_cycling_feedback_paused">הטיימר הושהה</string>
-    <string name="photo_widget_cycling_feedback_resumed">הטיימר חודש</string>
+    <string name="photo_widget_cycling_feedback_paused">הווידג\'ט הושהה</string>
+    <string name="photo_widget_cycling_feedback_resumed">הווידג\'ט חודש</string>
     <!-- Folder -->
     <string name="photo_widget_app_folder_empty">עדיין לא הוספת אפליקציות לתיקייה זו. הקש על המשך כדי לפתוח את עורך הווידג׳ט.</string>
     <string name="photo_widget_app_folder_add_app">הוסף אפליקציה</string>
+    <!-- Keep-alive service -->
+    <string name="photo_widget_keep_alive_service_dialog_title">שירות רקע</string>
+    <string name="photo_widget_keep_alive_service_dialog_toggle">הפעל שירות רקע</string>
+    <string name="photo_widget_keep_alive_service_dialog_body">ניתן להפעיל את שירות הרקע כדי ליידע את Android שהאפליקציה חשובה ושלא צריך לעצור אותה. אל תדאג, האפליקציה עושה רק את הנדרש כדי לשמור על הווידג\'טים שלך מציגים תמונות לפי לוח הזמנים, ללא ניקוז נוסף של הסוללה.&lt;br/&gt;&lt;br/&gt;הווידג\'טים על מסך הבית שלך מנוהלים על ידי מפעיל האפליקציות שלך, לא ישירות על ידי האפליקציה. מכיוון שהאפליקציה לעתים רחוקות פועלת בחזית, &lt;b&gt;המערכת עשויה להניח שהיא אינה חשובה ולעצור אותה&lt;/b&gt;. כשזה קורה, &lt;b&gt;גם הווידג\'טים נעצרים, מה שגורם לכך שתמונות לא יוצגו&lt;/b&gt;. זה נפוץ במיוחד על &lt;b&gt;מכשירי Samsung&lt;/b&gt;.</string>
+    <string name="photo_widget_keep_alive_service_required_for_gif">ווידג\'טים של GIF דורשים את שירות הרקע להפעלת אנימציות. ניתן למצוא מידע נוסף בכרטיסיית ההגדרות. האם ברצונך להפעיל אותו?</string>
+    <string name="photo_widget_keep_alive_service_gif_widgets_warning">ישנם ווידג\'טים פעילים של GIF שתלויים בשירות הרקע. כיבויו עלול לגרום להם להפסיק להפעיל אנימציות.</string>
+    <!-- Notifications -->
+    <string name="notification_channel_name_keep_alive">שירות רקע</string>
+    <string name="notification_channel_description_keep_alive">שומר את האפליקציה פעילה, גם אם היא פועלת ברקע לאורך זמן. מבטיח שהווידג\'טים יכולים להתעדכן כמצופה.</string>
     <!-- Common Actions -->
     <string name="photo_widget_action_yes">כן</string>
     <string name="photo_widget_action_no">לא</string>
@@ -312,6 +330,8 @@
     <string name="photo_widget_action_reset">איפוס</string>
     <!-- Hints -->
     <string name="hint_scroll_to_view_more">גלול כדי לראות עוד</string>
+    <string name="warning_experimental">ניסיוני</string>
+    <string name="warning_gif_widget_battery_usage">ווידג\'טי GIF עלולים לצרוך יותר סוללה! האפליקציה חייבת לבצע עבודה מתמדת כדי להפעיל את האנימציה. העבודה מושהית כאשר המסך כבוי כדי לחסוך משאבים, אך האפליקציה אינה יכולה לזהות מתי מסך הבית אינו גלוי בעת שימוש באפליקציות אחרות.</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">ווידג\'ט מסך הבית של Material Photo</string>
 </resources>

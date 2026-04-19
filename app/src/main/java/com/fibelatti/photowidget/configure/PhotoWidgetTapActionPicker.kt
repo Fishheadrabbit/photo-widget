@@ -5,6 +5,7 @@ package com.fibelatti.photowidget.configure
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,7 +35,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -93,6 +93,7 @@ import androidx.core.net.toUri
 import com.fibelatti.photowidget.R
 import com.fibelatti.photowidget.model.InstalledApp
 import com.fibelatti.photowidget.model.PhotoWidget
+import com.fibelatti.photowidget.model.PhotoWidgetSource
 import com.fibelatti.photowidget.model.PhotoWidgetTapAction
 import com.fibelatti.photowidget.model.PhotoWidgetTapActions
 import com.fibelatti.photowidget.model.TapActionArea
@@ -108,12 +109,13 @@ import com.fibelatti.ui.foundation.AppBottomSheet
 import com.fibelatti.ui.foundation.AppSheetState
 import com.fibelatti.ui.foundation.ConnectedButtonRowItem
 import com.fibelatti.ui.foundation.SelectionDialogBottomSheet
+import com.fibelatti.ui.foundation.Shapes
 import com.fibelatti.ui.foundation.dpToPx
 import com.fibelatti.ui.foundation.fadingEdges
 import com.fibelatti.ui.foundation.hideBottomSheet
 import com.fibelatti.ui.foundation.rememberAppSheetState
 import com.fibelatti.ui.foundation.showBottomSheet
-import com.fibelatti.ui.preview.AllPreviews
+import com.fibelatti.ui.preview.PreviewsAll
 import com.fibelatti.ui.text.AutoSizeText
 import com.fibelatti.ui.theme.ExtendedTheme
 import sh.calvin.reorderable.ReorderableColumn
@@ -122,6 +124,7 @@ import sh.calvin.reorderable.ReorderableColumn
 fun PhotoWidgetTapActionPicker(
     onNavClick: () -> Unit,
     currentTapActions: PhotoWidgetTapActions,
+    source: PhotoWidgetSource,
     onApplyClick: (newTapActions: PhotoWidgetTapActions) -> Unit,
 ) {
     var tapActions: PhotoWidgetTapActions by rememberSaveable { mutableStateOf(currentTapActions) }
@@ -145,6 +148,18 @@ fun PhotoWidgetTapActionPicker(
         tapActions = onGalleryAppPickerResult(result = result, tapActions = tapActions)
     }
 
+    val context = LocalContext.current
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+    ) { uri ->
+        tapActions = onFilePickerResult(
+            context = context,
+            uri = uri,
+            tapActions = tapActions,
+            selectedArea = selectedArea,
+        )
+    }
+
     TapActionPickerContent(
         onNavClick = onNavClick,
         selectedArea = selectedArea,
@@ -157,6 +172,7 @@ fun PhotoWidgetTapActionPicker(
         onTapActionChange = { newAction ->
             tapActions = onTapActionChange(tapActions = tapActions, newAction = newAction, selectedArea = selectedArea)
         },
+        source = source,
         onCopyFromClick = { sourceArea ->
             tapActions = onTapActionChange(
                 tapActions = tapActions,
@@ -191,6 +207,9 @@ fun PhotoWidgetTapActionPicker(
                     Intent(Intent.ACTION_VIEW).setDataAndType("content://sample".toUri(), "image/*"),
                 ),
             )
+        },
+        onChooseFileClick = {
+            filePickerLauncher.launch(arrayOf("*/*"))
         },
         onApplyClick = { onApplyClick(tapActions) },
     )
@@ -240,6 +259,25 @@ private fun onAppFolderPickerResult(
         TapActionArea.LEFT -> tapActions.copy(left = updatedAction)
         TapActionArea.CENTER -> tapActions.copy(center = updatedAction)
         TapActionArea.RIGHT -> tapActions.copy(right = updatedAction)
+    }
+}
+
+private fun onFilePickerResult(
+    context: Context,
+    uri: Uri?,
+    tapActions: PhotoWidgetTapActions,
+    selectedArea: TapActionArea,
+): PhotoWidgetTapActions {
+    if (uri == null) return tapActions
+
+    context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+    val newTapAction = PhotoWidgetTapAction.FileShortcut(fileUri = uri.toString())
+
+    return when (selectedArea) {
+        TapActionArea.LEFT -> tapActions.copy(left = newTapAction)
+        TapActionArea.CENTER -> tapActions.copy(center = newTapAction)
+        TapActionArea.RIGHT -> tapActions.copy(right = newTapAction)
     }
 }
 
@@ -326,10 +364,12 @@ private fun TapActionPickerContent(
     onSelectedAreaChange: (TapActionArea) -> Unit,
     currentTapAction: PhotoWidgetTapAction,
     onTapActionChange: (PhotoWidgetTapAction) -> Unit,
+    source: PhotoWidgetSource,
     onCopyFromClick: (TapActionArea) -> Unit,
     onChooseAppShortcutClick: () -> Unit,
     onAddAppToFolderClick: () -> Unit,
     onChooseGalleryAppClick: () -> Unit,
+    onChooseFileClick: () -> Unit,
     onApplyClick: () -> Unit,
 ) {
     Column(
@@ -405,6 +445,7 @@ private fun TapActionPickerContent(
                 currentTapAction = currentTapAction,
                 onTapActionClick = onTapActionChange,
                 selectedArea = selectedArea,
+                source = source,
                 onCopyFromClick = onCopyFromClick,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -415,6 +456,7 @@ private fun TapActionPickerContent(
                 onChooseAppShortcutClick = onChooseAppShortcutClick,
                 onAddAppToFolderClick = onAddAppToFolderClick,
                 onChooseGalleryAppClick = onChooseGalleryAppClick,
+                onChooseFileClick = onChooseFileClick,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -514,21 +556,21 @@ private fun TapAreaIndicator(
                 modifier = Modifier
                     .weight(3f)
                     .fillMaxHeight()
-                    .background(color = if (TapActionArea.LEFT == tapActionArea) color else Color.Transparent),
+                    .background(color = if (tapActionArea == TapActionArea.LEFT) color else Color.Transparent),
             )
 
             Box(
                 modifier = Modifier
                     .weight(4f)
                     .fillMaxHeight()
-                    .background(color = if (TapActionArea.CENTER == tapActionArea) color else Color.Transparent),
+                    .background(color = if (tapActionArea == TapActionArea.CENTER) color else Color.Transparent),
             )
 
             Box(
                 modifier = Modifier
                     .weight(3f)
                     .fillMaxHeight()
-                    .background(color = if (TapActionArea.RIGHT == tapActionArea) color else Color.Transparent),
+                    .background(color = if (tapActionArea == TapActionArea.RIGHT) color else Color.Transparent),
             )
         }
     }
@@ -539,6 +581,7 @@ private fun TapOptionsPicker(
     currentTapAction: PhotoWidgetTapAction,
     onTapActionClick: (PhotoWidgetTapAction) -> Unit,
     selectedArea: TapActionArea,
+    source: PhotoWidgetSource,
     onCopyFromClick: (TapActionArea) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -571,7 +614,7 @@ private fun TapOptionsPicker(
             title = stringResource(R.string.photo_widget_configure_tap_action),
         ) {
             RadioGroup(
-                items = PhotoWidgetTapAction.entries,
+                items = PhotoWidgetTapAction.entriesForSource(source = source),
                 itemSelected = { action -> action::class == currentTapAction::class },
                 onItemClick = { selection ->
                     onTapActionClick(
@@ -589,10 +632,6 @@ private fun TapOptionsPicker(
                     .padding(horizontal = 16.dp),
                 itemDescription = itemDescription@{ action ->
                     val descriptionRes: Int = when (action) {
-                        is PhotoWidgetTapAction.ViewInGallery -> {
-                            R.string.photo_widget_configure_tap_action_gallery_description_compatibility
-                        }
-
                         is PhotoWidgetTapAction.AppFolder -> {
                             R.string.photo_widget_configure_tap_action_app_folder_description
                         }
@@ -615,7 +654,7 @@ private fun TapOptionsPicker(
         title = stringResource(R.string.photo_widget_configure_tap_action_copy_from),
         options = TapActionArea.entries - selectedArea,
         optionName = { option -> localResources.getString(option.label) },
-        onOptionSelected = onCopyFromClick,
+        onOptionSelect = onCopyFromClick,
     )
 }
 
@@ -627,6 +666,7 @@ private fun TapActionCustomizationContent(
     onChooseAppShortcutClick: () -> Unit,
     onAddAppToFolderClick: () -> Unit,
     onChooseGalleryAppClick: () -> Unit,
+    onChooseFileClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (tapAction) {
@@ -680,6 +720,14 @@ private fun TapActionCustomizationContent(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 singleLine = true,
                 shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            )
+        }
+
+        is PhotoWidgetTapAction.FileShortcut -> {
+            FileShortcutCustomizationContent(
+                value = tapAction,
+                onChooseFileClick = onChooseFileClick,
+                modifier = modifier,
             )
         }
 
@@ -833,6 +881,38 @@ private fun ToggleCyclingCustomizationContent(
 }
 
 @Composable
+private fun FileShortcutCustomizationContent(
+    value: PhotoWidgetTapAction.FileShortcut,
+    onChooseFileClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        OutlinedButton(
+            onClick = onChooseFileClick,
+            shapes = ButtonDefaults.shapes(),
+        ) {
+            Text(text = stringResource(id = R.string.photo_widget_configure_tap_action_choose_file))
+        }
+
+        if (value.fileUri != null) {
+            AutoSizeText(
+                // lastPathSegment only takes care of the URI structure, the file can be in a nested directory
+                text = value.fileUri.toUri().lastPathSegment.orEmpty().substringAfterLast("/"),
+                modifier = Modifier.weight(1f),
+                color = MaterialTheme.colorScheme.onSurface,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                style = MaterialTheme.typography.labelLarge,
+            )
+        }
+    }
+}
+
+@Composable
 private fun AppFolderCustomizationContent(
     value: PhotoWidgetTapAction.AppFolder,
     onValueChange: (PhotoWidgetTapAction.AppFolder) -> Unit,
@@ -919,14 +999,7 @@ private fun AppFolderCustomizationContent(
             AppFolderCustomizationItem(
                 label = stringResource(R.string.photo_widget_app_folder_add_app),
                 modifier = Modifier.clickable(onClick = onAddAppClick),
-                backgroundShape = if (value.shortcuts.isEmpty()) {
-                    MaterialTheme.shapes.medium
-                } else {
-                    MaterialTheme.shapes.medium.copy(
-                        topStart = CornerSize(2.dp),
-                        topEnd = CornerSize(2.dp),
-                    )
-                },
+                backgroundShape = if (value.shortcuts.isEmpty()) Shapes.StandaloneShape else Shapes.BottomShape,
                 labelTextAlign = TextAlign.Center,
                 labelTextStyle = MaterialTheme.typography.titleMedium,
             )
@@ -977,7 +1050,7 @@ private fun AppFolderCustomizationItem(
 
 // region Previews
 @Composable
-@AllPreviews
+@PreviewsAll
 private fun PhotoWidgetTapActionPickerPreview() {
     ExtendedTheme {
         TapActionPickerContent(
@@ -986,10 +1059,12 @@ private fun PhotoWidgetTapActionPickerPreview() {
             onSelectedAreaChange = {},
             currentTapAction = PhotoWidgetTapAction.DEFAULT,
             onTapActionChange = {},
+            source = PhotoWidgetSource.PHOTOS,
             onCopyFromClick = {},
             onChooseAppShortcutClick = {},
             onAddAppToFolderClick = {},
             onChooseGalleryAppClick = {},
+            onChooseFileClick = {},
             onApplyClick = {},
         )
     }

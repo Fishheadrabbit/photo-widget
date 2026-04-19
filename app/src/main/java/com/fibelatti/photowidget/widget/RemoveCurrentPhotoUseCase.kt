@@ -27,6 +27,8 @@ class RemoveCurrentPhotoUseCase @Inject constructor(
                     photoIds = listOf(currentPhotoId),
                 )
             }
+
+            PhotoWidgetSource.GIF -> error("GIF source does not support removing photos.")
         }
 
         return true

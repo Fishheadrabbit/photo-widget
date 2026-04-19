@@ -62,7 +62,7 @@ fun ShapedPhoto(
             }
             val borderPercent = border.borderPercent()
 
-            if (PhotoWidgetAspectRatio.SQUARE == aspectRatio) {
+            if (aspectRatio == PhotoWidgetAspectRatio.SQUARE) {
                 bitmap.withPolygonalShape(
                     context = localContext,
                     shapeId = shapeId,

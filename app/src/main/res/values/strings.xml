@@ -99,8 +99,10 @@
     <!-- Source -->
     <string name="photo_widget_source_photos">Photos</string>
     <string name="photo_widget_source_directory">Folder</string>
+    <string name="photo_widget_source_gif">GIF</string>
     <string name="photo_widget_source_photos_description">Choose one or more photos using your default gallery picker.</string>
     <string name="photo_widget_source_directory_description">Choose one or more folders to sync. Photos are added automatically and refreshed at regular intervals.</string>
+    <string name="photo_widget_source_gif_description">Choose an animated GIF to play on your home screen. Shorter, simpler GIFs are recommended.</string>
 
     <!-- Aspect Ratio -->
     <string name="photo_widget_aspect_ratio_title">Format</string>
@@ -139,7 +141,7 @@
     <string name="photo_widget_configure_menu_source">Source</string>
     <string name="photo_widget_configure_source_selection_directory_empty">This widget is not synced with any folder yet.</string>
     <string name="photo_widget_configure_source_selection_directory_non_empty">This widget is synced with these folders:</string>
-    <string name="photo_widget_configure_source_warning">Changing the source will replace the current photos from this widget</string>
+    <string name="photo_widget_configure_source_warning">Changing the source will erase all content data from this widget once you confirm. This change cannot be reversed, and you will have to select photos or folders again.</string>
 
     <string name="photo_widget_configure_menu_crop">Crop</string>
     <string name="photo_widget_configure_menu_remove">Remove</string>
@@ -151,6 +153,8 @@
 
     <string name="photo_widget_configure_pick_photo">Pick photos</string>
     <string name="photo_widget_configure_pick_folder">Pick folder</string>
+    <string name="photo_widget_configure_pick_gif">Pick GIF</string>
+    <string name="photo_widget_configure_pick_gif_replace">Picking another GIF will replace the existing one, continue?</string>
     <string name="photo_widget_configure_change_source">Change source</string>
 
     <string name="photo_widget_configure_select_cycling_mode">Photo timer</string>
@@ -242,8 +246,11 @@
     <string name="photo_widget_configure_tap_action_app_folder">App folder</string>
     <string name="photo_widget_configure_tap_action_app_folder_description">Choose up to 12 apps</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Open a link</string>
+    <string name="photo_widget_configure_tap_action_file_shortcut">Open a file</string>
+    <string name="photo_widget_configure_tap_action_choose_file">Choose file</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling">Enable/disable timer</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling_description">Tap to pause the photo timer. Tap again to resume. This action will be disabled while the widget is locked.</string>
+    <string name="photo_widget_configure_tap_action_toggle_gif_playback">Enable/disable GIF playback</string>
     <string name="photo_widget_configure_tap_action_share_photo">Share photo</string>
     <string name="photo_widget_configure_tap_action_set_wallpaper">Set as wallpaper</string>
     <string name="photo_widget_configure_tap_action_remove_photo">Remove photo</string>
@@ -256,13 +263,16 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">View original photo (no crop or rotation)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">Do not shuffle when switching photos in the viewer</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">Do not change the current photo when switching photos in the viewer</string>
-    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">Compatible with folder-based widgets, photo-based widgets will use \"View photo in full screen\" instead.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_warning">This action opens the current photo using the gallery app. It won\'t be possible to view or navigate to other photos.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_app_selection">You may also choose which gallery app to use.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Choose app</string>
     <string name="photo_widget_configure_tap_action_disable_tap">Disable other tapping areas while the timer is paused</string>
     <string name="photo_widget_configure_tap_action_shared_preferences">These preferences are used by all areas that use this tap action.</string>
     <string name="photo_widget_configure_tap_action_shared_selected_app">The selected app is used by all areas that use this tap action.</string>
+
+    <string name="photo_widget_configure_gif_frame_interval">Frame interval</string>
+    <string name="photo_widget_configure_gif_frame_interval_description">Control the playing speed of the animated GIF. The smaller the value, the quicker the GIF.</string>
+    <string name="photo_widget_configure_gif_frame_interval_presets">Presets</string>
 
     <string name="photo_widget_configure_add_to_home">Add to home screen</string>
     <string name="photo_widget_configure_save_changes">Save changes</string>
@@ -339,12 +349,23 @@
     <string name="photo_widget_viewer_all_photos">All photos</string>
 
     <!-- Cycling feedback -->
-    <string name="photo_widget_cycling_feedback_paused">Timer paused</string>
-    <string name="photo_widget_cycling_feedback_resumed">Timer resumed</string>
+    <string name="photo_widget_cycling_feedback_paused">Widget paused</string>
+    <string name="photo_widget_cycling_feedback_resumed">Widget resumed</string>
 
     <!-- Folder -->
     <string name="photo_widget_app_folder_empty">You haven\'t added apps to this folder yet. Tap continue to open the widget editor.</string>
     <string name="photo_widget_app_folder_add_app">Add app</string>
+
+    <!-- Keep-alive service -->
+    <string name="photo_widget_keep_alive_service_dialog_title">Background Service</string>
+    <string name="photo_widget_keep_alive_service_dialog_toggle">Enable Background Service</string>
+    <string name="photo_widget_keep_alive_service_dialog_body">You can enable the background service to let Android know the app is important and that it shouldn\'t be stopped. Don\'t worry, the app only does what\'s needed to keep your widgets showing photos on schedule, without extra battery drain.&lt;br/>&lt;br/>Widgets on your home screen are managed by your app launcher, not directly by the app. Since the app rarely runs in the foreground, &lt;b>the system may assume it\'s not important and stop it&lt;/b>. When that happens, &lt;b>widgets are stopped too, causing photos not to appear&lt;/b>. This is especially common on &lt;b>Samsung devices&lt;/b>.</string>
+    <string name="photo_widget_keep_alive_service_required_for_gif">GIF widgets require the background service to play animations. You can find more about it in the settings tab. Would you like to enable it?</string>
+    <string name="photo_widget_keep_alive_service_gif_widgets_warning">There are active GIF widgets that depend on the background service. Disabling it may cause them to stop playing animations.</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name_keep_alive">Background Service</string>
+    <string name="notification_channel_description_keep_alive">Keeps the app alive, even if backgrounded for a long time. Ensures that widgets can be updated as expected.</string>
 
     <!-- Common Actions -->
     <string name="photo_widget_action_yes">Yes</string>
@@ -364,6 +385,9 @@
 
     <!-- Hints -->
     <string name="hint_scroll_to_view_more">Scroll to view more</string>
+
+    <string name="warning_experimental">Experimental</string>
+    <string name="warning_gif_widget_battery_usage">GIF widgets may use more battery! The app must do constant work in order to play the animation. Work is paused when the screen is off to save resources, but the app cannot detect when your home screen is not visible while using other apps.</string>
 
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Material Photo home screen widget</string>

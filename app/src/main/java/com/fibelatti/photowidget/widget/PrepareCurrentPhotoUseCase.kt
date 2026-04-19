@@ -67,7 +67,7 @@ class PrepareCurrentPhotoUseCase @Inject constructor(
         val borderPercent = photoWidget.border.borderPercent()
 
         Timber.d("Transforming the bitmap")
-        val transformedBitmap: Bitmap = if (PhotoWidgetAspectRatio.SQUARE == photoWidget.aspectRatio) {
+        val transformedBitmap: Bitmap = if (photoWidget.aspectRatio == PhotoWidgetAspectRatio.SQUARE) {
             bitmap.withPolygonalShape(
                 context = context,
                 shapeId = photoWidget.shapeId,

@@ -85,7 +85,9 @@
     <string name="photo_widget_source_photos">Photos</string>
     <string name="photo_widget_source_directory">Dossier</string>
     <string name="photo_widget_source_photos_description">Choisissez une ou plusieurs photos à l\'aide du sélecteur de galerie par défaut.</string>
+    <string name="photo_widget_source_gif">GIF</string>
     <string name="photo_widget_source_directory_description">Choisissez un ou plusieurs dossiers à synchroniser. Les photos sont ajoutées automatiquement et mises à jour à intervalles réguliers.</string>
+    <string name="photo_widget_source_gif_description">Choisissez un GIF animé à lire sur votre écran d\'accueil. Les GIF plus courts et plus simples sont recommandés.</string>
     <!-- Aspect Ratio -->
     <string name="photo_widget_aspect_ratio_title">Format</string>
     <string name="photo_widget_aspect_ratio_shape">Formes</string>
@@ -115,7 +117,7 @@
     <string name="photo_widget_configure_menu_source">Source</string>
     <string name="photo_widget_configure_source_selection_directory_empty">Ce widget n\'est pas encore synchronisé avec un dossier.</string>
     <string name="photo_widget_configure_source_selection_directory_non_empty">Ce widget est synchronisé avec ces dossiers :</string>
-    <string name="photo_widget_configure_source_warning">Changer la source remplacera les photos actuelles de ce widget</string>
+    <string name="photo_widget_configure_source_warning">Changer la source effacera toutes les données de contenu de ce widget dès que vous confirmez. Cette modification ne peut pas être annulée et vous devrez sélectionner à nouveau des photos ou des dossiers.</string>
     <string name="photo_widget_configure_menu_crop">Rogner</string>
     <string name="photo_widget_configure_menu_remove">Supprimer</string>
     <string name="photo_widget_configure_menu_move_left">Déplacer vers la gauche</string>
@@ -124,6 +126,8 @@
     <string name="photo_widget_configure_photos_excluded">Supprimé du widget</string>
     <string name="photo_widget_configure_pick_photo">Choisir des photos</string>
     <string name="photo_widget_configure_pick_folder">Choisir un dossier</string>
+    <string name="photo_widget_configure_pick_gif">Choisir un GIF</string>
+    <string name="photo_widget_configure_pick_gif_replace">Choisir un autre GIF remplacera celui existant, continuer ?</string>
     <string name="photo_widget_configure_change_source">Changer la source</string>
     <string name="photo_widget_configure_select_cycling_mode">Minuteur photo</string>
     <string name="photo_widget_configure_cycling_mode_interval">Intervalle</string>
@@ -203,8 +207,11 @@
     <string name="photo_widget_configure_tap_action_app_folder">Dossier d\'apps</string>
     <string name="photo_widget_configure_tap_action_app_folder_description">Choisissez jusqu\'à 12 apps</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Ouvrir un lien</string>
+    <string name="photo_widget_configure_tap_action_file_shortcut">Ouvrir un fichier</string>
+    <string name="photo_widget_configure_tap_action_choose_file">Choisir un fichier</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling">Activer/désactiver le minuteur</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling_description">Appuyez pour mettre le minuteur photo en pause. Appuyez de nouveau pour reprendre. Cette action sera désactivée lorsque le widget est verrouillé.</string>
+    <string name="photo_widget_configure_tap_action_toggle_gif_playback">Activer/désactiver la lecture GIF</string>
     <string name="photo_widget_configure_tap_action_share_photo">Partager la photo</string>
     <string name="photo_widget_configure_tap_action_set_wallpaper">Définir comme fond d\'écran</string>
     <string name="photo_widget_configure_tap_action_remove_photo">Supprimer la photo</string>
@@ -217,13 +224,15 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">Voir la photo originale (sans recadrage ni rotation)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">Ne pas mélanger les photos lors du changement dans le visualiseur</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">Ne pas changer la photo actuelle lors du changement dans le visualiseur</string>
-    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">Compatible avec les widgets basés sur les dossiers, les widgets photo utiliseront plutôt \"Afficher la photo en plein écran\".</string>
     <string name="photo_widget_configure_tap_action_gallery_description_warning">Cette action ouvre la photo actuelle avec l\'application galerie. Il ne sera pas possible de voir ou de naviguer vers d\'autres photos.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_app_selection">Vous pouvez également choisir quelle application galerie utiliser.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Choisir une application</string>
     <string name="photo_widget_configure_tap_action_disable_tap">Désactiver les autres zones tactiles pendant la pause du minuteur</string>
     <string name="photo_widget_configure_tap_action_shared_preferences">Ces préférences sont utilisées par toutes les zones utilisant cette action de toucher.</string>
     <string name="photo_widget_configure_tap_action_shared_selected_app">L\'application sélectionnée est utilisée par toutes les zones utilisant cette action de toucher.</string>
+    <string name="photo_widget_configure_gif_frame_interval">Intervalle des images</string>
+    <string name="photo_widget_configure_gif_frame_interval_description">Contrôlez la vitesse de lecture du GIF animé. Plus la valeur est faible, plus le GIF est rapide.</string>
+    <string name="photo_widget_configure_gif_frame_interval_presets">Préréglages</string>
     <string name="photo_widget_configure_add_to_home">Ajouter à l\'écran d\'accueil</string>
     <string name="photo_widget_configure_save_changes">Enregistrer les modifications</string>
     <string name="photo_widget_configure_widget_pinned">Widget ajouté ! Consultez votre écran d\'accueil…</string>
@@ -280,11 +289,20 @@
     <!-- Viewer -->
     <string name="photo_widget_viewer_all_photos">Toutes les photos</string>
     <!-- Cycling feedback -->
-    <string name="photo_widget_cycling_feedback_paused">Minuteur en pause</string>
-    <string name="photo_widget_cycling_feedback_resumed">Minuteur repris</string>
+    <string name="photo_widget_cycling_feedback_paused">Widget en pause</string>
+    <string name="photo_widget_cycling_feedback_resumed">Widget repris</string>
     <!-- Folder -->
     <string name="photo_widget_app_folder_empty">Vous n\'avez pas encore ajouté d\'apps à ce dossier. Appuyez sur Continuer pour ouvrir l\'éditeur de widgets.</string>
     <string name="photo_widget_app_folder_add_app">Ajouter une app</string>
+    <!-- Keep-alive service -->
+    <string name="photo_widget_keep_alive_service_dialog_title">Service en arrière-plan</string>
+    <string name="photo_widget_keep_alive_service_dialog_toggle">Activer le service en arrière-plan</string>
+    <string name="photo_widget_keep_alive_service_dialog_body">Vous pouvez activer le service en arrière-plan pour indiquer à Android que l\'application est importante et qu\'elle ne doit pas être arrêtée. Ne vous inquiétez pas, l\'application fait uniquement ce qui est nécessaire pour que vos widgets affichent les photos selon le calendrier, sans consommation supplémentaire de la batterie.&lt;br/>&lt;br/>Les widgets sur votre écran d\'accueil sont gérés par votre lanceur d\'applications, pas directement par l\'application. Comme l\'application s\'exécute rarement au premier plan, &lt;b>le système peut supposer qu\'elle n\'est pas importante et l\'arrêter&lt;/b>. Dans ce cas, &lt;b>les widgets sont également arrêtés, empêchant l\'affichage des photos&lt;/b>. Cela est particulièrement courant sur les &lt;b>appareils Samsung&lt;/b>.</string>
+    <string name="photo_widget_keep_alive_service_required_for_gif">Les widgets GIF nécessitent le service en arrière-plan pour lire des animations. Vous pouvez en savoir plus dans l\'onglet des paramètres. Souhaitez-vous l\'activer ?</string>
+    <string name="photo_widget_keep_alive_service_gif_widgets_warning">Des widgets GIF actifs dépendent du service en arrière-plan. Le désactiver peut les empêcher de lire des animations.</string>
+    <!-- Notifications -->
+    <string name="notification_channel_name_keep_alive">Service en arrière-plan</string>
+    <string name="notification_channel_description_keep_alive">Maintient l\'application active, même si elle est en arrière-plan pendant une longue période. Garantit que les widgets peuvent être mis à jour comme prévu.</string>
     <!-- Common Actions -->
     <string name="photo_widget_action_yes">Oui</string>
     <string name="photo_widget_action_no">Non</string>
@@ -302,6 +320,8 @@
     <string name="photo_widget_action_reset">Réinitialiser</string>
     <!-- Hints -->
     <string name="hint_scroll_to_view_more">Faites défiler pour en voir plus</string>
+    <string name="warning_experimental">Expérimental</string>
+    <string name="warning_gif_widget_battery_usage">Les widgets GIF peuvent consommer plus de batterie ! L\'application doit effectuer un travail constant pour lire l\'animation. Le travail est mis en pause lorsque l\'écran est éteint pour économiser les ressources, mais l\'application ne peut pas détecter quand votre écran d\'accueil n\'est pas visible pendant l\'utilisation d\'autres applications.</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Widget d\'accueil Material Photo</string>
 </resources>

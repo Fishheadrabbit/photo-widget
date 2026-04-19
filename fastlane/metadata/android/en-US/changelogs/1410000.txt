@@ -1,0 +1,8 @@
+This version brings the following updates:
+
+* It's finally here: animated GIF widgets!
+* New tap action: file shortcut
+* New flip horizontally/vertically shortcuts when cropping a photo
+* Fix import from another widget not working as expected
+
+Thanks for using the app!

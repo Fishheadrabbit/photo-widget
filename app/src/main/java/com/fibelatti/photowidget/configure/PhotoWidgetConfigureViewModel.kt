@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fibelatti.photowidget.model.DirectorySorting
+import com.fibelatti.photowidget.model.GifFrames
 import com.fibelatti.photowidget.model.LocalPhoto
 import com.fibelatti.photowidget.model.PhotoWidget
 import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
@@ -16,8 +17,10 @@ import com.fibelatti.photowidget.model.PhotoWidgetTapActions
 import com.fibelatti.photowidget.model.PhotoWidgetText
 import com.fibelatti.photowidget.model.coerceTapActions
 import com.fibelatti.photowidget.platform.savedState
+import com.fibelatti.photowidget.preferences.UserPreferencesStorage
 import com.fibelatti.photowidget.widget.DuplicatePhotoWidgetUseCase
 import com.fibelatti.photowidget.widget.LoadPhotoWidgetUseCase
+import com.fibelatti.photowidget.widget.PrepareGifPhotosUseCase
 import com.fibelatti.photowidget.widget.RestoreWidgetUseCase
 import com.fibelatti.photowidget.widget.SanitizeTapActionsUseCase
 import com.fibelatti.photowidget.widget.SavePhotoWidgetUseCase
@@ -46,12 +49,14 @@ import timber.log.Timber
 @HiltViewModel
 class PhotoWidgetConfigureViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    private val userPreferencesStorage: UserPreferencesStorage,
     private val photoWidgetStorage: PhotoWidgetStorage,
     loadPhotoWidgetUseCase: LoadPhotoWidgetUseCase,
     private val sanitizeTapActionsUseCase: SanitizeTapActionsUseCase,
     private val duplicatePhotoWidgetUseCase: DuplicatePhotoWidgetUseCase,
     private val restoreWidgetUseCase: RestoreWidgetUseCase,
     private val savePhotoWidgetUseCase: SavePhotoWidgetUseCase,
+    private val prepareGifPhotosUseCase: PrepareGifPhotosUseCase,
     private val pinningCache: PhotoWidgetPinningCache,
     private val scope: CoroutineScope,
 ) : ViewModel() {
@@ -190,24 +195,36 @@ class PhotoWidgetConfigureViewModel @Inject constructor(
     }
 
     fun changeSource(newSource: PhotoWidgetSource) {
-        photoWidgetStorage.saveWidgetSource(appWidgetId = effectiveWidgetId, source = newSource)
-        photoWidgetStorage.loadWidgetPhotos(appWidgetId = effectiveWidgetId)
-            .onEach { widgetPhotos ->
-                _state.getAndUpdate { current ->
-                    current.copy(
-                        photoWidget = current.photoWidget.copy(
-                            source = newSource,
-                            photos = widgetPhotos.current,
-                            currentPhoto = widgetPhotos.current.firstOrNull(),
-                            tapActions = current.photoWidget.tapActions.coerceTapActions(source = newSource),
-                            removedPhotos = widgetPhotos.excluded,
-                        ),
-                        selectedPhoto = widgetPhotos.current.firstOrNull(),
-                        cropQueue = emptyList(),
-                    )
+        if (newSource == PhotoWidgetSource.GIF && !userPreferencesStorage.keepAlive) {
+            _state += PhotoWidgetConfigureState.Message.KeepAliveRequired
+            return
+        }
+
+        viewModelScope.launch {
+            photoWidgetStorage.saveWidgetSource(appWidgetId = effectiveWidgetId, source = newSource)
+            photoWidgetStorage.loadWidgetPhotos(appWidgetId = effectiveWidgetId)
+                .onEach { widgetPhotos ->
+                    _state.getAndUpdate { current ->
+                        current.copy(
+                            photoWidget = current.photoWidget.copy(
+                                source = newSource,
+                                photos = widgetPhotos.current,
+                                currentPhoto = widgetPhotos.current.firstOrNull(),
+                                tapActions = current.photoWidget.tapActions.coerceTapActions(source = newSource),
+                                removedPhotos = widgetPhotos.excluded,
+                            ),
+                            selectedPhoto = widgetPhotos.current.firstOrNull(),
+                            cropQueue = emptyList(),
+                        )
+                    }
                 }
-            }
-            .launchIn(viewModelScope)
+                .launchIn(this)
+        }
+    }
+
+    fun confirmKeepAliveForGif() {
+        userPreferencesStorage.keepAlive = true
+        changeSource(PhotoWidgetSource.GIF)
     }
 
     fun setAspectRatio(photoWidgetAspectRatio: PhotoWidgetAspectRatio) {
@@ -215,19 +232,19 @@ class PhotoWidgetConfigureViewModel @Inject constructor(
             current.copy(
                 photoWidget = current.photoWidget.copy(
                     aspectRatio = photoWidgetAspectRatio,
-                    shapeId = if (PhotoWidgetAspectRatio.SQUARE == photoWidgetAspectRatio) {
+                    shapeId = if (photoWidgetAspectRatio == PhotoWidgetAspectRatio.SQUARE) {
                         current.photoWidget.shapeId
                     } else {
                         PhotoWidget.DEFAULT_SHAPE_ID
                     },
-                    cornerRadius = if (PhotoWidgetAspectRatio.SQUARE == photoWidgetAspectRatio ||
-                        PhotoWidgetAspectRatio.FILL_WIDGET == photoWidgetAspectRatio
+                    cornerRadius = if (photoWidgetAspectRatio == PhotoWidgetAspectRatio.SQUARE ||
+                        photoWidgetAspectRatio == PhotoWidgetAspectRatio.FILL_WIDGET
                     ) {
                         PhotoWidget.DEFAULT_CORNER_RADIUS
                     } else {
                         current.photoWidget.cornerRadius
                     },
-                    border = if (PhotoWidgetAspectRatio.FILL_WIDGET == photoWidgetAspectRatio) {
+                    border = if (photoWidgetAspectRatio == PhotoWidgetAspectRatio.FILL_WIDGET) {
                         PhotoWidgetBorder.None
                     } else {
                         current.photoWidget.border
@@ -271,6 +288,42 @@ class PhotoWidgetConfigureViewModel @Inject constructor(
 
             if (shouldTriggerCrop) {
                 requestCrop(photo = newPhotos.first())
+            }
+        }
+    }
+
+    fun gifPicked(source: Uri?) {
+        if (source == null) return
+
+        viewModelScope.launch {
+            state.first { !it.isProcessing }
+
+            _state.update { current -> current.copy(isProcessing = true) }
+
+            val existingPhotos = _state.value.photoWidget.photos
+            if (existingPhotos.isNotEmpty()) {
+                photoWidgetStorage.deletePhotos(
+                    appWidgetId = effectiveWidgetId,
+                    photoIds = existingPhotos.map { it.photoId },
+                )
+            }
+
+            val gifFrames: GifFrames = photoWidgetStorage.newWidgetPhotosFromGif(
+                appWidgetId = effectiveWidgetId,
+                source = source,
+            )
+
+            val message = if (gifFrames.frames.isEmpty()) {
+                PhotoWidgetConfigureState.Message.ImportFailed
+            } else {
+                null
+            }
+
+            _state.getAndUpdate { current ->
+                current.copy(
+                    photoWidget = current.photoWidget.copy(gifInterval = gifFrames.interval),
+                    isProcessing = false,
+                ) + gifFrames.frames + message
             }
         }
     }
@@ -478,6 +531,12 @@ class PhotoWidgetConfigureViewModel @Inject constructor(
         }
     }
 
+    fun saveGifFrameInterval(interval: Long) {
+        _state.update { current ->
+            current.copy(photoWidget = current.photoWidget.copy(gifInterval = interval))
+        }
+    }
+
     fun saveShuffle(value: Boolean) {
         _state.update { current ->
             current.copy(photoWidget = current.photoWidget.copy(shuffle = value))
@@ -606,21 +665,42 @@ class PhotoWidgetConfigureViewModel @Inject constructor(
 
             // The user started configuring from within the app, request to pin, but they might cancel
             currentState.isDraft -> {
-                pinningCache.populate(currentState.photoWidget, draftWidgetId = effectiveWidgetId)
+                scope.launch {
+                    if (currentState.photoWidget.source == PhotoWidgetSource.GIF) {
+                        _state.update { current -> current.copy(isProcessing = true) }
 
-                _state += PhotoWidgetConfigureState.Message.RequestPin
+                        prepareGifPhotosUseCase(appWidgetId = effectiveWidgetId, photoWidget = currentState.photoWidget)
+                    }
+
+                    pinningCache.populate(pendingWidget = currentState.photoWidget, draftWidgetId = effectiveWidgetId)
+
+                    _state.getAndUpdate { current ->
+                        current.copy(isProcessing = false) + PhotoWidgetConfigureState.Message.RequestPin
+                    }
+                }
             }
 
             // The user started configuring from the home screen, it will be added automatically
             else -> {
-                viewModelScope.launch {
-                    savePhotoWidgetUseCase(
-                        draftWidgetId = effectiveWidgetId,
-                        appWidgetId = appWidgetId,
-                        photoWidget = currentState.photoWidget,
-                    )
+                scope.launch {
+                    _state.update { current -> current.copy(isProcessing = true) }
 
-                    _state += PhotoWidgetConfigureState.Message.AddWidget(appWidgetId = appWidgetId)
+                    if (currentState.photoWidget.source == PhotoWidgetSource.GIF) {
+                        prepareGifPhotosUseCase(appWidgetId = appWidgetId, photoWidget = currentState.photoWidget)
+                    }
+
+                    withContext(NonCancellable) {
+                        savePhotoWidgetUseCase(
+                            draftWidgetId = effectiveWidgetId,
+                            appWidgetId = appWidgetId,
+                            photoWidget = currentState.photoWidget,
+                        )
+                    }
+
+                    _state.getAndUpdate { current ->
+                        current.copy(isProcessing = false) +
+                            PhotoWidgetConfigureState.Message.AddWidget(appWidgetId = appWidgetId)
+                    }
                 }
             }
         }
@@ -636,12 +716,18 @@ class PhotoWidgetConfigureViewModel @Inject constructor(
 
     fun saveDraft() {
         scope.launch {
+            _state.update { current -> current.copy(isProcessing = true) }
+
             withContext(NonCancellable) {
                 savePhotoWidgetUseCase(
                     draftWidgetId = effectiveWidgetId,
                     appWidgetId = effectiveWidgetId,
                     photoWidget = state.value.photoWidget,
                 )
+            }
+
+            _state.getAndUpdate { current ->
+                current.copy(isProcessing = false) + PhotoWidgetConfigureState.Message.DraftSaved
             }
         }
     }

@@ -25,10 +25,11 @@ import com.fibelatti.photowidget.preferences.PickerDefault
 import com.fibelatti.photowidget.preferences.ShapeDefault
 import com.fibelatti.ui.foundation.AppBottomSheet
 import com.fibelatti.ui.foundation.AppSheetState
+import com.fibelatti.ui.foundation.Shapes
 import com.fibelatti.ui.foundation.hideBottomSheet
 import com.fibelatti.ui.foundation.rememberAppSheetState
 import com.fibelatti.ui.foundation.showBottomSheet
-import com.fibelatti.ui.preview.AllPreviews
+import com.fibelatti.ui.preview.PreviewsAll
 import com.fibelatti.ui.theme.ExtendedTheme
 
 @Composable
@@ -65,7 +66,7 @@ fun PhotoWidgetConfigureAppearanceTab(
     // region Sheets
     PhotoWidgetAspectRatioBottomSheet(
         sheetState = aspectRatioPickerSheetState,
-        onAspectRatioSelected = viewModel::setAspectRatio,
+        onAspectRatioSelect = viewModel::setAspectRatio,
     )
 
     AppBottomSheet(
@@ -165,23 +166,24 @@ fun PhotoWidgetConfigureAppearanceTab(
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         PickerDefault(
             title = stringResource(id = R.string.photo_widget_aspect_ratio_title),
             currentValue = stringResource(id = photoWidget.aspectRatio.label),
             onClick = onAspectRatioClick,
             modifier = Modifier.padding(horizontal = 16.dp),
+            shape = Shapes.TopShape,
         )
 
-        if (PhotoWidgetAspectRatio.SQUARE == photoWidget.aspectRatio) {
+        if (photoWidget.aspectRatio == PhotoWidgetAspectRatio.SQUARE) {
             ShapeDefault(
                 title = stringResource(id = R.string.widget_defaults_shape),
                 currentValue = photoWidget.shapeId,
                 onClick = onShapeClick,
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
-        } else if (PhotoWidgetAspectRatio.FILL_WIDGET != photoWidget.aspectRatio) {
+        } else if (photoWidget.aspectRatio != PhotoWidgetAspectRatio.FILL_WIDGET) {
             PickerDefault(
                 title = stringResource(id = R.string.widget_defaults_corner_radius),
                 currentValue = photoWidget.cornerRadius.toString(),
@@ -190,7 +192,7 @@ fun PhotoWidgetConfigureAppearanceTab(
             )
         }
 
-        if (PhotoWidgetAspectRatio.FILL_WIDGET != photoWidget.aspectRatio) {
+        if (photoWidget.aspectRatio != PhotoWidgetAspectRatio.FILL_WIDGET) {
             val currentValue: String = buildString {
                 append(stringResource(photoWidget.border.label))
 
@@ -238,9 +240,14 @@ fun PhotoWidgetConfigureAppearanceTab(
             currentValue = formatRangeValue(value = photoWidget.colors.brightness),
             onClick = onBrightnessClick,
             modifier = Modifier.padding(horizontal = 16.dp),
+            shape = if (photoWidget.aspectRatio != PhotoWidgetAspectRatio.FILL_WIDGET) {
+                Shapes.MiddleShape
+            } else {
+                Shapes.BottomShape
+            },
         )
 
-        if (PhotoWidgetAspectRatio.FILL_WIDGET != photoWidget.aspectRatio) {
+        if (photoWidget.aspectRatio != PhotoWidgetAspectRatio.FILL_WIDGET) {
             PickerDefault(
                 title = stringResource(id = R.string.photo_widget_configure_offset),
                 currentValue = stringResource(
@@ -257,13 +264,14 @@ fun PhotoWidgetConfigureAppearanceTab(
                 currentValue = photoWidget.padding.toString(),
                 onClick = onPaddingClick,
                 modifier = Modifier.padding(horizontal = 16.dp),
+                shape = Shapes.BottomShape,
             )
         }
     }
 }
 
 // region Previews
-@AllPreviews
+@PreviewsAll
 @Composable
 private fun PhotoWidgetConfigureAppearanceTabPreview() {
     ExtendedTheme {
@@ -286,7 +294,7 @@ private fun PhotoWidgetConfigureAppearanceTabPreview() {
     }
 }
 
-@AllPreviews
+@PreviewsAll
 @Composable
 private fun PhotoWidgetConfigureAppearanceTabShapePreview() {
     ExtendedTheme {
@@ -309,7 +317,7 @@ private fun PhotoWidgetConfigureAppearanceTabShapePreview() {
     }
 }
 
-@AllPreviews
+@PreviewsAll
 @Composable
 private fun PhotoWidgetConfigureAppearanceTabFillPreview() {
     ExtendedTheme {

@@ -5,6 +5,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.fibelatti.photowidget.R
 import com.fibelatti.photowidget.configure.appWidgetId
+import com.fibelatti.photowidget.model.PhotoWidgetSource
+import com.fibelatti.photowidget.platform.KeepAliveService
 import com.fibelatti.photowidget.widget.data.PhotoWidgetStorage
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -26,24 +28,39 @@ class ToggleCyclingFeedbackActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (photoWidgetStorage.getWidgetLockedInApp(appWidgetId = intent.appWidgetId)) {
+        val appWidgetId: Int = intent.appWidgetId
+
+        if (photoWidgetStorage.getWidgetLockedInApp(appWidgetId = appWidgetId)) {
             finish()
             return
         }
 
-        val paused = photoWidgetStorage.getWidgetCyclePaused(appWidgetId = intent.appWidgetId)
+        val paused: Boolean = photoWidgetStorage.getWidgetCyclePaused(appWidgetId = appWidgetId)
+        val source: PhotoWidgetSource = photoWidgetStorage.getWidgetSource(appWidgetId = appWidgetId)
 
-        if (paused) {
-            photoWidgetAlarmManager.setup(appWidgetId = intent.appWidgetId)
-        } else {
-            photoWidgetAlarmManager.cancel(appWidgetId = intent.appWidgetId)
+        when {
+            source == PhotoWidgetSource.GIF && paused -> {
+                KeepAliveService.sendResumeGifBroadcast(context = this, appWidgetId = appWidgetId)
+            }
+
+            source == PhotoWidgetSource.GIF -> {
+                KeepAliveService.sendPauseGifBroadcast(context = this, appWidgetId = appWidgetId)
+            }
+
+            paused -> {
+                photoWidgetAlarmManager.setup(appWidgetId = appWidgetId)
+            }
+
+            else -> {
+                photoWidgetAlarmManager.cancel(appWidgetId = appWidgetId)
+            }
         }
 
-        photoWidgetStorage.saveWidgetCyclePaused(appWidgetId = intent.appWidgetId, value = !paused)
+        photoWidgetStorage.saveWidgetCyclePaused(appWidgetId = appWidgetId, value = !paused)
 
         PhotoWidgetProvider.update(
             context = this,
-            appWidgetId = intent.appWidgetId,
+            appWidgetId = appWidgetId,
         )
 
         Toast.makeText(

@@ -16,8 +16,8 @@ class RestoreWidgetUseCase @Inject constructor(
         originalWidget: PhotoWidget,
         newAppWidgetId: Int,
     ): PhotoWidget {
-        require(PhotoWidgetSource.PHOTOS == originalWidget.source) {
-            "Only photos widgets can be restored."
+        require(originalWidget.source == PhotoWidgetSource.PHOTOS || originalWidget.source == PhotoWidgetSource.GIF) {
+            "Only photos and GIF widgets can be restored."
         }
 
         val sourceDir: File? = originalWidget.photos.firstOrNull()

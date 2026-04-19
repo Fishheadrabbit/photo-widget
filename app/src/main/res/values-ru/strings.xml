@@ -87,7 +87,9 @@
     <string name="photo_widget_source_photos">Фотографии</string>
     <string name="photo_widget_source_directory">Папка</string>
     <string name="photo_widget_source_photos_description">Выберите одну или несколько фотографий с помощью стандартного выбора галереи.</string>
+    <string name="photo_widget_source_gif">GIF</string>
     <string name="photo_widget_source_directory_description">Выберите одну или несколько папок для синхронизации. Фотографии добавляются автоматически и регулярно обновляются.</string>
+    <string name="photo_widget_source_gif_description">Выберите анимированный GIF для воспроизведения на главном экране. Рекомендуются более короткие и простые GIF-файлы.</string>
     <!-- Aspect Ratio -->
     <string name="photo_widget_aspect_ratio_title">Формат</string>
     <string name="photo_widget_aspect_ratio_shape">Фигуры</string>
@@ -117,7 +119,7 @@
     <string name="photo_widget_configure_menu_source">Источник</string>
     <string name="photo_widget_configure_source_selection_directory_empty">Этот виджет еще не синхронизирован с какой-либо папкой.</string>
     <string name="photo_widget_configure_source_selection_directory_non_empty">Этот виджет синхронизирован с этими папками:</string>
-    <string name="photo_widget_configure_source_warning">Изменение источника заменит текущие фотографии в этом виджете</string>
+    <string name="photo_widget_configure_source_warning">Изменение источника удалит все данные содержимого этого виджета после подтверждения. Это действие нельзя отменить, и вам придётся снова выбрать фотографии или папки.</string>
     <string name="photo_widget_configure_menu_crop">Обрезать</string>
     <string name="photo_widget_configure_menu_remove">Удалить</string>
     <string name="photo_widget_configure_menu_move_left">Переместить влево</string>
@@ -126,6 +128,8 @@
     <string name="photo_widget_configure_photos_excluded">Удален из виджета</string>
     <string name="photo_widget_configure_pick_photo">Выбрать фотографии</string>
     <string name="photo_widget_configure_pick_folder">Выбрать папку</string>
+    <string name="photo_widget_configure_pick_gif">Выбрать GIF</string>
+    <string name="photo_widget_configure_pick_gif_replace">Выбор другого GIF заменит текущий. Продолжить?</string>
     <string name="photo_widget_configure_change_source">Изменить источник</string>
     <string name="photo_widget_configure_select_cycling_mode">Фототаймер</string>
     <string name="photo_widget_configure_cycling_mode_interval">Интервал</string>
@@ -215,8 +219,11 @@
     <string name="photo_widget_configure_tap_action_app_folder">Папка приложений</string>
     <string name="photo_widget_configure_tap_action_app_folder_description">Выберите до 12 приложений</string>
     <string name="photo_widget_configure_tap_action_url_shortcut">Открыть ссылку</string>
+    <string name="photo_widget_configure_tap_action_file_shortcut">Открыть файл</string>
+    <string name="photo_widget_configure_tap_action_choose_file">Выбрать файл</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling">Включить/выключить таймер</string>
     <string name="photo_widget_configure_tap_action_toggle_cycling_description">Нажмите, чтобы приостановить таймер фото. Нажмите ещё раз, чтобы продолжить. Это действие будет недоступно, пока виджет заблокирован.</string>
+    <string name="photo_widget_configure_tap_action_toggle_gif_playback">Включить/выключить воспроизведение GIF</string>
     <string name="photo_widget_configure_tap_action_share_photo">Поделиться фото</string>
     <string name="photo_widget_configure_tap_action_set_wallpaper">Установить как обои</string>
     <string name="photo_widget_configure_tap_action_remove_photo">Удалить фото</string>
@@ -227,13 +234,15 @@
     <string name="photo_widget_configure_tap_action_view_original_photo">Просмотреть оригинальную фотографию (без обрезки или поворота)</string>
     <string name="photo_widget_configure_tap_action_do_not_shuffle">Не перемешивать фотографии при переключении в просмотрщике</string>
     <string name="photo_widget_configure_tap_action_keep_current_photo">Не менять текущую фотографию при переключении фотографий в просмотрщике</string>
-    <string name="photo_widget_configure_tap_action_gallery_description_compatibility">Совместимо с виджетами на основе папок, виджеты на основе фотографий будут использовать «Просмотреть фото на весь экран» вместо этого.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_warning">Это действие откроет текущую фотографию через приложение галереи. Невозможно будет просматривать или переходить к другим фотографиям.</string>
     <string name="photo_widget_configure_tap_action_gallery_description_app_selection">Вы также можете выбрать, какое приложение галереи использовать.</string>
     <string name="photo_widget_configure_tap_action_choose_app">Выбрать приложение</string>
     <string name="photo_widget_configure_tap_action_disable_tap">Отключить другие области касания во время паузы таймера</string>
     <string name="photo_widget_configure_tap_action_shared_preferences">Эти настройки используются всеми зонами, применяющими это действие нажатия.</string>
     <string name="photo_widget_configure_tap_action_shared_selected_app">Выбранное приложение используется всеми зонами, применяющими это действие нажатия.</string>
+    <string name="photo_widget_configure_gif_frame_interval">Интервал кадров</string>
+    <string name="photo_widget_configure_gif_frame_interval_description">Управляйте скоростью воспроизведения анимированного GIF. Чем меньше значение, тем быстрее GIF.</string>
+    <string name="photo_widget_configure_gif_frame_interval_presets">Пресеты</string>
     <string name="photo_widget_configure_add_to_home">Добавить на главный экран</string>
     <string name="photo_widget_configure_save_changes">Сохранить изменения</string>
     <string name="photo_widget_configure_widget_pinned">Виджет добавлен! Проверьте домашний экран…</string>
@@ -290,11 +299,20 @@
     <!-- Viewer -->
     <string name="photo_widget_viewer_all_photos">Все фото</string>
     <!-- Cycling feedback -->
-    <string name="photo_widget_cycling_feedback_paused">Таймер приостановлен</string>
-    <string name="photo_widget_cycling_feedback_resumed">Таймер возобновлён</string>
+    <string name="photo_widget_cycling_feedback_paused">Виджет приостановлен</string>
+    <string name="photo_widget_cycling_feedback_resumed">Виджет возобновлён</string>
     <!-- Folder -->
     <string name="photo_widget_app_folder_empty">Вы ещё не добавили приложения в эту папку. Нажмите «Продолжить», чтобы открыть редактор виджетов.</string>
     <string name="photo_widget_app_folder_add_app">Добавить приложение</string>
+    <!-- Keep-alive service -->
+    <string name="photo_widget_keep_alive_service_dialog_title">Фоновый сервис</string>
+    <string name="photo_widget_keep_alive_service_dialog_toggle">Включить фоновый сервис</string>
+    <string name="photo_widget_keep_alive_service_dialog_body">Вы можете включить фоновый сервис, чтобы сообщить Android о важности приложения и предотвратить его остановку. Не беспокойтесь — приложение делает только необходимое для своевременного показа фотографий в виджетах, без дополнительного расхода батареи.&lt;br/&gt;&lt;br/&gt;Виджеты на вашем главном экране управляются лаунчером, а не напрямую приложением. Поскольку приложение редко работает на переднем плане, &lt;b&gt;система может посчитать его неважным и завершить его работу&lt;/b&gt;. Когда это происходит, &lt;b&gt;виджеты тоже перестают работать, и фотографии перестают отображаться&lt;/b&gt;. Это особенно часто встречается на &lt;b&gt;устройствах Samsung&lt;/b&gt;.</string>
+    <string name="photo_widget_keep_alive_service_required_for_gif">GIF-виджеты требуют фонового сервиса для воспроизведения анимаций. Подробнее об этом можно узнать во вкладке настроек. Хотите включить его?</string>
+    <string name="photo_widget_keep_alive_service_gif_widgets_warning">Есть активные GIF-виджеты, которые зависят от фонового сервиса. Его отключение может привести к тому, что анимации перестанут воспроизводиться.</string>
+    <!-- Notifications -->
+    <string name="notification_channel_name_keep_alive">Фоновый сервис</string>
+    <string name="notification_channel_description_keep_alive">Поддерживает работу приложения в фоновом режиме. Обеспечивает своевременное обновление виджетов.</string>
     <!-- Common Actions -->
     <string name="photo_widget_action_yes">Да</string>
     <string name="photo_widget_action_no">Нет</string>
@@ -312,6 +330,8 @@
     <string name="photo_widget_action_reset">Сбросить</string>
     <!-- Hints -->
     <string name="hint_scroll_to_view_more">Прокрутите, чтобы увидеть больше</string>
+    <string name="warning_experimental">Экспериментальный</string>
+    <string name="warning_gif_widget_battery_usage">GIF-виджеты могут потреблять больше заряда батареи! Приложению необходимо постоянно работать для воспроизведения анимации. Работа приостанавливается, когда экран выключен, чтобы сэкономить ресурсы, но приложение не может определить, когда главный экран не виден при использовании других приложений.</string>
     <!-- Content Description -->
     <string name="photo_widget_cd_host">Виджет главного экрана Material Photo</string>
 </resources>

@@ -20,8 +20,8 @@ object AppInfo {
     const val APPLICATION_ID = "com.fibelatti.photowidget"
 
     private const val VERSION_MAJOR = 1
-    private const val VERSION_MINOR = 39
-    private const val VERSION_PATCH = 1
+    private const val VERSION_MINOR = 41
+    private const val VERSION_PATCH = 0
     private const val VERSION_BUILD = 0
 
     val versionCode: Int = (VERSION_MAJOR * 1_000_000)
@@ -168,6 +168,7 @@ aboutLibraries {
 
 licensee {
     allow("Apache-2.0")
+    allow("MIT")
 }
 
 dependencies {
@@ -185,7 +186,7 @@ dependencies {
     implementation(libs.graphics.shapes)
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.palette)
-    implementation(libs.work.runtime.ktx)
+    implementation(libs.work.runtime)
 
     implementation(libs.navigation3.runtime)
     implementation(libs.navigation3.ui)
@@ -206,6 +207,7 @@ dependencies {
 
     implementation(libs.image.cropper)
     implementation(libs.coil)
+    implementation(libs.gif.drawable)
     implementation(libs.reorderable)
     implementation(libs.colorpicker.compose)
     implementation(libs.zoomable)
@@ -214,8 +216,6 @@ dependencies {
 
     implementation(libs.timber)
     debugImplementation(libs.leakcanary)
-
-    lintChecks(libs.compose.lint.checks)
 }
 
 /**

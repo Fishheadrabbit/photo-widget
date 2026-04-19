@@ -2,6 +2,7 @@ package com.fibelatti.photowidget.widget.data
 
 import android.net.Uri
 import com.fibelatti.photowidget.model.DirectorySorting
+import com.fibelatti.photowidget.model.GifFrames
 import com.fibelatti.photowidget.model.LocalPhoto
 import com.fibelatti.photowidget.model.PhotoWidgetAspectRatio
 import com.fibelatti.photowidget.model.PhotoWidgetBorder
@@ -13,6 +14,7 @@ import com.fibelatti.photowidget.model.TapActionArea
 import com.fibelatti.photowidget.model.WidgetOffset
 import com.fibelatti.photowidget.model.WidgetPhotos
 import com.fibelatti.photowidget.model.allWidgetPhotos
+import com.fibelatti.photowidget.platform.UriPermissionGrantor
 import java.io.File
 import java.util.UUID
 import javax.inject.Inject
@@ -38,6 +40,7 @@ class PhotoWidgetStorage @Inject constructor(
     private val pendingDeletionPhotosDao: PendingDeletionWidgetPhotoDao,
     private val excludedPhotosDao: ExcludedWidgetPhotoDao,
     private val widgetDirectoryDao: WidgetDirectoryDao,
+    private val uriPermissionGrantor: UriPermissionGrantor,
 ) {
 
     private val migrationMutex: Mutex = Mutex()
@@ -93,12 +96,27 @@ class PhotoWidgetStorage @Inject constructor(
         return directoryName
     }
 
-    fun saveWidgetSource(appWidgetId: Int, source: PhotoWidgetSource) {
+    suspend fun saveWidgetSource(appWidgetId: Int, source: PhotoWidgetSource) {
+        val currentSource: PhotoWidgetSource = sharedPreferences.getWidgetSource(appWidgetId = appWidgetId)
+        if (source != currentSource) {
+            internalFileStorage.deleteWidgetData(directoryName = getOrCreateDirectoryName(appWidgetId = appWidgetId))
+
+            deleteWidgetTableData(appWidgetId = appWidgetId)
+
+            sharedPreferences.saveWidgetSyncedDir(appWidgetId = appWidgetId, dirUri = emptySet())
+        }
+
         sharedPreferences.saveWidgetSource(appWidgetId = appWidgetId, source = source)
     }
 
     fun getWidgetSource(appWidgetId: Int): PhotoWidgetSource {
         return sharedPreferences.getWidgetSource(appWidgetId = appWidgetId)
+    }
+
+    suspend fun hasActiveGifWidgets(): Boolean {
+        return getKnownWidgetIds().first().any { id ->
+            getWidgetSource(appWidgetId = id) == PhotoWidgetSource.GIF
+        }
     }
 
     fun saveWidgetSyncedDir(appWidgetId: Int, dirUri: Set<Uri>) {
@@ -118,6 +136,11 @@ class PhotoWidgetStorage @Inject constructor(
     suspend fun newWidgetPhoto(appWidgetId: Int, source: Uri): LocalPhoto? {
         val directoryName = getOrCreateDirectoryName(appWidgetId)
         return internalFileStorage.newWidgetPhoto(directoryName = directoryName, source = source)
+    }
+
+    suspend fun newWidgetPhotosFromGif(appWidgetId: Int, source: Uri): GifFrames {
+        val directoryName = getOrCreateDirectoryName(appWidgetId)
+        return internalFileStorage.newWidgetPhotosFromGif(directoryName = directoryName, source = source)
     }
 
     suspend fun getNewDirPhotos(dirUri: Uri, sorting: DirectorySorting): List<LocalPhoto>? {
@@ -141,9 +164,9 @@ class PhotoWidgetStorage @Inject constructor(
     fun loadWidgetPhotos(appWidgetId: Int): Flow<WidgetPhotos> = flow {
         Timber.i("Retrieving photos (appWidgetId=$appWidgetId)")
 
-        val excludedPhotos = getExcludedPhotoIds(appWidgetId = appWidgetId)
+        val excludedPhotos: Set<String> = getExcludedPhotoIds(appWidgetId = appWidgetId)
 
-        val local = getLocalWidgetPhotos(
+        val local: WidgetPhotos = getLocalWidgetPhotos(
             appWidgetId = appWidgetId,
             excludedPhotos = excludedPhotos,
         )
@@ -152,7 +175,7 @@ class PhotoWidgetStorage @Inject constructor(
             emit(local)
         }
 
-        val source = getSourceWidgetPhotos(
+        val source: WidgetPhotos = getSourceWidgetPhotos(
             appWidgetId = appWidgetId,
             excludedPhotos = excludedPhotos,
         )
@@ -181,19 +204,19 @@ class PhotoWidgetStorage @Inject constructor(
     ): WidgetPhotos {
         Timber.d("Retrieving photos from source")
 
-        val source = getWidgetSource(appWidgetId = appWidgetId)
+        val source: PhotoWidgetSource = getWidgetSource(appWidgetId = appWidgetId)
 
         Timber.d("Widget source: $source")
 
         val directoryName: String = getOrCreateDirectoryName(appWidgetId)
-        val croppedPhotos = internalFileStorage.getWidgetPhotos(
+        val croppedPhotos: Map<String, LocalPhoto> = internalFileStorage.getWidgetPhotos(
             directoryName = directoryName,
             source = source,
         ).associateBy { it.photoId }
 
         Timber.d("Cropped photos found: ${croppedPhotos.size}")
 
-        val loadedPhotos = if (PhotoWidgetSource.DIRECTORY == source) {
+        val loadedPhotos: Map<Boolean, List<LocalPhoto>> = if (source == PhotoWidgetSource.DIRECTORY) {
             externalFileStorage.getPhotos(
                 dirUri = getWidgetSyncDir(appWidgetId),
                 croppedPhotos = croppedPhotos,
@@ -203,7 +226,7 @@ class PhotoWidgetStorage @Inject constructor(
             // Check for legacy storage value
             // Migrate found value to the new storage
             // or retrieve it from the new storage if not found
-            val widgetOrder = sharedPreferences.getWidgetOrder(appWidgetId = appWidgetId)
+            val widgetOrder: List<String> = sharedPreferences.getWidgetOrder(appWidgetId = appWidgetId)
                 ?.also { saveWidgetOrder(appWidgetId = appWidgetId, order = it.toSet()) }
                 ?: orderDao.getWidgetOrder(widgetId = appWidgetId)
 
@@ -230,13 +253,20 @@ class PhotoWidgetStorage @Inject constructor(
     ): WidgetPhotos {
         Timber.d("Retrieving photos from cache")
 
-        val localPhotos = localPhotoDao.getLocalPhotos(widgetId = appWidgetId)
+        val source: PhotoWidgetSource = getWidgetSource(appWidgetId)
+
+        val localPhotos: Map<Boolean, List<LocalPhoto>> = localPhotoDao.getLocalPhotos(widgetId = appWidgetId)
             .map {
                 LocalPhoto(
                     photoId = it.photoId,
                     croppedPhotoPath = it.croppedPhotoPath,
                     originalPhotoPath = it.originalPhotoPath,
                     externalUri = it.externalUri?.let(Uri::parse),
+                    launcherUri = if (source == PhotoWidgetSource.GIF && it.croppedPhotoPath != null) {
+                        uriPermissionGrantor(it.croppedPhotoPath)
+                    } else {
+                        null
+                    },
                     timestamp = it.timestamp,
                 )
             }
@@ -349,6 +379,8 @@ class PhotoWidgetStorage @Inject constructor(
                     .map { it.photoId }
                     .toSet()
             }
+
+            PhotoWidgetSource.GIF -> emptySet() // GIF source does not support removing photos
         }
     }
 
@@ -550,6 +582,14 @@ class PhotoWidgetStorage @Inject constructor(
         return sharedPreferences.getWidgetText(appWidgetId = appWidgetId)
     }
 
+    fun saveWidgetGifInterval(appWidgetId: Int, interval: Long) {
+        sharedPreferences.saveWidgetGifInterval(appWidgetId = appWidgetId, interval = interval)
+    }
+
+    fun getWidgetGifInterval(appWidgetId: Int): Long {
+        return sharedPreferences.getWidgetGifInterval(appWidgetId = appWidgetId)
+    }
+
     fun saveWidgetDeletionTimestamp(appWidgetId: Int, timestamp: Long?) {
         sharedPreferences.saveWidgetDeletionTimestamp(appWidgetId = appWidgetId, timestamp = timestamp)
     }
@@ -567,11 +607,7 @@ class PhotoWidgetStorage @Inject constructor(
             widgetDirectoryDao.deleteByWidgetId(widgetId = appWidgetId)
         }
 
-        localPhotoDao.deletePhotosByWidgetId(widgetId = appWidgetId)
-        displayedPhotoDao.deletePhotosByWidgetId(widgetId = appWidgetId)
-        orderDao.deletePhotosByWidgetId(widgetId = appWidgetId)
-        pendingDeletionPhotosDao.deletePhotosByWidgetId(widgetId = appWidgetId)
-        excludedPhotosDao.deletePhotosByWidgetId(widgetId = appWidgetId)
+        deleteWidgetTableData(appWidgetId = appWidgetId)
 
         sharedPreferences.deleteWidgetData(appWidgetId = appWidgetId)
     }
@@ -583,12 +619,18 @@ class PhotoWidgetStorage @Inject constructor(
 
         internalFileStorage.deleteWidgetData(directoryName = "$LEGACY_DRAFT_WIDGET_ID")
         widgetDirectoryDao.deleteByWidgetId(widgetId = draftWidgetId)
-        localPhotoDao.deletePhotosByWidgetId(widgetId = draftWidgetId)
-        displayedPhotoDao.deletePhotosByWidgetId(widgetId = draftWidgetId)
-        orderDao.deletePhotosByWidgetId(widgetId = draftWidgetId)
-        pendingDeletionPhotosDao.deletePhotosByWidgetId(widgetId = draftWidgetId)
-        excludedPhotosDao.deletePhotosByWidgetId(widgetId = draftWidgetId)
+
+        deleteWidgetTableData(appWidgetId = draftWidgetId)
+
         sharedPreferences.deleteWidgetData(appWidgetId = draftWidgetId)
+    }
+
+    private suspend fun deleteWidgetTableData(appWidgetId: Int) {
+        localPhotoDao.deletePhotosByWidgetId(widgetId = appWidgetId)
+        displayedPhotoDao.deletePhotosByWidgetId(widgetId = appWidgetId)
+        orderDao.deletePhotosByWidgetId(widgetId = appWidgetId)
+        pendingDeletionPhotosDao.deletePhotosByWidgetId(widgetId = appWidgetId)
+        excludedPhotosDao.deletePhotosByWidgetId(widgetId = appWidgetId)
     }
 
     /**
@@ -667,7 +709,7 @@ class PhotoWidgetStorage @Inject constructor(
 
     suspend fun duplicateWidgetDir(originalAppWidgetId: Int, newAppWidgetId: Int) {
         val sourceDirectoryName: String = getOrCreateDirectoryName(originalAppWidgetId)
-        val targetDirectoryName: String = createDirectoryName(newAppWidgetId)
+        val targetDirectoryName: String = getOrCreateDirectoryName(newAppWidgetId)
         internalFileStorage.duplicateWidgetDir(
             sourceDirectoryName = sourceDirectoryName,
             targetDirectoryName = targetDirectoryName,

@@ -19,4 +19,9 @@ enum class PhotoWidgetSource(
      * The user selected a directory and all its photos are added automatically.
      */
     DIRECTORY(label = R.string.photo_widget_source_directory),
+
+    /**
+     * The user selected one or more GIF files and the extracted frames are used as photos.
+     */
+    GIF(label = R.string.photo_widget_source_gif),
 }
